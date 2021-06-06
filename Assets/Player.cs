@@ -10,45 +10,65 @@ public class Player : MonoBehaviour
     float h;
     float v;
     Rigidbody body;
+    Animator anim;
 
+    bool isRun;
     void Start()
     {
         body = GetComponent<Rigidbody>();
+        anim = GetComponent<Animator>();
 
     }
     private void Update()
     {
+        AnimationManager();
+        InputKey();
 
-        h = Input.GetAxis("Horizontal");
-        v = Input.GetAxis("Vertical");
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (h == 0 && v == 0)
         {
-            body.AddForce(Vector3.up * 22f, ForceMode.Impulse);
+            isRun = false;
+        }
+        else
+        {
+            isRun = true;
         }
 
     }
-    void FixedUpdate()
+    void InputKey()
     {
-        body.velocity = new Vector3(0f, body.velocity.y,0f);
-        body.angularVelocity = Vector3.zero;
-        
-
-
-        
-        Vector3 direction = new Vector3(h, 0, v);
-
-/*        if (direction != Vector3.zero)
+        h = Input.GetAxis("Horizontal");
+        v = Input.GetAxis("Vertical");
+/*        if (Input.GetKeyDown(KeyCode.Space))
         {
-            float angle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg;
-
-            if (90.0f > angle && angle > -90.0f)
-            {
-                angle = angle * rotationSpeed * Time.deltaTime;
-                transform.Rotate(Vector3.up, angle);
-            }
+            body.AddForce(Vector3.up * 22f, ForceMode.Impulse);
         }*/
+    }
+    void AnimationManager()
+    {
+        if (isRun)
+        {
+            anim.SetBool("isRun", true);
+        }
+        else
+        {
+            anim.SetBool("isRun", false);
+        }
+    }
+
+    void PlayerMove()
+    {
+        //body.velocity = new Vector3(0f, body.velocity.y, 0f);
+        body.angularVelocity = Vector3.zero;
+
+        Vector3 direction= new Vector3(h, 0, v);
 
         transform.Translate(direction * moveSpeed * Time.deltaTime);
+
+    }
+
+    void FixedUpdate()
+    {
+        PlayerMove();
     }
 
 }

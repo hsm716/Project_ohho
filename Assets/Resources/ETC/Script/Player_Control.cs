@@ -85,11 +85,11 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     private void FixedUpdate()
     {
         Turn();
-        Jump();
+        //Jump();
         Run();
         Walk();
-        Attack();
-        DoubleJump();
+        //Attack();
+        //DoubleJump();
         Respawn();
     }
     [PunRPC]
@@ -216,7 +216,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
         if (PV.IsMine)
         {
             rgbd.velocity = new Vector3(0f, rgbd.velocity.y, 0f);
-            PV.RPC("InsertColor", RpcTarget.All);
+            //PV.RPC("InsertColor", RpcTarget.All);
 
             horizontalMove = Input.GetAxisRaw("Horizontal");
             verticalMove = Input.GetAxisRaw("Vertical");
@@ -226,7 +226,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
             {
                 isRespawn = true;
             }
-            if (isGrounded || isWall)
+/*            if (isGrounded || isWall)
             {
                 if (jumpCount == 2)
                 {
@@ -246,9 +246,9 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
                         isDoubleJump = true;
                     }
                 }
-            }
+            }*/
 
-            if (Input.GetKeyDown(KeyCode.X))
+/*            if (Input.GetKeyDown(KeyCode.X))
             {
                 isAttacking = true;
             }
@@ -257,7 +257,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
             {
                 PhotonNetwork.Instantiate("Bullet", GunHead.transform.position, transform.rotation);
                      
-            }
+            }*/
 
 
             if (Input.GetKey(KeyCode.Z))
@@ -385,11 +385,11 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     {
         if (horizontalMove == 0 && verticalMove == 0)
         {
-            animator.SetBool("isWalking", false);
+            animator.SetBool("isRun", false);
         }
         else
         {
-            animator.SetBool("isWalking", true);
+            animator.SetBool("isRun", true);
         }
 
         if (isGrounded==true)
