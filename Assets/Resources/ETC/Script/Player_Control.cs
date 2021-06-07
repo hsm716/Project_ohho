@@ -33,13 +33,14 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     private float walkSpeed;
     [SerializeField]
     private float jumpPower = 7.0f;
-    
+
     [SerializeField]
-    private int jumpCount=2;
+    private int jumpCount = 2;
     [SerializeField]
     private int AttackCount = 3;
 
     private Vector3 movement;
+    private Vector3 dodgeVec;
 
     private bool isWall = false;
     private bool isRespawn = false;
@@ -57,6 +58,11 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     private bool isSwordAttacking2;
     private bool isSwordAttacking3;
 
+    public bool isDodge;
+
+    private bool dDown;
+
+
     float horizontalMove;
     float verticalMove;
 
@@ -67,11 +73,6 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
 
     private void Awake()
     {
-        NickNameText.text = PV.IsMine ? PhotonNetwork.NickName : PV.Owner.NickName;
-        NickNameText.color = PV.IsMine ? Color.green : Color.red;
-
-       
-        PV.RPC("InitColor", RpcTarget.All, PV.ViewID);
         if (PV.IsMine)
         {
             var CM = GameObject.Find("Main Camera").GetComponent<Camera_Move>();
@@ -85,27 +86,52 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     private void FixedUpdate()
     {
         Turn();
-        //Jump();
+        Jump();
         Run();
         Walk();
-        //Attack();
-        //DoubleJump();
+        Attack();
+        DoubleJump();
         Respawn();
+        Dodge();
     }
+    [PunRPC]
+    void Dodge()
+    {
+        if (!isDodge && dDown)
+        {
+            dodgeVec = movement;
+            moveSpeed = 7;
+            animator.SetTrigger("doDodge");
+            isDodge = true;
+
+            Invoke("DodgeOut", 0.6f);
+        }
+
+    }
+    [PunRPC]
+    void DodgeOut()
+    {
+        moveSpeed = 5f;
+        isDodge = false;
+
+    }
+
+
+
     [PunRPC]
     void Run()
     {
-        
+
         if (!isRunning)
             return;
         /*movement.Set(horizontalMove, 0, verticalMove);
         movement = movement.normalized * 1.5f*moveSpeed * Time.deltaTime;
 
         rgbd.MovePosition(transform.position + movement);*/
-        moveSpeed = 5f;
+        moveSpeed = 20f;
 
     }
-   [PunRPC]
+    [PunRPC]
     void Attack()
     {
         if (!isAttacking)
@@ -119,23 +145,30 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
         if (!isDoubleJump)
             return;
         Dbjump.Play();
-        rgbd.AddForce(Vector3.up * jumpPower*1.2f, ForceMode.Impulse);
-        jumpCount-=1;
+        rgbd.AddForce(Vector3.up * jumpPower * 1.2f, ForceMode.Impulse);
+        jumpCount -= 1;
         isDoubleJump = false;
         isGrounded = false;
     }
     [PunRPC]
     void Walk()
     {
+
+        if (isDodge)
+        {
+            movement.Set(dodgeVec.x, dodgeVec.y, dodgeVec.z);
+        }
+        else
+        {
+            movement.Set(horizontalMove, 0, verticalMove);
+        }
         
-        
-        movement.Set(horizontalMove,0,verticalMove);
         movement = movement.normalized * moveSpeed * Time.deltaTime;
 
         rgbd.transform.position += movement;
         //rgbd.MovePosition(transform.position + movement);
     }
-   [PunRPC]
+    [PunRPC]
     void Jump()
     {
         if (!isJumping)
@@ -143,17 +176,18 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
         jump.Play();
         rgbd.velocity = Vector3.zero;
         rgbd.AddForce(Vector3.up * jumpPower, ForceMode.Impulse);
-        jumpCount-=1;
+        jumpCount -= 1;
         isJumping = false;
         isGrounded = false;
     }
-   [PunRPC] void Turn()
+    [PunRPC]
+    void Turn()
     {
         if (horizontalMove == 0 && verticalMove == 0)
             return;
         Quaternion newRotation = Quaternion.LookRotation(movement);
 
-        rgbd.rotation = Quaternion.Slerp(rgbd.rotation, newRotation, rotateSpeed * Time.deltaTime); 
+        rgbd.rotation = Quaternion.Slerp(rgbd.rotation, newRotation, rotateSpeed * Time.deltaTime);
     }
     void Respawn()
     {
@@ -171,52 +205,11 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
             PV.RPC("DestroyRPC", RpcTarget.AllBuffered);
         }
     }
-
-    [PunRPC]
-    void InitColor(int id)
-    {
-        if (id / 1000 == 1)
-        {
-            Head_color = Color.red;
-        }
-        else if (id / 1000 == 2)
-        {
-            Head_color = Color.blue;
-        }
-        else if (id / 1000 == 3)
-        {
-            Head_color = Color.green;
-        }
-        else if (id / 1000 == 4)
-        {
-            Head_color = Color.yellow;
-        }
-        else if (id / 1000 == 5)
-        {
-            Head_color = Color.magenta;
-        }
-        else if (id / 1000 == 6)
-        {
-            Head_color = Color.black;
-        }
-        else
-        {
-            Head_color = Color.clear;
-        }
-
-    }
-
-    [PunRPC]
-    void InsertColor()  // InitColor를 시킨것을 적용하는 함수.
-    {
-        Head.GetComponent<MeshRenderer>().material.color = Head_color;
-    }
     void Update()
     {
         if (PV.IsMine)
         {
             rgbd.velocity = new Vector3(0f, rgbd.velocity.y, 0f);
-            //PV.RPC("InsertColor", RpcTarget.All);
 
             horizontalMove = Input.GetAxisRaw("Horizontal");
             verticalMove = Input.GetAxisRaw("Vertical");
@@ -226,58 +219,31 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
             {
                 isRespawn = true;
             }
-/*            if (isGrounded || isWall)
-            {
-                if (jumpCount == 2)
-                {
-                    if (Input.GetButtonDown("Jump"))
-                    {
-                        isJumping = true;
-                    }
-                }
+            dDown = Input.GetKey(KeyCode.LeftShift);
+            /*            if (isGrounded || isWall)
+                        {
+                            if (jumpCount == 2)
+                            {
+                                if (Input.GetButtonDown("Jump"))
+                                {
+                                    isJumping = true;
+                                }
+                            }
 
-            }
-            else
-            {
-                if (jumpCount == 1)
-                {
-                    if (Input.GetButtonDown("Jump"))
-                    {
-                        isDoubleJump = true;
-                    }
-                }
-            }*/
-
-/*            if (Input.GetKeyDown(KeyCode.X))
-            {
-                isAttacking = true;
-            }
-
-            if (Input.GetKeyDown(KeyCode.C))
-            {
-                PhotonNetwork.Instantiate("Bullet", GunHead.transform.position, transform.rotation);
-                     
-            }*/
+                        }
+                        else
+                        {
+                            if (jumpCount == 1)
+                            {
+                                if (Input.GetButtonDown("Jump"))
+                                {
+                                    isDoubleJump = true;
+                                }
+                            }
+                        }*/
 
 
-            if (Input.GetKey(KeyCode.Z))
-            {
-                isRunning = true;
-            }
-            if (Input.GetKeyUp(KeyCode.Z))
-            {
-                isRunning = false;
-                moveSpeed = walkSpeed;
-            }
-            if (Input.GetKeyDown(KeyCode.T))
-            {
-                if (!isHi)
-                    isHi = true;
-                else
-                    isHi = false;
-                    
-            }
-            
+
 
             AnimationUpdate();
         }
@@ -297,20 +263,6 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
 
     private void OnCollisionEnter(Collision col)
     {
-        if (col.gameObject.CompareTag("Ground"))
-        {
-            isGrounded = true;
-            isJumping = false;
-            isDoubleJump = false;
-            jumpCount = 2;
-        }
-        if (col.gameObject.CompareTag("wall"))
-        {
-            isWall = true;
-            //isGrounded = true;
-            jumpCount = 2;
-        }
-
     }
     private void OnCollisionStay(Collision col)
     {
@@ -326,15 +278,11 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     }
     private void OnCollisionExit(Collision col)
     {
-        if (col.gameObject.CompareTag("wall"))
-        {
-            isWall = false;
-        }
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (!PV.IsMine&&other.gameObject.CompareTag("Attack_spot") &&other.gameObject.transform.parent.GetComponent<PhotonView>().IsMine)
+        if (!PV.IsMine && other.gameObject.CompareTag("Attack_spot") && other.gameObject.transform.parent.GetComponent<PhotonView>().IsMine)
         {
             PV.RPC("head_jump", RpcTarget.All);
             other.gameObject.transform.parent.GetComponent<Player_Control>().Hit();
@@ -385,14 +333,14 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     {
         if (horizontalMove == 0 && verticalMove == 0)
         {
-            animator.SetBool("isRun", false);
+            animator.SetBool("isRunning", false);
         }
         else
         {
-            animator.SetBool("isRun", true);
+            animator.SetBool("isRunning", true);
         }
 
-        if (isGrounded==true)
+        if (isGrounded == true)
         {
             animator.SetBool("isJumping", false);
         }
@@ -409,7 +357,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
         {
             animator.SetBool("isAttacking", false);
         }
-        
+
         if (isDoubleJump == true)
         {
             animator.SetBool("DoubleJump", true);
@@ -419,62 +367,6 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
             animator.SetBool("DoubleJump", false);
         }
 
-        if (isRunning == true)
-        {
-            animator.SetBool("isRunning", true);
-        }
-        else
-        {
-            animator.SetBool("isRunning", false);
-        }
-
-        if (isWall == true)
-        {
-            animator.SetBool("isWallgrep", true);
-        }
-        else
-        {
-            animator.SetBool("isWallgrep", false);
-        }
-
-        if (isHi == true)
-        {
-            animator.SetBool("isHi", true);
-        }
-        else
-        {
-            animator.SetBool("isHi", false);
-        }
-
-
-        if (isSwordAttacking1 == true)
-        {
-            animator.SetBool("isSwordAttack1", true);
-        }
-        else
-        {
-            animator.SetBool("isSwordAttack1", false);
-        }
-
-        if (isSwordAttacking2 == true)
-        {
-            animator.SetBool("isSwordAttack2", true);
-        }
-        else
-        {
-            animator.SetBool("isSwordAttack2", false);
-        }
-
-        if (isSwordAttacking3 == true)
-        {
-            animator.SetBool("isSwordAttack3", true);
-        }
-        else
-        {
-            animator.SetBool("isSwordAttack3", false);
-        }
-
-        animator.SetInteger("AttackCount", AttackCount);
 
     }
 
@@ -486,10 +378,10 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
             stream.SendNext(transform.position);
             stream.SendNext(transform.rotation);
             stream.SendNext(HealthImage.fillAmount);
-            
+
         }
         else
-        { 
+        {
             curPos = (Vector3)stream.ReceiveNext();
             curRot = (Quaternion)stream.ReceiveNext();
             HealthImage.fillAmount = (float)stream.ReceiveNext();

@@ -28,6 +28,8 @@ public class Camera_Move : MonoBehaviour
     Vector3 cameraPosition;
     Vector3 cameraRotation;
 
+    
+
     private void LateUpdate()
     {
         cameraPosition.x = player.transform.position.x + offsetX;

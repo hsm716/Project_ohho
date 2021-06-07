@@ -1223,6 +1223,7 @@ MonoBehaviour:
   jumpPower: 7
   jumpCount: 2
   AttackCount: 3
+  isDodge: 0
 --- !u!114 &5104082159748782764
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1256,7 +1257,10 @@ MonoBehaviour:
   m_SynchronizeParameters:
   - Type: 4
     SynchronizeType: 0
-    Name: isRun
+    Name: isRunning
+  - Type: 9
+    SynchronizeType: 0
+    Name: doDodge
   m_SynchronizeLayers:
   - SynchronizeType: 0
     LayerIndex: 0

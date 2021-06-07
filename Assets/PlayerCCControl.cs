@@ -57,6 +57,11 @@ public class PlayerCCControl : MonoBehaviourPunCallbacks,IPunObservable
     private bool isSwordAttacking2;
     private bool isSwordAttacking3;
 
+    private bool isDodge;
+
+    private bool dDown;
+
+
     float horizontalMove;
     float verticalMove;
 
@@ -71,7 +76,6 @@ public class PlayerCCControl : MonoBehaviourPunCallbacks,IPunObservable
         NickNameText.color = PV.IsMine ? Color.green : Color.red;
 
        
-        PV.RPC("InitColor", RpcTarget.All, PV.ViewID);
         if (PV.IsMine)
         {
             var CM = GameObject.Find("Main Camera").GetComponent<Camera_Move>();
@@ -92,6 +96,29 @@ public class PlayerCCControl : MonoBehaviourPunCallbacks,IPunObservable
         DoubleJump();
         Respawn();
     }
+    [PunRPC]
+    void Dodge()
+    {
+        if (!isDodge && dDown)
+        {
+            moveSpeed= 10;
+            animator.SetTrigger("doDodge");
+            isDodge = true;
+
+            Invoke("DodgeOut", 0.4f);
+        }
+
+    }
+    [PunRPC]
+    void DodgeOut()
+    {
+        moveSpeed = 30f;
+        isDodge = false;
+
+    }
+
+
+
     [PunRPC]
     void Run()
     {
@@ -171,52 +198,11 @@ public class PlayerCCControl : MonoBehaviourPunCallbacks,IPunObservable
             PV.RPC("DestroyRPC", RpcTarget.AllBuffered);
         }
     }
-
-    [PunRPC]
-    void InitColor(int id)
-    {
-        if (id / 1000 == 1)
-        {
-            Head_color = Color.red;
-        }
-        else if (id / 1000 == 2)
-        {
-            Head_color = Color.blue;
-        }
-        else if (id / 1000 == 3)
-        {
-            Head_color = Color.green;
-        }
-        else if (id / 1000 == 4)
-        {
-            Head_color = Color.yellow;
-        }
-        else if (id / 1000 == 5)
-        {
-            Head_color = Color.magenta;
-        }
-        else if (id / 1000 == 6)
-        {
-            Head_color = Color.black;
-        }
-        else
-        {
-            Head_color = Color.clear;
-        }
-
-    }
-
-    [PunRPC]
-    void InsertColor()  // InitColor를 시킨것을 적용하는 함수.
-    {
-        Head.GetComponent<MeshRenderer>().material.color = Head_color;
-    }
     void Update()
     {
         if (PV.IsMine)
         {
             rgbd.velocity = new Vector3(0f, rgbd.velocity.y, 0f);
-            PV.RPC("InsertColor", RpcTarget.All);
 
             horizontalMove = Input.GetAxisRaw("Horizontal");
             verticalMove = Input.GetAxisRaw("Vertical");
@@ -226,7 +212,7 @@ public class PlayerCCControl : MonoBehaviourPunCallbacks,IPunObservable
             {
                 isRespawn = true;
             }
-            if (isGrounded || isWall)
+/*            if (isGrounded || isWall)
             {
                 if (jumpCount == 2)
                 {
@@ -246,37 +232,9 @@ public class PlayerCCControl : MonoBehaviourPunCallbacks,IPunObservable
                         isDoubleJump = true;
                     }
                 }
-            }
-
-            if (Input.GetKeyDown(KeyCode.X))
-            {
-                isAttacking = true;
-            }
-
-            if (Input.GetKeyDown(KeyCode.C))
-            {
-                PhotonNetwork.Instantiate("Bullet", GunHead.transform.position, transform.rotation);
-                     
-            }
+            }*/
 
 
-            if (Input.GetKey(KeyCode.Z))
-            {
-                isRunning = true;
-            }
-            if (Input.GetKeyUp(KeyCode.Z))
-            {
-                isRunning = false;
-                moveSpeed = walkSpeed;
-            }
-            if (Input.GetKeyDown(KeyCode.T))
-            {
-                if (!isHi)
-                    isHi = true;
-                else
-                    isHi = false;
-                    
-            }
             
 
             AnimationUpdate();
@@ -427,54 +385,6 @@ public class PlayerCCControl : MonoBehaviourPunCallbacks,IPunObservable
         {
             animator.SetBool("isRunning", false);
         }
-
-        if (isWall == true)
-        {
-            animator.SetBool("isWallgrep", true);
-        }
-        else
-        {
-            animator.SetBool("isWallgrep", false);
-        }
-
-        if (isHi == true)
-        {
-            animator.SetBool("isHi", true);
-        }
-        else
-        {
-            animator.SetBool("isHi", false);
-        }
-
-
-        if (isSwordAttacking1 == true)
-        {
-            animator.SetBool("isSwordAttack1", true);
-        }
-        else
-        {
-            animator.SetBool("isSwordAttack1", false);
-        }
-
-        if (isSwordAttacking2 == true)
-        {
-            animator.SetBool("isSwordAttack2", true);
-        }
-        else
-        {
-            animator.SetBool("isSwordAttack2", false);
-        }
-
-        if (isSwordAttacking3 == true)
-        {
-            animator.SetBool("isSwordAttack3", true);
-        }
-        else
-        {
-            animator.SetBool("isSwordAttack3", false);
-        }
-
-        animator.SetInteger("AttackCount", AttackCount);
 
     }
 
