@@ -377,14 +377,12 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
         {
             stream.SendNext(transform.position);
             stream.SendNext(transform.rotation);
-            stream.SendNext(HealthImage.fillAmount);
 
         }
         else
         {
             curPos = (Vector3)stream.ReceiveNext();
             curRot = (Quaternion)stream.ReceiveNext();
-            HealthImage.fillAmount = (float)stream.ReceiveNext();
         }
     }
 }
