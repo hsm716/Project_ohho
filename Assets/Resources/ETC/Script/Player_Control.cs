@@ -70,13 +70,17 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     [PunRPC]
     void DestroyRPC() => Destroy(gameObject);
 
+    public GameObject CM;
+    private Camera characterCamera;
 
     private void Awake()
     {
         if (PV.IsMine)
         {
-            var CM = GameObject.Find("Main Camera").GetComponent<Camera_Move>();
-            CM.player = this.gameObject;
+            CM = GameObject.Find("Main Camera");
+            characterCamera = CM.GetComponent<Camera>();
+            var CM_cm = CM.GetComponent<Camera_Move>();
+            CM_cm.player = this.gameObject;
         }
 
         rgbd = GetComponent<Rigidbody>();
@@ -85,7 +89,9 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     }
     private void FixedUpdate()
     {
-        Turn();
+        Zoom();
+        MouseTurn();
+        //Turn();
         Jump();
         Run();
         Walk();
@@ -180,7 +186,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
         isJumping = false;
         isGrounded = false;
     }
-    [PunRPC]
+/*    [PunRPC]
     void Turn()
     {
         if (horizontalMove == 0 && verticalMove == 0)
@@ -188,6 +194,22 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
         Quaternion newRotation = Quaternion.LookRotation(movement);
 
         rgbd.rotation = Quaternion.Slerp(rgbd.rotation, newRotation, rotateSpeed * Time.deltaTime);
+    }*/
+    void Zoom()
+    {
+        var scroll = Input.mouseScrollDelta;
+        characterCamera.fieldOfView = Mathf.Clamp(characterCamera.fieldOfView - scroll.y*2f, 30f, 70f);
+    }
+    void MouseTurn()
+    {
+        Ray ray = characterCamera.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hitResult;
+        if(Physics.Raycast(ray,out hitResult))
+        {
+            Vector3 mouseDir = new Vector3(hitResult.point.x, transform.position.y, hitResult.point.z) - transform.position;
+            animator.transform.forward = mouseDir;
+        }
+
     }
     void Respawn()
     {
