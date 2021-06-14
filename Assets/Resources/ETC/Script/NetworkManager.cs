@@ -53,7 +53,6 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     public void Spawn()
     {
         GameObject obj = PhotonNetwork.Instantiate("Player",new Vector3(Random.Range(-7,8),4.5f,-4.1f), Quaternion.identity);
-        obj.transform.localScale = new Vector3(0.25f, 0.25f, 0.25f);
         RespawnPanel.SetActive(false);
     }
 }

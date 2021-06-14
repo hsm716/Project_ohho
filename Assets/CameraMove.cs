@@ -10,6 +10,7 @@ public class CameraMove : MonoBehaviour
     [SerializeField]
     float offsetX, offsetY, offsetZ;
 
+    
     private void FixedUpdate()
     {
         nextPosition  = Target.transform.position + new Vector3(offsetX, offsetY, offsetZ);

@@ -231,6 +231,8 @@ SkinnedMeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 3
+  m_RayTraceProcedural: 0
   m_RenderingLayerMask: 4294967295
   m_RendererPriority: 0
   m_Materials:
@@ -243,6 +245,7 @@ SkinnedMeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -337,7 +340,6 @@ GameObject:
   - component: {fileID: 95446636183784616}
   - component: {fileID: 54174046382449110}
   - component: {fileID: 136043099458248162}
-  - component: {fileID: 114062226022497710}
   m_Layer: 0
   m_Name: FreeZombieSimpleMovement
   m_TagString: Untagged
@@ -410,23 +412,6 @@ CapsuleCollider:
   m_Height: 1
   m_Direction: 1
   m_Center: {x: 0, y: 0.5, z: 0}
---- !u!114 &114062226022497710
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1190601789873990}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 58d6da23a2cbdbf419e581162aa2eaaf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_moveSpeed: 0.3
-  m_turnSpeed: 100
-  m_animator: {fileID: 95446636183784616}
-  m_rigidBody: {fileID: 54174046382449110}
-  m_controlMode: 0
 --- !u!1 &1236329582464368
 GameObject:
   m_ObjectHideFlags: 0
