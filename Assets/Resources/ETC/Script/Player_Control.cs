@@ -62,10 +62,12 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
 
     private bool dDown;
 
+    private bool mouseTurn;
 
     float horizontalMove;
     float verticalMove;
 
+    Text Px, Pz;
 
     [PunRPC]
     void DestroyRPC() => Destroy(gameObject);
@@ -77,6 +79,9 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     {
         if (PV.IsMine)
         {
+            Px = GameObject.Find("Px").GetComponent<Text>();
+            Pz = GameObject.Find("Pz").GetComponent<Text>();
+
             CM = GameObject.Find("Main Camera");
             characterCamera = CM.GetComponent<Camera>();
             var CM_cm = CM.GetComponent<Camera_Move>();
@@ -90,8 +95,15 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     private void FixedUpdate()
     {
         Zoom();
-        MouseTurn();
-        //Turn();
+
+        if (mouseTurn)
+        {
+            MouseTurn();
+        }
+        else
+        {
+            Turn();
+        }
         Jump();
         Run();
         Walk();
@@ -186,7 +198,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
         isJumping = false;
         isGrounded = false;
     }
-/*    [PunRPC]
+    [PunRPC]
     void Turn()
     {
         if (horizontalMove == 0 && verticalMove == 0)
@@ -194,23 +206,26 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
         Quaternion newRotation = Quaternion.LookRotation(movement);
 
         rgbd.rotation = Quaternion.Slerp(rgbd.rotation, newRotation, rotateSpeed * Time.deltaTime);
-    }*/
-    void Zoom()
-    {
-        var scroll = Input.mouseScrollDelta;
-        characterCamera.fieldOfView = Mathf.Clamp(characterCamera.fieldOfView - scroll.y*2f, 30f, 70f);
     }
     void MouseTurn()
     {
         Ray ray = characterCamera.ScreenPointToRay(Input.mousePosition);
         RaycastHit hitResult;
-        if(Physics.Raycast(ray,out hitResult))
+        if (Physics.Raycast(ray, out hitResult))
         {
             Vector3 mouseDir = new Vector3(hitResult.point.x, transform.position.y, hitResult.point.z) - transform.position;
             animator.transform.forward = mouseDir;
-        }
 
+            Px.text = "" + mouseDir.x;
+            Pz.text = "" + mouseDir.z;
+        }
     }
+    void Zoom()
+    {
+        var scroll = Input.mouseScrollDelta;
+        characterCamera.fieldOfView = Mathf.Clamp(characterCamera.fieldOfView - scroll.y*2f, 30f, 70f);
+    }
+
     void Respawn()
     {
         if (!isRespawn)
@@ -242,6 +257,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
                 isRespawn = true;
             }
             dDown = Input.GetKey(KeyCode.LeftShift);
+            mouseTurn = Input.GetMouseButton(1);
             /*            if (isGrounded || isWall)
                         {
                             if (jumpCount == 2)

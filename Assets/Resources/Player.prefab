@@ -1226,6 +1226,7 @@ MonoBehaviour:
   jumpCount: 2
   AttackCount: 3
   isDodge: 0
+  CM: {fileID: 0}
 --- !u!114 &5104082159748782764
 MonoBehaviour:
   m_ObjectHideFlags: 0
