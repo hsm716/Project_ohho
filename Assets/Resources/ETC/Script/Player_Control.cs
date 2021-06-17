@@ -47,6 +47,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     private bool isGrounded = true;
     private bool isJumping;
     private bool isRunning;
+    private bool isRunningBack;
     private bool isAttacking;
     private bool isDoubleJump;
     private bool isHi;
@@ -61,6 +62,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     public bool isDodge;
 
     private bool dDown;
+
 
     private bool mouseTurn;
 
@@ -201,14 +203,6 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     [PunRPC]
     void Turn()
     {
-        if (horizontalMove == 0 && verticalMove == 0)
-            return;
-        Quaternion newRotation = Quaternion.LookRotation(movement);
-
-        rgbd.rotation = Quaternion.Slerp(rgbd.rotation, newRotation, rotateSpeed * Time.deltaTime);
-    }
-    void MouseTurn()
-    {
         Ray ray = characterCamera.ScreenPointToRay(Input.mousePosition);
         RaycastHit hitResult;
         if (Physics.Raycast(ray, out hitResult))
@@ -218,13 +212,32 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
 
             Px.text = "" + mouseDir.x;
             Pz.text = "" + mouseDir.z;
+
+            if (mouseDir.x * horizontalMove <= 0f && mouseDir.z * verticalMove <= 0f)
+            {
+                isRunningBack = true;
+            }
+            else
+            {
+                isRunningBack = false;
+            }
         }
+        /*        if (horizontalMove == 0 && verticalMove == 0)
+                    return;
+                Quaternion newRotation = Quaternion.LookRotation(movement);
+
+                rgbd.rotation = Quaternion.Slerp(rgbd.rotation, newRotation, rotateSpeed * Time.deltaTime);*/
+    }
+    void MouseTurn()
+    {
+
     }
     void Zoom()
     {
         var scroll = Input.mouseScrollDelta;
         characterCamera.fieldOfView = Mathf.Clamp(characterCamera.fieldOfView - scroll.y*2f, 30f, 70f);
     }
+
 
     void Respawn()
     {
@@ -377,6 +390,15 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
         {
             animator.SetBool("isRunning", true);
         }
+        if (isRunningBack)
+        {
+            animator.SetBool("isRunningBack", true);
+        }
+        else
+        {
+            animator.SetBool("isRunningBack", false);
+        }
+
 
         if (isGrounded == true)
         {
