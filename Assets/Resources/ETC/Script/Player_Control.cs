@@ -121,7 +121,15 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
         {
             dodgeVec = movement;
             moveSpeed = 7;
-            animator.SetTrigger("doDodge");
+            if (isRunningBack)
+            {
+                animator.SetTrigger("doDodge_back");
+            }
+            else
+            {
+                animator.SetTrigger("doDodge");
+            }
+            
             isDodge = true;
 
             Invoke("DodgeOut", 0.6f);
