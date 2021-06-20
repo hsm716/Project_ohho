@@ -19,6 +19,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
 
     public Color Head_color;
 
+    public Style.WeaponStyle curStyle;
     Vector3 curPos;
     Quaternion curRot;
 
@@ -390,52 +391,49 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
 
     void AnimationUpdate()
     {
-        if (horizontalMove == 0 && verticalMove == 0)
+        switch (curStyle)
         {
-            animator.SetBool("isRunning", false);
+            case Style.WeaponStyle.None:
+                if (horizontalMove == 0 && verticalMove == 0)
+                {
+                    animator.SetBool("isRunning", false);
+                }
+                else
+                {
+                    animator.SetBool("isRunning", true);
+                }
+                if (isRunningBack)
+                {
+                    animator.SetBool("isRunningBack", true);
+                }
+                else
+                {
+                    animator.SetBool("isRunningBack", false);
+                }
+                break;
+            case Style.WeaponStyle.Sword:
+                if (horizontalMove == 0 && verticalMove == 0)
+                {
+                    animator.SetBool("isRunning_Sword", false);
+                }
+                else
+                {
+                    animator.SetBool("isRunning_Sword", true);
+                }
+                if (isRunningBack)
+                {
+                    animator.SetBool("isRunningBack_Sword", true);
+                }
+                else
+                {
+                    animator.SetBool("isRunningBack_Sword", false);
+                }
+                break;
+            case Style.WeaponStyle.Arrow:
+                break;
+            case Style.WeaponStyle.Staff:
+                break;
         }
-        else
-        {
-            animator.SetBool("isRunning", true);
-        }
-        if (isRunningBack)
-        {
-            animator.SetBool("isRunningBack", true);
-        }
-        else
-        {
-            animator.SetBool("isRunningBack", false);
-        }
-
-
-        if (isGrounded == true)
-        {
-            animator.SetBool("isJumping", false);
-        }
-        else
-        {
-            animator.SetBool("isJumping", true);
-        }
-
-        if (isAttacking == true)
-        {
-            animator.SetBool("isAttacking", true);
-        }
-        else
-        {
-            animator.SetBool("isAttacking", false);
-        }
-
-        if (isDoubleJump == true)
-        {
-            animator.SetBool("DoubleJump", true);
-        }
-        else
-        {
-            animator.SetBool("DoubleJump", false);
-        }
-
-
     }
 
 
