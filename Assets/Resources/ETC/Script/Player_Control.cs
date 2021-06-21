@@ -37,8 +37,10 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
 
     [SerializeField]
     private int jumpCount = 2;
-    [SerializeField]
-    private int AttackCount = 3;
+
+
+    [Header("무기 위치")]
+    public GameObject WeaponPosition;
 
     private Vector3 movement;
     private Vector3 dodgeVec;
@@ -49,28 +51,24 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     private bool isJumping;
     private bool isRunning;
     private bool isRunningBack;
-    private bool isAttacking;
     private bool isDoubleJump;
     private bool isHi;
     private bool isPicking;
     private bool isItemEnter;
     private bool clickC;
 
-    private bool isSwordAttacking1;
-    private bool isSwordAttacking2;
-    private bool isSwordAttacking3;
+
 
     public bool isDodge;
 
     private bool dDown;
 
 
-    private bool mouseTurn;
+    private bool mLDown;//마우스 왼쪽
 
     float horizontalMove;
     float verticalMove;
 
-    Text Px, Pz;
 
     [PunRPC]
     void DestroyRPC() => Destroy(gameObject);
@@ -82,8 +80,6 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     {
         if (PV.IsMine)
         {
-            Px = GameObject.Find("Px").GetComponent<Text>();
-            Pz = GameObject.Find("Pz").GetComponent<Text>();
 
             CM = GameObject.Find("Main Camera");
             characterCamera = CM.GetComponent<Camera>();
@@ -98,19 +94,10 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     private void FixedUpdate()
     {
         Zoom();
-
-        if (mouseTurn)
-        {
-            MouseTurn();
-        }
-        else
-        {
-            Turn();
-        }
+        Turn();
         Jump();
         Run();
         Walk();
-        Attack();
         DoubleJump();
         Respawn();
         Dodge();
@@ -161,14 +148,6 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
 
     }
     [PunRPC]
-    void Attack()
-    {
-        if (!isAttacking)
-            return;
-        isAttacking = false;
-    }
-
-    [PunRPC]
     void DoubleJump()
     {
         if (!isDoubleJump)
@@ -212,23 +191,25 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     [PunRPC]
     void Turn()
     {
-        Ray ray = characterCamera.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hitResult;
-        if (Physics.Raycast(ray, out hitResult))
+        if (!isDodge)
         {
-            Vector3 mouseDir = new Vector3(hitResult.point.x, transform.position.y, hitResult.point.z) - transform.position;
-            animator.transform.forward = mouseDir;
-
-            Px.text = "" + mouseDir.x;
-            Pz.text = "" + mouseDir.z;
-
-            if (mouseDir.x * horizontalMove <= 0f && mouseDir.z * verticalMove <= 0f)
+            Ray ray = characterCamera.ScreenPointToRay(Input.mousePosition);
+            RaycastHit hitResult;
+            if (Physics.Raycast(ray, out hitResult))
             {
-                isRunningBack = true;
-            }
-            else
-            {
-                isRunningBack = false;
+                Vector3 mouseDir = new Vector3(hitResult.point.x, transform.position.y, hitResult.point.z) - transform.position;
+                animator.transform.forward = mouseDir;
+                if (mouseDir.x * horizontalMove <= 0f && mouseDir.z * verticalMove <= 0f)
+                {
+                    if (mouseDir.x * horizontalMove == 0f && mouseDir.z * verticalMove == 0f)
+                        isRunningBack = false;
+                    else
+                        isRunningBack = true;
+                }
+                else
+                {
+                    isRunningBack = false;
+                }
             }
         }
         /*        if (horizontalMove == 0 && verticalMove == 0)
@@ -264,46 +245,24 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
             PV.RPC("DestroyRPC", RpcTarget.AllBuffered);
         }
     }
+    void InputKey()
+    {
+        horizontalMove = Input.GetAxisRaw("Horizontal");
+        verticalMove = Input.GetAxisRaw("Vertical");
+        dDown = Input.GetKey(KeyCode.LeftShift);
+        mLDown = Input.GetMouseButtonDown(0);
+    }
     void Update()
     {
         if (PV.IsMine)
         {
+            InputKey();
             rgbd.velocity = new Vector3(0f, rgbd.velocity.y, 0f);
-
-            horizontalMove = Input.GetAxisRaw("Horizontal");
-            verticalMove = Input.GetAxisRaw("Vertical");
-
 
             if (transform.position.y < -100)
             {
                 isRespawn = true;
             }
-            dDown = Input.GetKey(KeyCode.LeftShift);
-            mouseTurn = Input.GetMouseButton(1);
-            /*            if (isGrounded || isWall)
-                        {
-                            if (jumpCount == 2)
-                            {
-                                if (Input.GetButtonDown("Jump"))
-                                {
-                                    isJumping = true;
-                                }
-                            }
-
-                        }
-                        else
-                        {
-                            if (jumpCount == 1)
-                            {
-                                if (Input.GetButtonDown("Jump"))
-                                {
-                                    isDoubleJump = true;
-                                }
-                            }
-                        }*/
-
-
-
 
             AnimationUpdate();
         }
@@ -315,11 +274,6 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
         }
     }
 
-    IEnumerator DelaySec()
-    {
-        yield return new WaitForSeconds(2f);
-        AttackCount = 3;
-    }
 
     private void OnCollisionEnter(Collision col)
     {
@@ -385,6 +339,47 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
 
     }
 
+    float aDelay;
+    int atkNum = 0;
+    bool isAttack;
+    void Attack()
+    {
+        aDelay = 0f;
+        StartCoroutine(ComboAttack());
+    }
+   
+    IEnumerator ComboAttack()
+    {
+        yield return null;
+        while (!(Input.GetMouseButtonDown(0) || aDelay == 1.5f)){
+            aDelay += Time.deltaTime;
+            yield return null;
+        }
+        if(0<= aDelay && aDelay <= 1.5f)
+        {
+            AttackAnimation(atkNum++);
+            if (atkNum < 3)
+                Attack();
+            else
+            {
+                atkNum = 0;
+                isAttack = false;
+            }
+        }
+        else
+        {
+            AttackAnimation(0);
+            isAttack = false;
+            atkNum = 0;
+        }
+        aDelay = 0f;
+    }
+
+    public void AttackAnimation(int atkNum)
+    {
+        animator.SetFloat("Blend", atkNum);
+        animator.SetTrigger("doSlash");
+    }
 
 
 
@@ -396,7 +391,9 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
             case Style.WeaponStyle.None:
                 if (horizontalMove == 0 && verticalMove == 0)
                 {
+                    
                     animator.SetBool("isRunning", false);
+                    animator.SetBool("isRunning_Sword", false);
                 }
                 else
                 {
@@ -409,12 +406,15 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
                 else
                 {
                     animator.SetBool("isRunningBack", false);
+                    animator.SetBool("isRunningBack_Sword", false);
                 }
                 break;
             case Style.WeaponStyle.Sword:
                 if (horizontalMove == 0 && verticalMove == 0)
                 {
+                    animator.SetBool("isIdle_Sword", true);
                     animator.SetBool("isRunning_Sword", false);
+                    animator.SetBool("isRunning", false);
                 }
                 else
                 {
@@ -427,12 +427,19 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
                 else
                 {
                     animator.SetBool("isRunningBack_Sword", false);
+                    animator.SetBool("isRunningBack", false);
+                }
+                if (mLDown && !isAttack)
+                {
+                    isAttack = true;
+                    Attack();
                 }
                 break;
             case Style.WeaponStyle.Arrow:
                 break;
             case Style.WeaponStyle.Staff:
                 break;
+
         }
     }
 

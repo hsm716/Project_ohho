@@ -24,7 +24,10 @@ public class Style : MonoBehaviour
             switch (selectStyle)
             {
                 case WeaponStyle.Sword:
-
+                    Player_Control player = other.gameObject.GetComponent<Player_Control>();
+                    player.curStyle = WeaponStyle.Sword;
+                    player.WeaponPosition.transform.GetChild(1).gameObject.SetActive(true);
+                    Destroy(this.gameObject, 1f);
                     break;
                 case WeaponStyle.Arrow:
                     break;
