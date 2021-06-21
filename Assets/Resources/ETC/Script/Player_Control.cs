@@ -342,45 +342,6 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     float aDelay;
     int atkNum = 0;
     bool isAttack;
-    void Attack()
-    {
-        aDelay = 0f;
-        StartCoroutine(ComboAttack());
-    }
-   
-    IEnumerator ComboAttack()
-    {
-        yield return null;
-        while (!(Input.GetMouseButtonDown(0) || aDelay == 1.5f)){
-            aDelay += Time.deltaTime;
-            yield return null;
-        }
-        if(0<= aDelay && aDelay <= 1.5f)
-        {
-            AttackAnimation(atkNum++);
-            if (atkNum < 3)
-                Attack();
-            else
-            {
-                atkNum = 0;
-                isAttack = false;
-            }
-        }
-        else
-        {
-            AttackAnimation(0);
-            isAttack = false;
-            atkNum = 0;
-        }
-        aDelay = 0f;
-    }
-
-    public void AttackAnimation(int atkNum)
-    {
-        animator.SetFloat("Blend", atkNum);
-        animator.SetTrigger("doSlash");
-    }
-
 
 
 
@@ -429,10 +390,10 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
                     animator.SetBool("isRunningBack_Sword", false);
                     animator.SetBool("isRunningBack", false);
                 }
-                if (mLDown && !isAttack)
+                if (mLDown)
                 {
-                    isAttack = true;
-                    Attack();
+                    
+                    animator.SetTrigger("doSlash");
                 }
                 break;
             case Style.WeaponStyle.Arrow:

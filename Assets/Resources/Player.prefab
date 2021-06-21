@@ -1225,7 +1225,6 @@ MonoBehaviour:
   moveSpeed: 5
   jumpPower: 7
   jumpCount: 2
-  AttackCount: 3
   WeaponPosition: {fileID: 5104522257180585968}
   isDodge: 0
   CM: {fileID: 0}
@@ -1290,6 +1289,8 @@ MonoBehaviour:
   m_SynchronizeLayers:
   - SynchronizeType: 0
     LayerIndex: 0
+  - SynchronizeType: 0
+    LayerIndex: 1
 --- !u!135 &310175140457930723
 SphereCollider:
   m_ObjectHideFlags: 0
