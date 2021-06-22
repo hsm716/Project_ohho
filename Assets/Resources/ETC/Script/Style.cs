@@ -21,15 +21,21 @@ public class Style : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
+            Player_Control player;
             switch (selectStyle)
             {
                 case WeaponStyle.Sword:
-                    Player_Control player = other.gameObject.GetComponent<Player_Control>();
+                    player = other.gameObject.GetComponent<Player_Control>();
                     player.curStyle = WeaponStyle.Sword;
-                    player.WeaponPosition.transform.GetChild(1).gameObject.SetActive(true);
+                    player.WeaponPosition_R.transform.GetChild(1).gameObject.SetActive(true);
+                    player.WeaponPosition_L.transform.GetChild(1).gameObject.SetActive(true);
                     Destroy(this.gameObject, 1f);
                     break;
                 case WeaponStyle.Arrow:
+                    player = other.gameObject.GetComponent<Player_Control>();
+                    player.curStyle = WeaponStyle.Arrow;
+                    player.WeaponPosition_L.transform.GetChild(2).gameObject.SetActive(true);
+                    Destroy(this.gameObject, 1f);
                     break;
                 case WeaponStyle.Staff:
                     break;
