@@ -46,6 +46,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
 
     private Vector3 movement;
     private Vector3 dodgeVec;
+    private Vector3 mouseDir;
 
     private bool isWall = false;
     private bool isRespawn = false;
@@ -209,7 +210,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
             RaycastHit hitResult;
             if (Physics.Raycast(ray, out hitResult))
             {
-                Vector3 mouseDir = new Vector3(hitResult.point.x, transform.position.y, hitResult.point.z) - transform.position;
+                mouseDir = new Vector3(hitResult.point.x, transform.position.y, hitResult.point.z) - transform.position;
                 animator.transform.forward = mouseDir;
                 if (mouseDir.x * horizontalMove <= 0f && mouseDir.z * verticalMove <= 0f)
                 {
@@ -224,16 +225,8 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
                 }
             }
         }
-        /*        if (horizontalMove == 0 && verticalMove == 0)
-                    return;
-                Quaternion newRotation = Quaternion.LookRotation(movement);
-
-                rgbd.rotation = Quaternion.Slerp(rgbd.rotation, newRotation, rotateSpeed * Time.deltaTime);*/
     }
-    void MouseTurn()
-    {
 
-    }
     void Zoom()
     {
         var scroll = Input.mouseScrollDelta;
@@ -284,7 +277,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
             InputKey();
             AnimationUpdate();
             rgbd.velocity = new Vector3(0f, rgbd.velocity.y, 0f);
-
+           
             if (transform.position.y < -100)
             {
                 isRespawn = true;
@@ -370,7 +363,10 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     bool isAttack;
 
 
-
+    void AttackOut()
+    {
+        isAttack = false;
+    }
     void AnimationUpdate()
     {
         switch (curStyle)
@@ -408,10 +404,22 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
                     animator.SetBool("isRunning_Sword", false);
                     animator.SetBool("isRunningBack_Arrow", false);
 
+                    if (mLDown && !isDodge && !isAttack)
+                    {
+                        isAttack = true;
+                        animator.SetTrigger("doSlash");
+                        Invoke("AttackOut", 0.56f);
+                    }
+
                 }
                 else
                 {
                     animator.SetBool("isRunning_Sword", true);
+                    if (mLDown && !isDodge)
+                    {
+
+                        animator.SetTrigger("doSlash");
+                    }
                 }
                 if (isRunningBack)
                 {
@@ -425,49 +433,65 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
 
 
                 }
-                if (mLDown && !isDodge)
-                {
-                    
-                    animator.SetTrigger("doSlash");
-                }
+
                 break;
             case Style.WeaponStyle.Arrow:
-                if (mRDown)
+                
+                if(horizontalMove == 0 && verticalMove == 0)
                 {
-                    animator.SetBool("isAim_Arrow", true);
+                    if (mRDown)
+                    {
+                        animator.SetBool("isAim_Arrow", true);
+                    }
+                    else
+                    {
+                        animator.SetBool("isAim_Arrow", false);
+                        animator.SetBool("isIdle_Arrow", true);
+
+
+                    }
+                    animator.SetBool("isRunning", false);
+                    animator.SetBool("isRunning_Sword", false);
+                    animator.SetBool("isRunning_Arrow", false);
+
+
                 }
                 else
                 {
-                    animator.SetBool("isAim_Arrow", false);
-                    if (horizontalMove == 0 && verticalMove == 0)
+                    animator.SetBool("isRunning_Arrow", true);
+
+                    if (mRDown)
                     {
-                        animator.SetBool("isIdle_Arrow", true);
-
-                        animator.SetBool("isRunning", false);
-                        animator.SetBool("isRunning_Sword", false);
-                        animator.SetBool("isRunning_Arrow", false);
-
-
+                        animator.SetBool("isAim_Arrow", true);
                     }
                     else
                     {
-                        animator.SetBool("isRunning_Arrow", true);
+                        animator.SetBool("isAim_Arrow", false);
                     }
-                    if (isRunningBack)
+                }
+                if (isRunningBack)
+                {
+                    animator.SetBool("isRunningBack_Arrow", true);
+
+                    if (mRDown)
                     {
-                        animator.SetBool("isRunningBack_Arrow", true);
+                        animator.SetBool("isAim_Arrow", true);
                     }
                     else
                     {
-                        animator.SetBool("isRunningBack", false);
-                        animator.SetBool("isRunningBack_Sword", false);
-                        animator.SetBool("isRunningBack_Arrow", false);
+                        animator.SetBool("isAim_Arrow", false);
                     }
-                    if (mLDown && !isDodge)
-                    {
+                }
+                else
+                {
+                    animator.SetBool("isRunningBack", false);
+                    animator.SetBool("isRunningBack_Sword", false);
+                    animator.SetBool("isRunningBack_Arrow", false);
+                }
+                if (mLDown && !isDodge)
+                {
 
-                        animator.SetTrigger("doShoot");
-                    }
+                    animator.SetTrigger("doShoot");
                 }
                 break;  
             case Style.WeaponStyle.Staff:
