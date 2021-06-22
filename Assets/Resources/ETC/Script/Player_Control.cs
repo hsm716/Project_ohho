@@ -67,6 +67,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
 
 
     private bool mLDown;//마우스 왼쪽
+    private bool mRDown;//마우스 오른쪽
 
     float horizontalMove;
     float verticalMove;
@@ -262,6 +263,19 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
         verticalMove = Input.GetAxisRaw("Vertical");
         dDown = Input.GetKey(KeyCode.LeftShift);
         mLDown = Input.GetMouseButtonDown(0);
+        if (Input.GetMouseButtonDown(1)) {
+            mRDown = true;
+        }
+        if (mRDown&&Input.GetMouseButtonUp(1))
+        {
+
+            animator.SetTrigger("doShoot");
+            Invoke("ShootOut", 0.6f);
+        }
+    }
+    void ShootOut()
+    {
+        mRDown = false;
     }
     void Update()
     {
@@ -418,36 +432,44 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
                 }
                 break;
             case Style.WeaponStyle.Arrow:
-                if (horizontalMove == 0 && verticalMove == 0)
+                if (mRDown)
                 {
-                    animator.SetBool("isIdle_Arrow", true);
-
-                    animator.SetBool("isRunning", false);
-                    animator.SetBool("isRunning_Sword", false);
-                    animator.SetBool("isRunning_Arrow", false);
-
-
+                    animator.SetBool("isAim_Arrow", true);
                 }
                 else
                 {
-                    animator.SetBool("isRunning_Arrow", true);
-                }
-                if (isRunningBack)
-                {
-                    animator.SetBool("isRunningBack_Arrow", true);
-                }
-                else
-                {
-                    animator.SetBool("isRunningBack", false);
-                    animator.SetBool("isRunningBack_Sword", false);
-                    animator.SetBool("isRunningBack_Arrow", false);
-                }
-                if (mLDown && !isDodge)
-                {
+                    animator.SetBool("isAim_Arrow", false);
+                    if (horizontalMove == 0 && verticalMove == 0)
+                    {
+                        animator.SetBool("isIdle_Arrow", true);
 
-                    animator.SetTrigger("doShoot");
+                        animator.SetBool("isRunning", false);
+                        animator.SetBool("isRunning_Sword", false);
+                        animator.SetBool("isRunning_Arrow", false);
+
+
+                    }
+                    else
+                    {
+                        animator.SetBool("isRunning_Arrow", true);
+                    }
+                    if (isRunningBack)
+                    {
+                        animator.SetBool("isRunningBack_Arrow", true);
+                    }
+                    else
+                    {
+                        animator.SetBool("isRunningBack", false);
+                        animator.SetBool("isRunningBack_Sword", false);
+                        animator.SetBool("isRunningBack_Arrow", false);
+                    }
+                    if (mLDown && !isDodge)
+                    {
+
+                        animator.SetTrigger("doShoot");
+                    }
                 }
-                break;
+                break;  
             case Style.WeaponStyle.Staff:
                 break;
 
