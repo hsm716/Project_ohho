@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Style : MonoBehaviour
 {
-    public enum WeaponStyle { None,Sword, Arrow, Staff };
+    public enum WeaponStyle { None,Sword, Arrow, Magic };
     public WeaponStyle selectStyle;
     void Start()
     {
@@ -37,7 +37,11 @@ public class Style : MonoBehaviour
                     player.WeaponPosition_L.transform.GetChild(2).gameObject.SetActive(true);
                     Destroy(this.gameObject, 1f);
                     break;
-                case WeaponStyle.Staff:
+                case WeaponStyle.Magic:
+                    player = other.gameObject.GetComponent<Player_Control>();
+                    player.curStyle = WeaponStyle.Magic;
+                    player.WeaponPosition_R.transform.GetChild(2).gameObject.SetActive(true);
+                    Destroy(this.gameObject, 1f);
                     break;
 
             }

@@ -4,6 +4,7 @@ using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine.UI;
+using System.Xml;
 
 public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
 {
@@ -35,9 +36,13 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     [SerializeField]
     private float jumpPower = 7.0f;
 
+    private float gravity = -100.81f;
+
     [SerializeField]
     private int jumpCount = 2;
 
+
+    public CapsuleCollider myCollider;
 
     [Header("R 무기 위치")]
     public GameObject WeaponPosition_R;
@@ -47,6 +52,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     private Vector3 movement;
     private Vector3 dodgeVec;
     private Vector3 mouseDir;
+    private Vector3 dir_;
 
     private bool isWall = false;
     private bool isRespawn = false;
@@ -90,7 +96,6 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
             var CM_cm = CM.GetComponent<Camera_Move>();
             CM_cm.player = this.gameObject;
         }
-
         rgbd = GetComponent<Rigidbody>();
         animator = GetComponent<Animator>();
         walkSpeed = moveSpeed;
@@ -99,10 +104,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     {
         Zoom();
         Turn();
-        Jump();
-        Run();
         Walk();
-        DoubleJump();
         Respawn();
         Dodge();
     }
@@ -146,34 +148,10 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     }
 
 
-
-    [PunRPC]
-    void Run()
-    {
-
-        if (!isRunning)
-            return;
-        /*movement.Set(horizontalMove, 0, verticalMove);
-        movement = movement.normalized * 1.5f*moveSpeed * Time.deltaTime;
-
-        rgbd.MovePosition(transform.position + movement);*/
-        moveSpeed = 20f;
-
-    }
-    [PunRPC]
-    void DoubleJump()
-    {
-        if (!isDoubleJump)
-            return;
-        Dbjump.Play();
-        rgbd.AddForce(Vector3.up * jumpPower * 1.2f, ForceMode.Impulse);
-        jumpCount -= 1;
-        isDoubleJump = false;
-        isGrounded = false;
-    }
     [PunRPC]
     void Walk()
     {
+
 
         if (isDodge)
         {
@@ -181,11 +159,10 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
         }
         else
         {
-            movement.Set(horizontalMove, 0, verticalMove);
+            movement.Set(horizontalMove,0, verticalMove);
         }
         
         movement = movement.normalized * moveSpeed * Time.deltaTime;
-
         rgbd.transform.position += movement;
         //rgbd.MovePosition(transform.position + movement);
     }
@@ -195,8 +172,8 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
         if (!isJumping)
             return;
         jump.Play();
-        rgbd.velocity = Vector3.zero;
-        rgbd.AddForce(Vector3.up * jumpPower, ForceMode.Impulse);
+        //rgbd.velocity = Vector3.zero;
+        //rgbd.AddForce(Vector3.up * jumpPower, ForceMode.Impulse);
         jumpCount -= 1;
         isJumping = false;
         isGrounded = false;
@@ -277,7 +254,8 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
             InputKey();
             AnimationUpdate();
             rgbd.velocity = new Vector3(0f, rgbd.velocity.y, 0f);
-           
+
+
             if (transform.position.y < -100)
             {
                 isRespawn = true;
@@ -299,15 +277,17 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     }
     private void OnCollisionStay(Collision col)
     {
-        if (col.gameObject.CompareTag("Weapon") && clickC)
+        foreach(ContactPoint p in col.contacts)
         {
-            col.transform.SetParent(playerEquipPoint.transform);
-            col.transform.localPosition = Vector3.zero;
-            col.transform.rotation = new Quaternion(0, 0, 0, 0);
-            col.transform.localScale = new Vector3(0.07f, 0.02f, 0.03f);
+            Vector3 bottom = myCollider.bounds.center - (Vector3.up * myCollider.bounds.extents.y);
+            Vector3 curve = bottom + (Vector3.up * myCollider.radius);
+            
+            dir_ = curve - p.point;
 
-            Pickup(col.transform.gameObject);
+            
         }
+
+        
     }
     private void OnCollisionExit(Collision col)
     {
@@ -325,8 +305,8 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     [PunRPC]
     void head_jump()
     {
-        rgbd.velocity = Vector3.zero;
-        rgbd.AddForce(Vector3.up * jumpPower, ForceMode.Impulse);
+        //rgbd.velocity = Vector3.zero;
+        //rgbd.AddForce(Vector3.up * jumpPower, ForceMode.Impulse);
     }
 
 
@@ -376,8 +356,6 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
                 {
 
                     animator.SetBool("isRunning", false);
-                    animator.SetBool("isRunning_Sword", false);
-                    animator.SetBool("isRunningBack_Arrow", false);
                 }
                 else
                 {
@@ -391,28 +369,25 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
                 {
 
                     animator.SetBool("isRunningBack", false);
-                    animator.SetBool("isRunningBack_Sword", false);
-                    animator.SetBool("isRunningBack_Arrow", false);
                 }
                 break;
             case Style.WeaponStyle.Sword:
+                //정지 시,
                 if (horizontalMove == 0 && verticalMove == 0)
                 {
                     animator.SetBool("isIdle_Sword", true);
+                    animator.SetBool("isRunning_Sword",false);
+                    animator.SetBool("isRunningBack_Sword", false);
 
-                    animator.SetBool("isRunning", false);
-                    animator.SetBool("isRunning_Sword", false);
-                    animator.SetBool("isRunningBack_Arrow", false);
-
-                    if (mLDown && !isDodge && !isAttack)
+                    if (mLDown && !isDodge)
                     {
                         isAttack = true;
                         animator.SetTrigger("doSlash");
-                        Invoke("AttackOut", 0.56f);
+                        Invoke("AttackOut", 0.6f);
                     }
 
                 }
-                else
+                else//움직이고 있을 때,
                 {
                     animator.SetBool("isRunning_Sword", true);
                     if (mLDown && !isDodge)
@@ -420,23 +395,22 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
 
                         animator.SetTrigger("doSlash");
                     }
-                }
-                if (isRunningBack)
-                {
-                    animator.SetBool("isRunningBack_Sword", true);
-                }
-                else
-                {
-                    animator.SetBool("isRunningBack", false);
-                    animator.SetBool("isRunningBack_Sword", false);
-                    animator.SetBool("isRunningBack_Arrow", false);
 
-
+                    if (isRunningBack)// 뒤로움직일 때,
+                    {
+                        animator.SetBool("isRunningBack_Sword", true);
+                    }
+                    else
+                    {
+                        animator.SetBool("isRunningBack_Sword", false);
+                    }
                 }
+                
 
                 break;
             case Style.WeaponStyle.Arrow:
                 
+                //정지 시,
                 if(horizontalMove == 0 && verticalMove == 0)
                 {
                     if (mRDown)
@@ -450,13 +424,10 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
 
 
                     }
-                    animator.SetBool("isRunning", false);
-                    animator.SetBool("isRunning_Sword", false);
                     animator.SetBool("isRunning_Arrow", false);
-
-
+                    animator.SetBool("isRunningBack_Arrow", false);
                 }
-                else
+                else// 움직이고 있을 때,
                 {
                     animator.SetBool("isRunning_Arrow", true);
 
@@ -468,33 +439,66 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
                     {
                         animator.SetBool("isAim_Arrow", false);
                     }
-                }
-                if (isRunningBack)
-                {
-                    animator.SetBool("isRunningBack_Arrow", true);
 
-                    if (mRDown)
+                    //뒤로 움직일 때,
+                    if (isRunningBack)
                     {
-                        animator.SetBool("isAim_Arrow", true);
+                        animator.SetBool("isRunningBack_Arrow", true);
+
+                        if (mRDown)
+                        {
+                            animator.SetBool("isAim_Arrow", true);
+                        }
+                        else
+                        {
+                            animator.SetBool("isAim_Arrow", false);
+                        }
                     }
                     else
                     {
-                        animator.SetBool("isAim_Arrow", false);
+                        animator.SetBool("isRunningBack_Arrow", false);
                     }
                 }
-                else
-                {
-                    animator.SetBool("isRunningBack", false);
-                    animator.SetBool("isRunningBack_Sword", false);
-                    animator.SetBool("isRunningBack_Arrow", false);
-                }
+                // 공격 할 떄,
                 if (mLDown && !isDodge)
                 {
 
                     animator.SetTrigger("doShoot");
                 }
+
+
                 break;  
-            case Style.WeaponStyle.Staff:
+
+               
+
+            case Style.WeaponStyle.Magic:
+                // 정지 시,
+               if (horizontalMove == 0 && verticalMove == 0)
+                {
+                    animator.SetBool("isIdle_Magic", true);
+                    animator.SetBool("isRunning_Magic", false);
+                    animator.SetBool("isRunningBack_Magic", false);
+                }
+                else // 움직일 때,
+                {
+                    animator.SetBool("isRunning_Magic", true);
+
+                    if (isRunningBack)
+                    {
+                        animator.SetBool("isRunningBack_Magic", true);
+                    }
+                    else
+                    {
+                        animator.SetBool("isRunningBack_Magic", false);
+                    }
+                }
+
+                if (mLDown && !isDodge)
+                {
+                    animator.SetTrigger("doSpell");
+                    Invoke("AttackOut", 0.6f);
+                }
+
                 break;
 
         }
