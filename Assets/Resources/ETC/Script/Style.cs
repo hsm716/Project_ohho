@@ -29,6 +29,7 @@ public class Style : MonoBehaviour
                     player.curStyle = WeaponStyle.Sword;
                     player.WeaponPosition_R.transform.GetChild(1).gameObject.SetActive(true);
                     player.WeaponPosition_L.transform.GetChild(1).gameObject.SetActive(true);
+                    player.atk = 20f;
                     Destroy(this.gameObject, 1f);
                     break;
                 case WeaponStyle.Arrow:

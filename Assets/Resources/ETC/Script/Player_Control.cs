@@ -28,15 +28,10 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     public AudioSource Dbjump;
 
 
-    [SerializeField]
-    private float rotateSpeed;
-    [SerializeField]
-    private float moveSpeed;
-    private float walkSpeed;
-    [SerializeField]
-    private float jumpPower = 7.0f;
+    [SerializeField] private float rotateSpeed;
+    [SerializeField] private float moveSpeed;
 
-    private float gravity = -100.81f;
+    public float atk;
 
     [SerializeField]
     private int jumpCount = 2;
@@ -52,7 +47,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     private Vector3 movement;
     private Vector3 dodgeVec;
     private Vector3 mouseDir;
-    private Vector3 dir_;
+    public Vector3 dir_;
 
     private bool isWall = false;
     private bool isRespawn = false;
@@ -98,16 +93,42 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
         }
         rgbd = GetComponent<Rigidbody>();
         animator = GetComponent<Animator>();
-        walkSpeed = moveSpeed;
     }
     private void FixedUpdate()
     {
         Zoom();
         Turn();
-        Walk();
+        Moving();
         Respawn();
         Dodge();
+
     }
+    void Update()
+    {
+        if (PV.IsMine)
+        {
+            InputKey();
+            AnimationUpdate();
+            Attack();
+            rgbd.velocity = new Vector3(0f, rgbd.velocity.y, 0f);
+
+
+            if (transform.position.y < -100)
+            {
+                isRespawn = true;
+            }
+
+
+        }
+        else if ((transform.position - curPos).sqrMagnitude >= 100) transform.position = curPos;
+        else
+        {
+            transform.position = Vector3.Lerp(transform.position, curPos, Time.deltaTime * 10);
+            transform.rotation = Quaternion.Lerp(transform.rotation, curRot, Time.deltaTime * 10);
+        }
+    }
+
+    // 구르기 동작코드, 210624_황승민
     [PunRPC]
     void Dodge()
     {
@@ -139,6 +160,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
         }
 
     }
+    // 구르기 벗어나는 동작코드, 210624_황승민
     [PunRPC]
     void DodgeOut()
     {
@@ -148,8 +170,9 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     }
 
 
+    // 움직임 동작코드, 210624_황승민
     [PunRPC]
-    void Walk()
+    void Moving()
     {
 
 
@@ -164,20 +187,11 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
         
         movement = movement.normalized * moveSpeed * Time.deltaTime;
         rgbd.transform.position += movement;
+       
         //rgbd.MovePosition(transform.position + movement);
     }
-    [PunRPC]
-    void Jump()
-    {
-        if (!isJumping)
-            return;
-        jump.Play();
-        //rgbd.velocity = Vector3.zero;
-        //rgbd.AddForce(Vector3.up * jumpPower, ForceMode.Impulse);
-        jumpCount -= 1;
-        isJumping = false;
-        isGrounded = false;
-    }
+
+    // 방향전환 동작코드, 210624_황승민
     [PunRPC]
     void Turn()
     {
@@ -204,6 +218,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
         }
     }
 
+    // 줌인 줌아웃 동작코드, 210624_황승민
     void Zoom()
     {
         var scroll = Input.mouseScrollDelta;
@@ -211,6 +226,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     }
 
 
+    // 리스폰 동작코드, 210624_황승민
     void Respawn()
     {
         if (!isRespawn)
@@ -227,6 +243,45 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
             PV.RPC("DestroyRPC", RpcTarget.AllBuffered);
         }
     }
+
+    bool isAttack = false;
+    public bool isAttackReady=false;
+    public BoxCollider attackArea;
+    public float attackDelay=0f;
+    void Attack()
+    {
+        isAttack = false;
+        attackDelay += Time.deltaTime;
+
+
+        switch (curStyle)
+        {
+            case Style.WeaponStyle.Sword:
+                isAttackReady = 0.15f < attackDelay;
+                
+                if (isAttackReady && mLDown)
+                {
+                    animator.SetTrigger("doSlash");
+                    isAttack = true;
+                    Invoke("Slash", 0f);
+                    attackDelay = 0f;
+                }
+                break;
+
+        }
+
+    }
+    public void Slash()
+    {
+        attackArea.enabled = true;
+        Invoke("SlashOut", 0.02f);
+        // yield return new WaitForSeconds(0.1f);
+    }
+    public void SlashOut()
+    {
+        attackArea.enabled = false;
+    }
+    // 키보드 및 마우스 입력관련, 210624_황승민
     void InputKey()
     {
         horizontalMove = Input.GetAxisRaw("Horizontal");
@@ -243,33 +298,13 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
             Invoke("ShootOut", 0.6f);
         }
     }
+
+    // Style::Arrow 공격모션 벗어나는 동작코드, 210624_황승민
     void ShootOut()
     {
         mRDown = false;
     }
-    void Update()
-    {
-        if (PV.IsMine)
-        {
-            InputKey();
-            AnimationUpdate();
-            rgbd.velocity = new Vector3(0f, rgbd.velocity.y, 0f);
 
-
-            if (transform.position.y < -100)
-            {
-                isRespawn = true;
-            }
-
-            
-        }
-        else if ((transform.position - curPos).sqrMagnitude >= 100) transform.position = curPos;
-        else
-        {
-            transform.position = Vector3.Lerp(transform.position, curPos, Time.deltaTime * 10);
-            transform.rotation = Quaternion.Lerp(transform.rotation, curRot, Time.deltaTime * 10);
-        }
-    }
 
 
     private void OnCollisionEnter(Collision col)
@@ -338,10 +373,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
 
     }
 
-    float aDelay;
-    int atkNum = 0;
-    bool isAttack;
-
+ 
 
     void AttackOut()
     {
@@ -379,22 +411,20 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
                     animator.SetBool("isRunning_Sword",false);
                     animator.SetBool("isRunningBack_Sword", false);
 
-                    if (mLDown && !isDodge)
+      /*              if (mLDown && !isDodge)
                     {
-                        isAttack = true;
-                        animator.SetTrigger("doSlash");
-                        Invoke("AttackOut", 0.6f);
-                    }
+                        Attack();
+                    }*/
 
                 }
                 else//움직이고 있을 때,
                 {
                     animator.SetBool("isRunning_Sword", true);
-                    if (mLDown && !isDodge)
+         /*           if (mLDown && !isDodge)
                     {
 
                         animator.SetTrigger("doSlash");
-                    }
+                    }*/
 
                     if (isRunningBack)// 뒤로움직일 때,
                     {
