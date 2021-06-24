@@ -13,7 +13,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     public PhotonView PV;
     public Text NickNameText;
     public Image HealthImage;
-    public float hp_;
+
     public GameObject playerEquipPoint;
     public GameObject Head;
     public GameObject GunHead;
@@ -30,6 +30,8 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
 
     [SerializeField] private float rotateSpeed;
     [SerializeField] private float moveSpeed;
+    public float curHP;
+    public float maxHP;
 
     public float atk;
 
@@ -85,7 +87,8 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     {
         if (PV.IsMine)
         {
-
+            maxHP = 100f;
+            curHP = 100f;
             CM = GameObject.Find("Main Camera");
             characterCamera = CM.GetComponent<Camera>();
             var CM_cm = CM.GetComponent<Camera_Move>();
@@ -132,7 +135,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     [PunRPC]
     void Dodge()
     {
-        if (!isDodge && dDown)
+        if (!isDodge && dDown &&!isAttack)
         {
             dodgeVec = movement;
             moveSpeed = 7;
@@ -259,11 +262,11 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
             case Style.WeaponStyle.Sword:
                 isAttackReady = 0.15f < attackDelay;
                 
-                if (isAttackReady && mLDown)
+                if (isAttackReady && mLDown && !isDodge)
                 {
                     animator.SetTrigger("doSlash");
                     isAttack = true;
-                    Invoke("Slash", 0f);
+                    //Invoke("Slash", 0f);
                     attackDelay = 0f;
                 }
                 break;
@@ -274,7 +277,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     public void Slash()
     {
         attackArea.enabled = true;
-        Invoke("SlashOut", 0.02f);
+        Invoke("SlashOut", 0.2f);
         // yield return new WaitForSeconds(0.1f);
     }
     public void SlashOut()
