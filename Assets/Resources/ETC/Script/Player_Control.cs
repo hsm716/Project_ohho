@@ -154,15 +154,8 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
             }
             else
             {
-                if (curStyle == Style.WeaponStyle.Arrow)
-                {
-                    animator.SetTrigger("doDive");
-                }
-                else
-                {
-                    animator.SetTrigger("doDodge");
-                }
-                
+                animator.SetTrigger("doDodge");
+
             }
             
             isDodge = true;
@@ -280,6 +273,18 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
                     attackDelay = 0f;
                 }
                 break;
+            case Style.WeaponStyle.Arrow:
+                isAttackReady = 0.15f < attackDelay;
+
+                if (mRDown&&isAttackReady && mLDown && !isDodge)
+                {
+                    animator.SetBool("isAim_Arrow", true);
+                    animator.SetTrigger("doShoot");
+                    isAttack = true;
+                    //Invoke("Slash", 0f);
+                    attackDelay = 0f;
+                }
+                break;
 
         }
 
@@ -294,6 +299,12 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     {
         attackArea.enabled = false;
     }
+
+    // Style::Arrow 공격모션 벗어나는 동작코드, 210624_황승민
+    void ShootOut()
+    {
+        mRDown = false;
+    }
     // 키보드 및 마우스 입력관련, 210624_황승민
     void InputKey()
     {
@@ -306,17 +317,11 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
         }
         if (mRDown&&Input.GetMouseButtonUp(1))
         {
-
-            animator.SetTrigger("doShoot");
-            Invoke("ShootOut", 0.6f);
+            Invoke("ShootOut", 0.2f);
         }
     }
 
-    // Style::Arrow 공격모션 벗어나는 동작코드, 210624_황승민
-    void ShootOut()
-    {
-        mRDown = false;
-    }
+    
 
 
 
@@ -505,12 +510,6 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
                     {
                         animator.SetBool("isRunningBack_Arrow", false);
                     }
-                }
-                // 공격 할 떄,
-                if (mLDown && !isDodge)
-                {
-
-                    animator.SetTrigger("doShoot");
                 }
 
 
