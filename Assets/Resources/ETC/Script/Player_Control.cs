@@ -5,9 +5,17 @@ using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine.UI;
 using System.Xml;
+using Photon.Pun.Demo.Asteroids;
 
 public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
 {
+    public static Player_Control Instance;
+
+    [SerializeField]
+    private GameObject arrowPrefab;
+
+    private Queue<Arrow> arrowQ = new Queue<Arrow>();
+
     public Animator animator;
     public Rigidbody rgbd;
     public PhotonView PV;
@@ -25,6 +33,8 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     Vector3 curPos;
     Quaternion curRot;
     float curHpValue;
+
+    public Arrow curArrow;
 
     public AudioSource jump;
     public AudioSource Dbjump;
@@ -94,7 +104,8 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
 
         if (PV.IsMine)
         {
-            
+            Instance = this;
+            ArrowIntialize(10);
 
             CM = GameObject.Find("Main Camera");
             characterCamera = CM.GetComponent<Camera>();
@@ -104,6 +115,46 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
         rgbd = GetComponent<Rigidbody>();
         animator = GetComponent<Animator>();
     }
+
+    private Arrow CreateNewArrow()
+    {
+        var newObj = Instantiate(arrowPrefab, attackArea.transform.parent).GetComponent<Arrow>();
+        newObj.gameObject.SetActive(false);
+        return newObj;
+    }
+    private void ArrowIntialize(int count)
+    {
+        for(int i=0; i < count; i++)
+        {
+            arrowQ.Enqueue(CreateNewArrow());
+        }
+    }
+    public static Arrow GetArrow()
+    {
+        if (Instance.arrowQ.Count > 0) 
+        {
+            var obj = Instance.arrowQ.Dequeue();
+            //obj.transform.SetParent(null);
+            obj.gameObject.SetActive(true);
+            return obj;
+        }
+        else
+        {
+            var newObj = Instance.CreateNewArrow();
+            //newObj.transform.SetParent(null);
+            newObj.gameObject.SetActive(true);
+            return newObj;
+        }
+    }
+    public static void ReturnArrow(Arrow arrow)
+    {
+        arrow.gameObject.SetActive(false);
+        arrow.transform.SetParent(Instance.transform);
+        arrow.transform.position = Player_Control.Instance.transform.position + new Vector3(0f,2f,0f);
+        arrow.transform.rotation = Quaternion.identity;
+        Instance.arrowQ.Enqueue(arrow);
+    }
+
     private void FixedUpdate()
     {
         Zoom();
@@ -280,9 +331,15 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
                 {
                     animator.SetBool("isAim_Arrow", true);
                     animator.SetTrigger("doShoot");
+                    Invoke("Shoot", 0.1f);
                     isAttack = true;
                     //Invoke("Slash", 0f);
                     attackDelay = 0f;
+                }
+
+                if(mRDown && curArrow == null)
+                {
+                    curArrow = Player_Control.GetArrow();
                 }
                 break;
 
@@ -299,10 +356,30 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     {
         attackArea.enabled = false;
     }
-
+    void Shoot()
+    {
+        RaycastHit hitResult;
+        if(Physics.Raycast(characterCamera.ScreenPointToRay(Input.mousePosition),out hitResult))
+        {
+            var direction = new Vector3(hitResult.point.x, transform.position.y, hitResult.point.z) - transform.position;
+            if (curArrow != null)
+            {
+                curArrow.transform.SetParent(null);
+                curArrow.transform.position = attackArea.transform.position + direction.normalized;
+                curArrow.Shoot(direction.normalized);
+                curArrow = null;
+            }
+            
+        }
+        
+    }
     // Style::Arrow 공격모션 벗어나는 동작코드, 210624_황승민
     void ShootOut()
     {
+        if (curArrow != null)
+        {
+            curArrow.DestroyArrow();
+        }
         mRDown = false;
     }
     // 키보드 및 마우스 입력관련, 210624_황승민
@@ -314,6 +391,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
         mLDown = Input.GetMouseButtonDown(0);
         if (Input.GetMouseButtonDown(1)) {
             mRDown = true;
+            curArrow = Player_Control.GetArrow();
         }
         if (mRDown&&Input.GetMouseButtonUp(1))
         {

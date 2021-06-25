@@ -2350,6 +2350,11 @@ PrefabInstance:
       objectReference: {fileID: 6144343105719620296}
     - target: {fileID: 5104082159748782766, guid: 587dc3ad9b099f54cadabb8902561b71,
         type: 3}
+      propertyPath: arrowPrefab
+      value: 
+      objectReference: {fileID: 111768, guid: 802986766a97b4a108b97eb5fdf6e02f, type: 3}
+    - target: {fileID: 5104082159748782766, guid: 587dc3ad9b099f54cadabb8902561b71,
+        type: 3}
       propertyPath: NickNameText
       value: 
       objectReference: {fileID: 301827093377760674}
