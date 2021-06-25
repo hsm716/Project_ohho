@@ -87,8 +87,8 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     {
         if (PV.IsMine)
         {
-            maxHP = 100f;
-            curHP = 100f;
+            maxHP = 1000f;
+            curHP = 1000f;
             CM = GameObject.Find("Main Camera");
             characterCamera = CM.GetComponent<Camera>();
             var CM_cm = CM.GetComponent<Camera_Move>();
