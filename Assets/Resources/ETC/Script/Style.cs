@@ -29,7 +29,7 @@ public class Style : MonoBehaviour
                     player.curStyle = WeaponStyle.Sword;
                     player.WeaponPosition_R.transform.GetChild(1).gameObject.SetActive(true);
                     player.WeaponPosition_L.transform.GetChild(1).gameObject.SetActive(true);
-                    player.atk = 20f;
+                    player.atk = 200f;
                     player.animator.Rebind();
                     player.animator.Play("Idle_Sword");
 

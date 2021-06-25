@@ -29,8 +29,6 @@ public class Player_HpBar : MonoBehaviour
     }
     public void GetHpBoost()
     {
-        player_data.curHP += 150;
-        player_data.maxHP += 150;
         float scaleX = (1000f / 200f) / (player_data.maxHP / 200f);
         HpLineFolder.GetComponent<HorizontalLayoutGroup>().gameObject.SetActive(false);
         foreach(Transform child in HpLineFolder.transform)

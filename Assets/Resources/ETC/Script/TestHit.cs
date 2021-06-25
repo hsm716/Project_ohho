@@ -24,7 +24,7 @@ public class TestHit : MonoBehaviour
     {
         if (other.CompareTag("Player_Attack"))
         {
-            curHP -= other.transform.root.GetComponent<Player_Control>().atk;
+            curHP -= other.transform.parent.GetComponent<Player_Control>().atk;
             Debug.Log("¾Æ¾æ!");
         }
     }

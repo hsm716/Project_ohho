@@ -13,6 +13,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     public PhotonView PV;
     public Text NickNameText;
     public Image HealthImage;
+    public Player_HpBar Hp_Bar;
 
     public GameObject playerEquipPoint;
     public GameObject Head;
@@ -23,6 +24,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     public Style.WeaponStyle curStyle;
     Vector3 curPos;
     Quaternion curRot;
+    float curHpValue;
 
     public AudioSource jump;
     public AudioSource Dbjump;
@@ -85,10 +87,15 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
 
     private void Awake()
     {
+        NickNameText.text = PV.IsMine ? PhotonNetwork.NickName : PV.Owner.NickName;
+        NickNameText.color = PV.IsMine ? Color.green : Color.red;
+        maxHP = 1000f;
+        curHP = 1000f;
+
         if (PV.IsMine)
         {
-            maxHP = 1000f;
-            curHP = 1000f;
+            
+
             CM = GameObject.Find("Main Camera");
             characterCamera = CM.GetComponent<Camera>();
             var CM_cm = CM.GetComponent<Camera_Move>();
@@ -126,8 +133,9 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
         else if ((transform.position - curPos).sqrMagnitude >= 100) transform.position = curPos;
         else
         {
-            transform.position = Vector3.Lerp(transform.position, curPos, Time.deltaTime * 10);
-            transform.rotation = Quaternion.Lerp(transform.rotation, curRot, Time.deltaTime * 10);
+            transform.position = Vector3.Lerp(transform.position, curPos, Time.deltaTime * 100);
+            transform.rotation = Quaternion.Lerp(transform.rotation, curRot, Time.deltaTime * 100);
+            Hp_Bar.hpBar.value = curHpValue;
         }
     }
 
@@ -251,6 +259,8 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     public bool isAttackReady=false;
     public BoxCollider attackArea;
     public float attackDelay=0f;
+
+    [PunRPC]
     void Attack()
     {
         isAttack = false;
@@ -337,6 +347,10 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
         {
             PV.RPC("head_jump", RpcTarget.All);
             other.gameObject.transform.parent.GetComponent<Player_Control>().Hit();
+        }
+        if (PV.IsMine && other.CompareTag("Player_Attack"))
+        {
+            curHP -= other.transform.parent.GetComponent<Player_Control>().atk;
         }
 
     }
@@ -544,12 +558,15 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
         {
             stream.SendNext(transform.position);
             stream.SendNext(transform.rotation);
-
+            stream.SendNext(curHP);
+            stream.SendNext(Hp_Bar.hpBar.value);
         }
         else
         {
             curPos = (Vector3)stream.ReceiveNext();
             curRot = (Quaternion)stream.ReceiveNext();
+            curHP = (float)stream.ReceiveNext();
+            curHpValue = (float)stream.ReceiveNext();
         }
     }
 }

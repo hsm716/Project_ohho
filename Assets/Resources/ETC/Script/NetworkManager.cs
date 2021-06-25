@@ -15,8 +15,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     void Awake()
     {
         Screen.SetResolution(960, 540, false);
-        PhotonNetwork.SendRate = 100;
-        PhotonNetwork.SerializationRate = 100;
+        PhotonNetwork.SendRate = 144;
+        PhotonNetwork.SerializationRate = 144;
     }
     public void Connect() => PhotonNetwork.ConnectUsingSettings();
 
