@@ -4,16 +4,19 @@ using UnityEngine;
 using Photon.Pun;
 public class Arrow : MonoBehaviourPunCallbacks
 {
-    Rigidbody rgbd;
+    public Rigidbody rgbd;
     public PhotonView PV;
     private Vector3 direction;
 
+    [PunRPC]
     public void Shoot(Vector3 dir)
     {
+        rgbd.isKinematic = false;
         direction = dir;
         rgbd.AddForce(direction*50f, ForceMode.Impulse);
         Invoke("DestroyArrow", 5f);
     }
+    [PunRPC]
     public void DestroyArrow()
     {
         Player_Control.ReturnArrow(this);
@@ -27,12 +30,10 @@ public class Arrow : MonoBehaviourPunCallbacks
 
     private void OnTriggerEnter(Collider col)
     {
-        if (col.CompareTag("Ground") || col.CompareTag("wall"))
-            PV.RPC("DestroyRPC", RpcTarget.AllBuffered);
+      
 
-        if (!PV.IsMine && col.CompareTag("Player") && col.GetComponent<PhotonView>().IsMine)
+        if (!PV.IsMine && col.CompareTag("Player"))
         {
-            col.GetComponent<Player_Control>().Hit();
             PV.RPC("DestroyRPC", RpcTarget.AllBuffered);
         }
     }

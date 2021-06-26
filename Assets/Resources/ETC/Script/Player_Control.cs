@@ -118,7 +118,8 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
 
     private Arrow CreateNewArrow()
     {
-        var newObj = Instantiate(arrowPrefab, attackArea.transform.parent).GetComponent<Arrow>();
+        var newObj = PhotonNetwork.Instantiate("arrow", transform.position,transform.rotation).GetComponent<Arrow>();
+        newObj.transform.localPosition = new Vector3(0.122f, 1.377f, 0.587f);
         newObj.gameObject.SetActive(false);
         return newObj;
     }
@@ -148,10 +149,12 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     }
     public static void ReturnArrow(Arrow arrow)
     {
-        arrow.gameObject.SetActive(false);
         arrow.transform.SetParent(Instance.transform);
-        arrow.transform.position = Player_Control.Instance.transform.position + new Vector3(0f,2f,0f);
-        arrow.transform.rotation = Quaternion.identity;
+        arrow.transform.localPosition = new Vector3(0.122f, 1.377f, 0.587f);
+        arrow.transform.localRotation = Quaternion.identity;
+        arrow.rgbd.isKinematic = true;
+        arrow.gameObject.SetActive(false);
+
         Instance.arrowQ.Enqueue(arrow);
     }
 
@@ -339,7 +342,8 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
 
                 if(mRDown && curArrow == null)
                 {
-                    curArrow = Player_Control.GetArrow();
+                    if(isAttackReady)
+                        curArrow = Player_Control.GetArrow();
                 }
                 break;
 
@@ -365,7 +369,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
             if (curArrow != null)
             {
                 curArrow.transform.SetParent(null);
-                curArrow.transform.position = attackArea.transform.position + direction.normalized;
+                curArrow.transform.position = curArrow.transform.position + direction.normalized;
                 curArrow.Shoot(direction.normalized);
                 curArrow = null;
             }
@@ -381,6 +385,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
             curArrow.DestroyArrow();
         }
         mRDown = false;
+        curArrow = null;
     }
     // 키보드 및 마우스 입력관련, 210624_황승민
     void InputKey()
@@ -391,7 +396,6 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
         mLDown = Input.GetMouseButtonDown(0);
         if (Input.GetMouseButtonDown(1)) {
             mRDown = true;
-            curArrow = Player_Control.GetArrow();
         }
         if (mRDown&&Input.GetMouseButtonUp(1))
         {

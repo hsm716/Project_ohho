@@ -52,6 +52,8 @@ MonoBehaviour:
   - Dodge
   - DodgeOut
   - Moving
+  - DestroyArrow
+  - Shoot
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1
