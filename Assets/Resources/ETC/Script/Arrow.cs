@@ -2,21 +2,20 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
+using Photon.Realtime;
 public class Arrow : MonoBehaviourPunCallbacks
 {
     public Rigidbody rgbd;
     public PhotonView PV;
     private Vector3 direction;
 
-    [PunRPC]
     public void Shoot(Vector3 dir)
     {
         rgbd.isKinematic = false;
         direction = dir;
         rgbd.AddForce(direction*50f, ForceMode.Impulse);
-        Invoke("DestroyArrow", 5f);
+        Invoke("DestroyArrow", 3f);
     }
-    [PunRPC]
     public void DestroyArrow()
     {
         Player_Control.ReturnArrow(this);
@@ -35,6 +34,10 @@ public class Arrow : MonoBehaviourPunCallbacks
         if (!PV.IsMine && col.CompareTag("Player"))
         {
             PV.RPC("DestroyRPC", RpcTarget.AllBuffered);
+        }
+        if (col.CompareTag("Ground"))
+        {
+            rgbd.isKinematic = true;
         }
     }
 

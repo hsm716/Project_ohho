@@ -118,11 +118,13 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
 
     private Arrow CreateNewArrow()
     {
-        var newObj = PhotonNetwork.Instantiate("arrow", transform.position,transform.rotation).GetComponent<Arrow>();
+        var newObj = PhotonNetwork.Instantiate("Arrow", attackArea.transform.localPosition, attackArea.transform.localRotation).GetComponent<Arrow>();
+        newObj.transform.SetParent(Instance.transform);
         newObj.transform.localPosition = new Vector3(0.122f, 1.377f, 0.587f);
         newObj.gameObject.SetActive(false);
         return newObj;
     }
+
     private void ArrowIntialize(int count)
     {
         for(int i=0; i < count; i++)
@@ -130,6 +132,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
             arrowQ.Enqueue(CreateNewArrow());
         }
     }
+
     public static Arrow GetArrow()
     {
         if (Instance.arrowQ.Count > 0) 
@@ -147,6 +150,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
             return newObj;
         }
     }
+
     public static void ReturnArrow(Arrow arrow)
     {
         arrow.transform.SetParent(Instance.transform);
@@ -328,7 +332,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
                 }
                 break;
             case Style.WeaponStyle.Arrow:
-                isAttackReady = 0.15f < attackDelay;
+                isAttackReady = 0.75f < attackDelay;
 
                 if (mRDown&&isAttackReady && mLDown && !isDodge)
                 {

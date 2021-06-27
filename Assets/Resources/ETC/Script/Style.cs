@@ -39,6 +39,7 @@ public class Style : MonoBehaviour
                     player = other.gameObject.GetComponent<Player_Control>();
                     player.curStyle = WeaponStyle.Arrow;
                     player.WeaponPosition_L.transform.GetChild(2).gameObject.SetActive(true);
+                    player.atk = 200f;
                     player.animator.Rebind();
                     player.animator.Play("Idle_Arrow");
                     Destroy(this.gameObject, 1f);

@@ -54,6 +54,10 @@ MonoBehaviour:
   - Moving
   - DestroyArrow
   - Shoot
+  - GetArrow
+  - ReturnArrow
+  - ArrowIntialize
+  - CreateNewArrow
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1
