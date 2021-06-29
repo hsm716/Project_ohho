@@ -9,13 +9,17 @@ public class Arrow : MonoBehaviourPunCallbacks
     public PhotonView PV;
     private Vector3 direction;
 
+    [PunRPC]
     public void Shoot(Vector3 dir)
     {
         rgbd.isKinematic = false;
         direction = dir;
-        rgbd.AddForce(direction*50f, ForceMode.Impulse);
+        rgbd.AddForce(direction * 50f, ForceMode.Impulse);
         Invoke("DestroyArrow", 3f);
     }
+    [PunRPC]
+    void DirRPC(Vector3 dir) => this.direction = dir;
+
     public void DestroyArrow()
     {
         Player_Control.ReturnArrow(this);
@@ -28,7 +32,7 @@ public class Arrow : MonoBehaviourPunCallbacks
     }
 
     private void OnTriggerEnter(Collider col)
-    {
+    {  
       
 
         if (!PV.IsMine && col.CompareTag("Player"))

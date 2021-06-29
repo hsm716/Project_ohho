@@ -132,7 +132,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
             arrowQ.Enqueue(CreateNewArrow());
         }
     }
-
+    [PunRPC]
     public static Arrow GetArrow()
     {
         if (Instance.arrowQ.Count > 0) 
@@ -150,7 +150,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
             return newObj;
         }
     }
-
+    [PunRPC]
     public static void ReturnArrow(Arrow arrow)
     {
         arrow.transform.SetParent(Instance.transform);

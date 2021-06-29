@@ -58,6 +58,8 @@ MonoBehaviour:
   - ReturnArrow
   - ArrowIntialize
   - CreateNewArrow
+  - ShootRPC
+  - DirRPC
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1
