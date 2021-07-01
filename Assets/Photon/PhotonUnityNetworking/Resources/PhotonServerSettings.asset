@@ -51,6 +51,15 @@ MonoBehaviour:
   - DirRpc
   - Dodge
   - DodgeOut
+  - Moving
+  - DestroyArrow
+  - Shoot
+  - GetArrow
+  - ReturnArrow
+  - ArrowIntialize
+  - CreateNewArrow
+  - ShootRPC
+  - DirRPC
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1
