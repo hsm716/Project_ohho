@@ -204,15 +204,18 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
         if (!isDodge && dDown &&!isAttack)
         {
             dodgeVec = movement;
+            
             moveSpeed = 7;
             if (isRunningBack)
             {
                 animator.SetTrigger("doDodge_back");
+                animator.transform.forward = -dodgeVec;
 
             }
             else
             {
                 animator.SetTrigger("doDodge");
+                animator.transform.forward = dodgeVec;
 
             }
             
