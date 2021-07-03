@@ -17,6 +17,7 @@ public class Player_HpBar : MonoBehaviour
     private void Awake()
     {
         player_data = player.GetComponent<Player_Control>();
+        GetHpBoost();
     }
 
     void Update()

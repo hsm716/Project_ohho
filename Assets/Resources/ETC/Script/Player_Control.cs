@@ -67,14 +67,17 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     private bool isRespawn = false;
     private bool isGrounded = true;
     private bool isJumping;
-    private bool isRunning;
-    private bool isRunningBack;
     private bool isDoubleJump;
     private bool isHi;
     private bool isPicking;
     private bool isItemEnter;
     private bool clickC;
 
+
+    private bool isAttack = false;
+    public bool isAttackReady = false;
+    private bool isRunning;
+    private bool isRunningBack;
 
 
     public bool isDodge;
@@ -89,6 +92,10 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     float verticalMove;
 
 
+
+    public BoxCollider attackArea;
+    public float attackDelay = 0f;
+
     [PunRPC]
     void DestroyRPC() => Destroy(gameObject);
 
@@ -99,8 +106,8 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     {
         NickNameText.text = PV.IsMine ? PhotonNetwork.NickName : PV.Owner.NickName;
         NickNameText.color = PV.IsMine ? Color.green : Color.red;
-        maxHP = 1000f;
-        curHP = 1000f;
+        maxHP = 2000f;
+        curHP = 2000f;
 
         if (PV.IsMine)
         {
@@ -115,7 +122,24 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
         rgbd = GetComponent<Rigidbody>();
         animator = GetComponent<Animator>();
     }
-
+    // 키보드 및 마우스 입력관련, 210624_황승민
+    void InputKey()
+    {
+        horizontalMove = Input.GetAxisRaw("Horizontal");
+        verticalMove = Input.GetAxisRaw("Vertical");
+        dDown = Input.GetKey(KeyCode.LeftShift);
+        mLDown = Input.GetMouseButtonDown(0);
+        if (Input.GetMouseButtonDown(1))
+        {
+            mRDown = true;
+         
+        }
+        if (mRDown && Input.GetMouseButtonUp(1))
+        {
+            Invoke("ShootOut", 0.2f);
+            Invoke("DeffenseOut", 0.2f);
+        }
+    }
     private Arrow CreateNewArrow()
     {
         var newObj = PhotonNetwork.Instantiate("Arrow", attackArea.transform.localPosition, attackArea.transform.localRotation).GetComponent<Arrow>();
@@ -309,10 +333,6 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
         }
     }
 
-    bool isAttack = false;
-    public bool isAttackReady=false;
-    public BoxCollider attackArea;
-    public float attackDelay=0f;
 
     [PunRPC]
     void Attack()
@@ -333,6 +353,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
                     //Invoke("Slash", 0f);
                     attackDelay = 0f;
                 }
+                
                 break;
             case Style.WeaponStyle.Arrow:
                 isAttackReady = 0.75f < attackDelay;
@@ -394,21 +415,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
         mRDown = false;
         curArrow = null;
     }
-    // 키보드 및 마우스 입력관련, 210624_황승민
-    void InputKey()
-    {
-        horizontalMove = Input.GetAxisRaw("Horizontal");
-        verticalMove = Input.GetAxisRaw("Vertical");
-        dDown = Input.GetKey(KeyCode.LeftShift);
-        mLDown = Input.GetMouseButtonDown(0);
-        if (Input.GetMouseButtonDown(1)) {
-            mRDown = true;
-        }
-        if (mRDown&&Input.GetMouseButtonUp(1))
-        {
-            Invoke("ShootOut", 0.2f);
-        }
-    }
+    
 
     
 
@@ -545,6 +552,8 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
                     {
                         animator.SetBool("isRunningBack_Sword", false);
                     }
+
+
                 }
                 
 
