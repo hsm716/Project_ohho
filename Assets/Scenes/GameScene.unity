@@ -2251,7 +2251,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b78c2d48b3f6d242a80af9812886654, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  selectStyle: 1
+  selectStyle: 2
 --- !u!135 &1647582711
 SphereCollider:
   m_ObjectHideFlags: 0

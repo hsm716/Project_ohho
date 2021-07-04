@@ -122,6 +122,54 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
         rgbd = GetComponent<Rigidbody>();
         animator = GetComponent<Animator>();
     }
+    private void FixedUpdate()
+    {
+        Zoom();
+
+        if (curStyle == Style.WeaponStyle.Arrow)
+        {
+            if (isAttackReady == true)
+            {
+                Moving();
+                Dodge();
+                Turn();
+            }
+        }
+        else
+        {
+            Moving();
+            Dodge();
+            Turn();
+        }
+        Respawn();
+        
+
+    }
+    void Update()
+    {
+        if (PV.IsMine)
+        {
+            InputKey();
+            AnimationUpdate();
+            Attack();
+            rgbd.velocity = new Vector3(0f, rgbd.velocity.y, 0f);
+
+
+            if (transform.position.y < -100)
+            {
+                isRespawn = true;
+            }
+
+
+        }
+        else if ((transform.position - curPos).sqrMagnitude >= 100) transform.position = curPos;
+        else
+        {
+            transform.position = Vector3.Lerp(transform.position, curPos, Time.deltaTime * 100);
+            transform.rotation = Quaternion.Lerp(transform.rotation, curRot, Time.deltaTime * 100);
+            Hp_Bar.hpBar.value = curHpValue;
+        }
+    }
     // 키보드 및 마우스 입력관련, 210624_황승민
     void InputKey()
     {
@@ -132,13 +180,24 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
         if (Input.GetMouseButtonDown(1))
         {
             mRDown = true;
-         
+            Deffense();
         }
         if (mRDown && Input.GetMouseButtonUp(1))
         {
             Invoke("ShootOut", 0.2f);
-            Invoke("DeffenseOut", 0.2f);
+            Invoke("DeffenseOut", 0.0f);
         }
+    }
+    void Deffense()
+    {
+        if (curStyle == Style.WeaponStyle.Sword)
+        {
+            animator.SetTrigger("doDeffense");
+        }
+    }
+    void DeffenseOut()
+    {
+        mRDown = false;
     }
     private Arrow CreateNewArrow()
     {
@@ -186,40 +245,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
         Instance.arrowQ.Enqueue(arrow);
     }
 
-    private void FixedUpdate()
-    {
-        Zoom();
-        Turn();
-        Moving();
-        Respawn();
-        Dodge();
 
-    }
-    void Update()
-    {
-        if (PV.IsMine)
-        {
-            InputKey();
-            AnimationUpdate();
-            Attack();
-            rgbd.velocity = new Vector3(0f, rgbd.velocity.y, 0f);
-
-
-            if (transform.position.y < -100)
-            {
-                isRespawn = true;
-            }
-
-
-        }
-        else if ((transform.position - curPos).sqrMagnitude >= 100) transform.position = curPos;
-        else
-        {
-            transform.position = Vector3.Lerp(transform.position, curPos, Time.deltaTime * 100);
-            transform.rotation = Quaternion.Lerp(transform.rotation, curRot, Time.deltaTime * 100);
-            Hp_Bar.hpBar.value = curHpValue;
-        }
-    }
 
     // 구르기 동작코드, 210624_황승민
     [PunRPC]
@@ -356,7 +382,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
                 
                 break;
             case Style.WeaponStyle.Arrow:
-                isAttackReady = 0.75f < attackDelay;
+                isAttackReady = 0.6f < attackDelay;
 
                 if (mRDown&&isAttackReady && mLDown && !isDodge)
                 {
@@ -371,7 +397,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
                 if(mRDown && curArrow == null)
                 {
                     if(isAttackReady)
-                        curArrow = Player_Control.GetArrow();
+                        curArrow = GetArrow();
                 }
                 break;
 
@@ -398,7 +424,8 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
             {
                 curArrow.transform.SetParent(null);
                 curArrow.transform.position = curArrow.transform.position + direction.normalized;
-                curArrow.Shoot(direction.normalized);
+                
+                curArrow.PV.RPC("Shoot", RpcTarget.AllBuffered, direction.normalized);
                 curArrow = null;
             }
             
@@ -555,6 +582,14 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
 
 
                 }
+                if (mRDown)
+                {
+                    animator.SetBool("isDeffensing", true);
+                }
+                else
+                {
+                    animator.SetBool("isDeffensing", false);
+                }
                 
 
                 break;
@@ -563,6 +598,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
                 //정지 시,
                 if(horizontalMove == 0 && verticalMove == 0)
                 {
+                    animator.SetBool("isIdle_Arrow", true);
                     if (mRDown)
                     {
                         animator.SetBool("isAim_Arrow", true);
@@ -570,7 +606,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
                     else
                     {
                         animator.SetBool("isAim_Arrow", false);
-                        animator.SetBool("isIdle_Arrow", true);
+                        
 
 
                     }
