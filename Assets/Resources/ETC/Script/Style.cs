@@ -6,16 +6,8 @@ public class Style : MonoBehaviour
 {
     public enum WeaponStyle { None,Sword, Arrow, Magic };
     public WeaponStyle selectStyle;
-    void Start()
-    {
-        
-    }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+
 
     private void OnTriggerEnter(Collider other)
     {

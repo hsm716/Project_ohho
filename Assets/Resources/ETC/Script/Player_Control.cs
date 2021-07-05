@@ -9,12 +9,12 @@ using Photon.Pun.Demo.Asteroids;
 
 public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
 {
-    public static Player_Control Instance;
+/*    public static Player_Control Instance;*/
 
     [SerializeField]
     private GameObject arrowPrefab;
 
-    private Queue<Arrow> arrowQ = new Queue<Arrow>();
+/*    private Queue<Arrow> arrowQ = new Queue<Arrow>();*/
 
     public Animator animator;
     public Rigidbody rgbd;
@@ -34,7 +34,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     Quaternion curRot;
     float curHpValue;
 
-    public Arrow curArrow;
+   /* public Arrow curArrow;*/
 
     public AudioSource jump;
     public AudioSource Dbjump;
@@ -93,6 +93,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
 
 
 
+    public GameObject shootPoint;
     public BoxCollider attackArea;
     public float attackDelay = 0f;
 
@@ -111,8 +112,8 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
 
         if (PV.IsMine)
         {
-            Instance = this;
-            ArrowIntialize(10);
+/*            Instance = this;
+            ArrowIntialize(10);*/
 
             CM = GameObject.Find("Main Camera");
             characterCamera = CM.GetComponent<Camera>();
@@ -199,7 +200,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     {
         mRDown = false;
     }
-    private Arrow CreateNewArrow()
+/*    private Arrow CreateNewArrow()
     {
         var newObj = PhotonNetwork.Instantiate("Arrow", attackArea.transform.localPosition, attackArea.transform.localRotation).GetComponent<Arrow>();
         newObj.transform.SetParent(Instance.transform);
@@ -243,7 +244,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
         arrow.gameObject.SetActive(false);
 
         Instance.arrowQ.Enqueue(arrow);
-    }
+    }*/
 
 
 
@@ -349,10 +350,10 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
         transform.position = new Vector3(0f, 15f, 0f);
         isRespawn = false;
     }
-    public void Hit()
+    public void Hit(float atk_)
     {
-        HealthImage.fillAmount -= 0.1f;
-        if (HealthImage.fillAmount <= 0)
+        curHP -= atk_;
+        if (curHP <= 0)
         {
             GameObject.Find("Canvas").transform.Find("RespawnPanel").gameObject.SetActive(true);
             PV.RPC("DestroyRPC", RpcTarget.AllBuffered);
@@ -390,15 +391,14 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
                     animator.SetTrigger("doShoot");
                     Invoke("Shoot", 0.1f);
                     isAttack = true;
-                    //Invoke("Slash", 0f);
                     attackDelay = 0f;
                 }
 
-                if(mRDown && curArrow == null)
+/*                if(mRDown && curArrow == null)
                 {
                     if(isAttackReady)
                         curArrow = GetArrow();
-                }
+                }*/
                 break;
 
         }
@@ -420,27 +420,34 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
         if(Physics.Raycast(characterCamera.ScreenPointToRay(Input.mousePosition),out hitResult))
         {
             var direction = new Vector3(hitResult.point.x, transform.position.y, hitResult.point.z) - transform.position;
-            if (curArrow != null)
+            /*if (curArrow != null)
             {
                 curArrow.transform.SetParent(null);
                 curArrow.transform.position = curArrow.transform.position + direction.normalized;
                 
                 curArrow.PV.RPC("Shoot", RpcTarget.AllBuffered, direction.normalized);
                 curArrow = null;
-            }
+            }*/
+            Arrow arrow_ = PhotonNetwork.Instantiate("Arrow", shootPoint.transform.position, shootPoint.transform.rotation).GetComponent<Arrow>();
+
             
         }
-        
     }
+    [PunRPC]
+    void SetArrow(Arrow arrow_)
+    {
+        arrow_.atk = atk;
+    }
+
     // Style::Arrow 공격모션 벗어나는 동작코드, 210624_황승민
     void ShootOut()
-    {
+    {/*
         if (curArrow != null)
         {
             curArrow.DestroyArrow();
-        }
-        mRDown = false;
-        curArrow = null;
+        }*/
+        mRDown = false;/*
+        curArrow = null;*/
     }
     
 
@@ -471,15 +478,12 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
 
     private void OnTriggerEnter(Collider other)
     {
-        if (!PV.IsMine && other.gameObject.CompareTag("Attack_spot") && other.gameObject.transform.parent.GetComponent<PhotonView>().IsMine)
+
+        if (PV.IsMine && other.CompareTag("Player_Sword"))
         {
-            PV.RPC("head_jump", RpcTarget.All);
-            other.gameObject.transform.parent.GetComponent<Player_Control>().Hit();
+            Hit(other.transform.parent.GetComponent<Player_Control>().atk);
         }
-        if (PV.IsMine && other.CompareTag("Player_Attack"))
-        {
-            curHP -= other.transform.parent.GetComponent<Player_Control>().atk;
-        }
+
 
     }
     [PunRPC]
@@ -693,6 +697,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
             stream.SendNext(transform.rotation);
             stream.SendNext(curHP);
             stream.SendNext(Hp_Bar.hpBar.value);
+            stream.SendNext(atk);
         }
         else
         {
@@ -700,6 +705,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
             curRot = (Quaternion)stream.ReceiveNext();
             curHP = (float)stream.ReceiveNext();
             curHpValue = (float)stream.ReceiveNext();
+            atk = (float)stream.ReceiveNext();
         }
     }
 }

@@ -17,18 +17,6 @@ public class Bullet_ : MonoBehaviourPunCallbacks
     
     }
 
-    private void OnTriggerEnter(Collider col)
-    {
-        if (col.CompareTag("Ground") || col.CompareTag("wall"))
-            PV.RPC("DestroyRPC", RpcTarget.AllBuffered);
-
-        if (!PV.IsMine && col.CompareTag("Player") && col.GetComponent<PhotonView>().IsMine)
-        {
-            col.GetComponent<Player_Control>().Hit();
-            PV.RPC("DestroyRPC", RpcTarget.AllBuffered);
-        }
-    }
-
     [PunRPC]
     void DestroyRPC() => Destroy(gameObject);
 
