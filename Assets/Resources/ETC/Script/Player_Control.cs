@@ -106,14 +106,10 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     {
         NickNameText.text = PV.IsMine ? PhotonNetwork.NickName : PV.Owner.NickName;
         NickNameText.color = PV.IsMine ? Color.green : Color.red;
-<<<<<<< Updated upstream
-        maxHP = 2000f;
-        curHP = 2000f;
-=======
 
         maxHP = 10000f;
         curHP = 10000f;
->>>>>>> Stashed changes
+
 
         if (PV.IsMine)
         {
@@ -250,49 +246,6 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
 
         Instance.arrowQ.Enqueue(arrow);
     }
-    /// //////////////////////
-   
-
-
-
-<<<<<<< Updated upstream
-
-=======
-    private void FixedUpdate()
-    {
-        Zoom();
-        Turn();
-        Moving();
-        Dodge();
-        Respawn();
-        
-    }
-    void Update()
-    {
-        if (PV.IsMine)
-        {
-            InputKey();
-            AnimationUpdate();
-            Attack();
-            rgbd.velocity = new Vector3(0f, rgbd.velocity.y, 0f);
-
-
-            if (transform.position.y < -100)
-            {
-                isRespawn = true;
-            }
-
-
-        }
-        else if ((transform.position - curPos).sqrMagnitude >= 100) transform.position = curPos;
-        else
-        {
-            transform.position = Vector3.Lerp(transform.position, curPos, Time.deltaTime * 100);
-            transform.rotation = Quaternion.Lerp(transform.rotation, curRot, Time.deltaTime * 100);
-            Hp_Bar.hpBar.value = curHpValue;
-        }
-    }
->>>>>>> Stashed changes
 
     // 구르기 동작코드, 210624_황승민
     [PunRPC]
