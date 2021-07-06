@@ -128,7 +128,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     {
         Zoom();
 
-        if (curStyle == Style.WeaponStyle.Arrow)
+        if (curStyle == Style.WeaponStyle.Arrow||curStyle==Style.WeaponStyle.Magic)
         {
             if (isAttackReady == true)
             {
@@ -401,6 +401,23 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
                         curArrow = GetArrow();
                 }*/
                 break;
+            case Style.WeaponStyle.Magic:
+                isAttackReady = 0.85f < attackDelay;
+
+                if (isAttackReady && mLDown && !isDodge)
+                {
+                    animator.SetTrigger("doSpell");
+                    Invoke("Spell", 0.35f);
+                    isAttack = true;
+                    attackDelay = 0f;
+                }
+
+                /*                if(mRDown && curArrow == null)
+                                {
+                                    if(isAttackReady)
+                                        curArrow = GetArrow();
+                                }*/
+                break;
 
         }
 
@@ -429,9 +446,10 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
                 curArrow.PV.RPC("Shoot", RpcTarget.AllBuffered, direction.normalized);
                 curArrow = null;
             }*/
-            PhotonNetwork.Instantiate("Spell", shootPoint.transform.position, shootPoint.transform.rotation);
+            PhotonNetwork.Instantiate("Arrow", shootPoint.transform.position, shootPoint.transform.rotation);
         }
     }
+    
 
 
     // Style::Arrow 공격모션 벗어나는 동작코드, 210624_황승민
@@ -444,9 +462,26 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
         mRDown = false;/*
         curArrow = null;*/
     }
-    
 
-    
+    void Spell()
+    {
+        RaycastHit hitResult;
+        if (Physics.Raycast(characterCamera.ScreenPointToRay(Input.mousePosition), out hitResult))
+        {
+            var direction = new Vector3(hitResult.point.x, transform.position.y, hitResult.point.z) - transform.position;
+            /*if (curArrow != null)
+            {
+                curArrow.transform.SetParent(null);
+                curArrow.transform.position = curArrow.transform.position + direction.normalized;
+                
+                curArrow.PV.RPC("Shoot", RpcTarget.AllBuffered, direction.normalized);
+                curArrow = null;
+            }*/
+            PhotonNetwork.Instantiate("Spell", attackArea.transform.position, attackArea.transform.rotation);
+        }
+    }
+
+
 
 
 
@@ -670,12 +705,6 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
                     {
                         animator.SetBool("isRunningBack_Magic", false);
                     }
-                }
-
-                if (mLDown && !isDodge)
-                {
-                    animator.SetTrigger("doSpell");
-                    Invoke("AttackOut", 0.6f);
                 }
 
                 break;
