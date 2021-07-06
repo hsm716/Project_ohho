@@ -31,7 +31,7 @@ public class Style : MonoBehaviour
                     player = other.gameObject.GetComponent<Player_Control>();
                     player.curStyle = WeaponStyle.Arrow;
                     player.WeaponPosition_L.transform.GetChild(2).gameObject.SetActive(true);
-                    player.atk = 200f;
+                    player.atk = 150f;
                     player.animator.Rebind();
                     player.animator.Play("Idle_Arrow");
                     Destroy(this.gameObject, 1f);
@@ -41,6 +41,7 @@ public class Style : MonoBehaviour
                     player = other.gameObject.GetComponent<Player_Control>();
                     player.curStyle = WeaponStyle.Magic;
                     player.WeaponPosition_R.transform.GetChild(2).gameObject.SetActive(true);
+                    player.atk = 175f;
                     player.animator.Rebind();
                     player.animator.Play("Idle_Magic");
                     Destroy(this.gameObject, 1f);
