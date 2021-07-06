@@ -9,7 +9,7 @@ using Photon.Pun.Demo.Asteroids;
 
 public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
 {
-/*    public static Player_Control Instance;*/
+    public static GameObject Instance;
 
     [SerializeField]
     private GameObject arrowPrefab;
@@ -112,6 +112,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
 
         if (PV.IsMine)
         {
+            Instance = this.gameObject;
 /*            Instance = this;
             ArrowIntialize(10);*/
 
@@ -428,16 +429,10 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
                 curArrow.PV.RPC("Shoot", RpcTarget.AllBuffered, direction.normalized);
                 curArrow = null;
             }*/
-            Arrow arrow_ = PhotonNetwork.Instantiate("Arrow", shootPoint.transform.position, shootPoint.transform.rotation).GetComponent<Arrow>();
-
-            
+            PhotonNetwork.Instantiate("Spell", shootPoint.transform.position, shootPoint.transform.rotation);
         }
     }
-    [PunRPC]
-    void SetArrow(Arrow arrow_)
-    {
-        arrow_.atk = atk;
-    }
+
 
     // Style::Arrow 공격모션 벗어나는 동작코드, 210624_황승민
     void ShootOut()

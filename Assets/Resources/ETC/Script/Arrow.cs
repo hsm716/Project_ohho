@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
-public class Arrow : MonoBehaviourPunCallbacks, IPunObservable
+public class Arrow : MonoBehaviourPunCallbacks
 {
     Rigidbody rgbd;
     public PhotonView PV;
-    public Player_Control myPlayer;
+    Player_Control myPlayer;
     public float atk;
 
 
@@ -23,11 +23,24 @@ public class Arrow : MonoBehaviourPunCallbacks, IPunObservable
     void Awake()
     {
         rgbd = GetComponent<Rigidbody>();
-        atk = 50f;
         rgbd.isKinematic = false;
+        FindMyPlayer();
+        atk = myPlayer.atk;
         rgbd.AddForce(transform.forward * 20f, ForceMode.Impulse);
         Invoke("DestroyRPC", 3f);
 
+    }
+    void FindMyPlayer()
+    {
+        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+        foreach(GameObject p in players)
+        {
+            if (p.GetComponent<Player_Control>().PV.Owner.NickName == PV.Owner.NickName)
+            {
+                myPlayer = p.GetComponent<Player_Control>();
+                break;
+            }
+        }
     }
 
     private void OnTriggerEnter(Collider col)
@@ -45,22 +58,7 @@ public class Arrow : MonoBehaviourPunCallbacks, IPunObservable
             rgbd.isKinematic = true;
         }
     }
-
     [PunRPC]
-    void DestroyRPC() => Destroy(gameObject);
-
-    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
-    {
-        if (stream.IsWriting)
-        {
-            stream.SendNext(atk);
-
-        }
-        else
-        {
-            atk = (float)stream.ReceiveNext();
-
-        }
-    }
+    void DestroyRPC() => Destroy(this.gameObject);
 
 }
