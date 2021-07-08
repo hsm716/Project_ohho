@@ -5,38 +5,52 @@ using Photon.Pun;
 using Photon.Realtime;
 public class Arrow : MonoBehaviourPunCallbacks
 {
-    public Rigidbody rgbd;
+    Rigidbody rgbd;
     public PhotonView PV;
-    private Vector3 direction;
+    Player_Control myPlayer;
+    public float atk;
 
-    [PunRPC]
+
+
+    /*[PunRPC]
     public void Shoot(Vector3 dir)
     {
         rgbd.isKinematic = false;
         direction = dir;
         rgbd.AddForce(direction * 50f, ForceMode.Impulse);
         Invoke("DestroyArrow", 3f);
-    }
-    [PunRPC]
-    void DirRPC(Vector3 dir) => this.direction = dir;
-
-    public void DestroyArrow()
-    {
-        Player_Control.ReturnArrow(this);
-    }
+    }*/
     void Awake()
     {
         rgbd = GetComponent<Rigidbody>();
+        rgbd.isKinematic = false;
+        FindMyPlayer();
+        atk = myPlayer.atk;
+        rgbd.AddForce(transform.forward * 20f, ForceMode.Impulse);
+        Invoke("DestroyRPC", 3f);
 
-
+    }
+    void FindMyPlayer()
+    {
+        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+        foreach(GameObject p in players)
+        {
+            if (p.GetComponent<Player_Control>().PV.Owner.NickName == PV.Owner.NickName)
+            {
+                myPlayer = p.GetComponent<Player_Control>();
+                break;
+            }
+        }
     }
 
     private void OnTriggerEnter(Collider col)
-    {  
-      
+    {
 
-        if (!PV.IsMine && col.CompareTag("Player"))
+
+        if (!PV.IsMine && col.CompareTag("Player") && col.GetComponent<PhotonView>().IsMine)
         {
+            col.GetComponent<Player_Control>().Hit(atk);
+            Debug.Log(col.gameObject.name+"를 맞춤 "+"데미지 : " + atk);
             PV.RPC("DestroyRPC", RpcTarget.AllBuffered);
         }
         if (col.CompareTag("Ground"))
@@ -44,8 +58,7 @@ public class Arrow : MonoBehaviourPunCallbacks
             rgbd.isKinematic = true;
         }
     }
-
     [PunRPC]
-    void DestroyRPC() => Destroy(gameObject);
+    void DestroyRPC() => Destroy(this.gameObject);
 
 }

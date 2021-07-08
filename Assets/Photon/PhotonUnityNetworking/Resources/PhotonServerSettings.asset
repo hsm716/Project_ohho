@@ -61,6 +61,10 @@ MonoBehaviour:
   - ShootRPC
   - DirRPC
   - Deffense
+  - Select_Arrow
+  - Select_Magic
+  - Select_Sword
+  - SetArrow
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1
