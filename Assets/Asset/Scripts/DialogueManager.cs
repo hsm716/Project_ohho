@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using Photon.Pun;
 using Photon.Realtime;
 
-public class DialogueManager : MonoBehaviour
+public class DialogueManager : MonoBehaviourPunCallbacks,IPunObservable
 {
     private Queue<string> sentences;
 
@@ -13,16 +13,15 @@ public class DialogueManager : MonoBehaviour
     public Text dialoguText;
     public Button nextDialogueButton;
     public Animator animator;
+    public PhotonView PV;
 
     public float speakDelay;
 
     public GameObject Wall;
-    private Animator wallanimator;
 
     void Start()
     {
         sentences = new Queue<string>();
-        wallanimator = Wall.GetComponent<Animator>();
     }
 
     public void StartDialogue(Dialogue dialogue)
@@ -41,6 +40,7 @@ public class DialogueManager : MonoBehaviour
 
         DisplayNextSentence();
     }
+    [PunRPC]
     public void DisplayNextSentence()
     {
         if (sentences.Count == 0)
@@ -52,8 +52,10 @@ public class DialogueManager : MonoBehaviour
 
         nextDialogueButton.interactable = false;
         string sentence = sentences.Dequeue();
-        StopAllCoroutines();
-        StartCoroutine(TypeSentence(sentence, speakDelay));
+        dialoguText.text = sentence;
+        nextDialogueButton.interactable = true;
+        //StopAllCoroutines();
+        //StartCoroutine(TypeSentence(sentence, speakDelay));
     }
 
     IEnumerator TypeSentence(string sentence, float delay)
@@ -72,5 +74,17 @@ public class DialogueManager : MonoBehaviour
     public void EndDialogue()
     {
         animator.SetBool("IsOpen", false);
+    }
+
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        if (stream.IsWriting)
+        {
+            stream.SendNext(dialoguText.text);
+        }
+        else
+        {
+            dialoguText.text = (string)stream.ReceiveNext();
+        }
     }
 }

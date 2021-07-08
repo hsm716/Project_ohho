@@ -190,7 +190,7 @@ PrefabInstance:
         type: 3}
       propertyPath: PV
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 176828309}
     - target: {fileID: 7632288019909748665, guid: 5f940b89b2e68d646b4cbeb1074e4efb,
         type: 3}
       propertyPath: Wall
@@ -597,6 +597,34 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!1 &176828307 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7632288019909748666, guid: 5f940b89b2e68d646b4cbeb1074e4efb,
+    type: 3}
+  m_PrefabInstance: {fileID: 18181376}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &176828309
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 176828307}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  ObservedComponents:
+  - {fileID: 1450764511}
+  viewIdField: 2
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &255298676
 GameObject:
   m_ObjectHideFlags: 0
@@ -2664,7 +2692,7 @@ MonoBehaviour:
     type: 3}
   m_PrefabInstance: {fileID: 18181376}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 176828307}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 55ce7f5aa18099c4cac87c6b0f88334d, type: 3}
