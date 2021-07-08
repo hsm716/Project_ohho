@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using Photon.Pun;
 using Photon.Realtime;
 
-public class DialogueManager : MonoBehaviourPunCallbacks
+public class DialogueManager : MonoBehaviour
 {
     private Queue<string> sentences;
 
@@ -18,7 +18,6 @@ public class DialogueManager : MonoBehaviourPunCallbacks
 
     public GameObject Wall;
     private Animator wallanimator;
-    public PhotonView PV;
 
     void Start()
     {
@@ -40,10 +39,8 @@ public class DialogueManager : MonoBehaviourPunCallbacks
             sentences.Enqueue(sentence);
         }
 
-        PV.RPC("DisplayNextSentence", RpcTarget.All);
-        //DisplayNextSentence();
+        DisplayNextSentence();
     }
-    [PunRPC]
     public void DisplayNextSentence()
     {
         if (sentences.Count == 0)
@@ -76,9 +73,8 @@ public class DialogueManager : MonoBehaviourPunCallbacks
     {
         animator.SetBool("IsOpen", false);
     }
-    [PunRPC]
     public void WallDown()
     {
-        wallanimator.Play("WallDown");
+        wallanimator.SetTrigger("doDO");
     }
 }
