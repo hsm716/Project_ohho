@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Photon.Pun;
+using Photon.Realtime;
 
-public class DialogueManager : MonoBehaviour
+public class DialogueManager : MonoBehaviourPunCallbacks
 {
     private Queue<string> sentences;
 
@@ -16,6 +18,7 @@ public class DialogueManager : MonoBehaviour
 
     public GameObject Wall;
     private Animator wallanimator;
+    public PhotonView PV;
 
     void Start()
     {
@@ -37,15 +40,16 @@ public class DialogueManager : MonoBehaviour
             sentences.Enqueue(sentence);
         }
 
-        DisplayNextSentence();
+        PV.RPC("DisplayNextSentence", RpcTarget.All);
+        //DisplayNextSentence();
     }
-
+    [PunRPC]
     public void DisplayNextSentence()
     {
-        if(sentences.Count == 0)
+        if (sentences.Count == 0)
         {
             EndDialogue();
-            wallanimator.Play("WallDown");
+            WallDown();
             return;
         }
 
@@ -55,7 +59,7 @@ public class DialogueManager : MonoBehaviour
         StartCoroutine(TypeSentence(sentence, speakDelay));
     }
 
-    IEnumerator TypeSentence (string sentence, float delay)
+    IEnumerator TypeSentence(string sentence, float delay)
     {
         dialoguText.text = "";
         foreach (char letter in sentence.ToCharArray())
@@ -71,5 +75,10 @@ public class DialogueManager : MonoBehaviour
     public void EndDialogue()
     {
         animator.SetBool("IsOpen", false);
+    }
+    [PunRPC]
+    public void WallDown()
+    {
+        wallanimator.Play("WallDown");
     }
 }

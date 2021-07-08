@@ -31,40 +31,24 @@ MonoBehaviour:
   RunInBackground: 1
   StartInOfflineMode: 0
   RpcList:
+  - Attack
   - ClickRpc
   - DestroyRpc
-  - DestroySpaceship
-  - Fire
-  - RespawnSpaceship
-  - Turn
-  - DoubleJump
-  - Attack
-  - Jump
-  - Run
-  - Walk
-  - DestoryRPC
-  - InitColor
-  - Destory_RPC
   - DestroyRPC
-  - head_jump
-  - InsertColor
-  - DirRpc
+  - DestroySpaceship
   - Dodge
   - DodgeOut
+  - DoubleJump
+  - Fire
+  - head_jump
+  - Jump
   - Moving
-  - DestroyArrow
-  - Shoot
-  - GetArrow
-  - ReturnArrow
-  - ArrowIntialize
-  - CreateNewArrow
-  - ShootRPC
-  - DirRPC
-  - Deffense
-  - Select_Arrow
-  - Select_Magic
-  - Select_Sword
-  - SetArrow
+  - RespawnSpaceship
+  - Run
+  - Turn
+  - Walk
+  - WallDown
+  - DisplayNextSentence
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

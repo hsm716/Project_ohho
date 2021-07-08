@@ -39,13 +39,14 @@ public class Camera_Move : MonoBehaviour
 
     private void LateUpdate()
     {
-        if ((animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f) && !b)
+        if ((animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.9895833f) && !b)
         {
+            animator.enabled = false;
             cameraPosition.x = player.transform.position.x + offsetX;
             cameraPosition.y = player.transform.position.y + offsetY;
             cameraPosition.z = player.transform.position.z + offsetZ;
 
-            transform.position = Vector3.Lerp(transform.position, cameraPosition, 10 * Time.deltaTime);
+            transform.position = Vector3.Lerp(transform.position, cameraPosition, 1f * Time.deltaTime);
             //왜안댐
             if (!a)
                 StartCoroutine(Wait());
