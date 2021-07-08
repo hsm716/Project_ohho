@@ -14,9 +14,13 @@ public class DialogueManager : MonoBehaviour
 
     public float speakDelay;
 
+    public GameObject Wall;
+    private Animator wallanimator;
+
     void Start()
     {
         sentences = new Queue<string>();
+        wallanimator = Wall.GetComponent<Animator>();
     }
 
     public void StartDialogue(Dialogue dialogue)
@@ -41,6 +45,7 @@ public class DialogueManager : MonoBehaviour
         if(sentences.Count == 0)
         {
             EndDialogue();
+            wallanimator.Play("WallDown");
             return;
         }
 

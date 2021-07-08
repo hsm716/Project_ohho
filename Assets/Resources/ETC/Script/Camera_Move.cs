@@ -23,21 +23,52 @@ public class Camera_Move : MonoBehaviour
     private float currentCameraRotationY = 0;
 
 
+    Animator animator;
 
-
-    Vector3 cameraPosition;
+    public Vector3 cameraPosition;
     Vector3 cameraRotation;
 
-    
+    bool intromove = false;
+    bool b = false;
+    bool a = false;
+
+    private void Start()
+    {
+        animator = gameObject.GetComponent<Animator>();
+    }
 
     private void LateUpdate()
     {
-        cameraPosition.x = player.transform.position.x + offsetX;
-        cameraPosition.y = player.transform.position.y + offsetY;
-        cameraPosition.z = player.transform.position.z + offsetZ;
+        if ((animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f) && !b)
+        {
+            cameraPosition.x = player.transform.position.x + offsetX;
+            cameraPosition.y = player.transform.position.y + offsetY;
+            cameraPosition.z = player.transform.position.z + offsetZ;
 
-        transform.position = cameraPosition;
+            transform.position = Vector3.Lerp(transform.position, cameraPosition, 10 * Time.deltaTime);
+            //왜안댐
+            if (!a)
+                StartCoroutine(Wait());
+        }
+
+        if (intromove)
+        {
+            cameraPosition.x = player.transform.position.x + offsetX;
+            cameraPosition.y = player.transform.position.y + offsetY;
+            cameraPosition.z = player.transform.position.z + offsetZ;
+
+            transform.position = cameraPosition;
+
+        }
        // transform.position = Vector3.Lerp(transform.position,cameraPosition,followSpeed*Time.deltaTime);
+    }
+
+    IEnumerator Wait()
+    {
+        a = true;
+        yield return new WaitForSeconds(5f);
+        b = true;
+        intromove = true;
     }
     /*
     private void CharacterRotation()

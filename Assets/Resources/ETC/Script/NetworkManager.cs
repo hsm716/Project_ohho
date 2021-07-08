@@ -52,7 +52,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     */
     public void Spawn()
     {
-        GameObject obj = PhotonNetwork.Instantiate("Player",new Vector3(Random.Range(-7,8),4.5f,-4.1f), Quaternion.identity);
+        GameObject obj = PhotonNetwork.Instantiate("Player",new Vector3(Random.Range(-7,8),23.5f,-4.1f), Quaternion.identity);
         RespawnPanel.SetActive(false);
     }
 }
