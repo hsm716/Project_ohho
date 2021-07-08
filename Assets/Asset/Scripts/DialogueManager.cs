@@ -46,7 +46,7 @@ public class DialogueManager : MonoBehaviour
         if (sentences.Count == 0)
         {
             EndDialogue();
-            WallDown();
+            Wall.GetComponent<StartWall>().WallDown();
             return;
         }
 
@@ -72,9 +72,5 @@ public class DialogueManager : MonoBehaviour
     public void EndDialogue()
     {
         animator.SetBool("IsOpen", false);
-    }
-    public void WallDown()
-    {
-        wallanimator.SetTrigger("doDO");
     }
 }
