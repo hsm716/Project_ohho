@@ -177,8 +177,8 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
         else if ((transform.position - curPos).sqrMagnitude >= 100) transform.position = curPos;
         else
         {
-            transform.position = Vector3.Lerp(transform.position, curPos, Time.deltaTime * 100);
-            transform.rotation = Quaternion.Lerp(transform.rotation, curRot, Time.deltaTime * 100);
+            transform.position = Vector3.Lerp(transform.position, curPos, Time.deltaTime * 10);
+            transform.rotation = Quaternion.Lerp(transform.rotation, curRot, Time.deltaTime * 10);
             Hp_Bar.hpBar.value = curHpValue;
         }
     }

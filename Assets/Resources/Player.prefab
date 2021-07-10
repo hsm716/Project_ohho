@@ -2307,7 +2307,7 @@ MonoBehaviour:
     LayerIndex: 2
   - SynchronizeType: 1
     LayerIndex: 3
-  - SynchronizeType: 0
+  - SynchronizeType: 1
     LayerIndex: 4
 --- !u!136 &7044034116310767728
 CapsuleCollider:
