@@ -93,6 +93,8 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
 
 
 
+    public float pullPower=20f;
+
     public GameObject shootPoint;
     public BoxCollider attackArea;
     public float attackDelay = 0f;
@@ -156,6 +158,14 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
             Attack();
             rgbd.velocity = new Vector3(0f, rgbd.velocity.y, 0f);
 
+            if (mRDown&&!isDodge)
+            {
+                pullPower += Time.deltaTime *7f;
+                if (pullPower >= 40f)
+                {
+                    pullPower = 40f;
+                }
+            }
 
             if (transform.position.y < -100)
             {
@@ -188,7 +198,12 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
         {
             Invoke("ShootOut", 0.2f);
             Invoke("DeffenseOut", 0.0f);
+            Invoke("PullPower_valueChange",0.1f);
         }
+    }
+    void PullPower_valueChange()
+    {
+        pullPower = 20f;
     }
     void Deffense()
     {
@@ -388,10 +403,12 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
 
                 if (mRDown&&isAttackReady && mLDown && !isDodge)
                 {
+
                     animator.SetBool("isAim_Arrow", true);
                     animator.SetTrigger("doShoot");
                     Invoke("Shoot", 0.1f);
                     isAttack = true;
+                    Invoke("PullPower_valueChange", 0.1f);
                     attackDelay = 0f;
                 }
 
@@ -402,7 +419,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
                 }*/
                 break;
             case Style.WeaponStyle.Magic:
-                isAttackReady = 0.85f < attackDelay;
+                isAttackReady = 0.82f < attackDelay;
 
                 if (isAttackReady && mLDown && !isDodge)
                 {
@@ -422,6 +439,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
         }
 
     }
+
     public void Slash()
     {
         attackArea.enabled = true;
@@ -722,6 +740,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
             stream.SendNext(curHP);
             stream.SendNext(Hp_Bar.hpBar.value);
             stream.SendNext(atk);
+            stream.SendNext(pullPower);
         }
         else
         {
@@ -730,6 +749,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
             curHP = (float)stream.ReceiveNext();
             curHpValue = (float)stream.ReceiveNext();
             atk = (float)stream.ReceiveNext();
+            pullPower = (float)stream.ReceiveNext();
         }
     }
 }

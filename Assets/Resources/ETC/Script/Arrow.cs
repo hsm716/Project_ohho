@@ -9,7 +9,7 @@ public class Arrow : MonoBehaviourPunCallbacks
     public PhotonView PV;
     Player_Control myPlayer;
     public float atk;
-
+    public float shootPower;
 
 
     /*[PunRPC]
@@ -25,8 +25,9 @@ public class Arrow : MonoBehaviourPunCallbacks
         rgbd = GetComponent<Rigidbody>();
         rgbd.isKinematic = false;
         FindMyPlayer();
-        atk = myPlayer.atk;
-        rgbd.AddForce(transform.forward * 20f, ForceMode.Impulse);
+        atk = myPlayer.atk*(myPlayer.pullPower/20f);
+        shootPower = myPlayer.pullPower;
+        rgbd.AddForce(transform.forward * shootPower, ForceMode.Impulse);
         Invoke("DestroyRPC", 3f);
 
     }

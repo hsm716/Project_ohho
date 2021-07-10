@@ -19,9 +19,12 @@ public class DialogueManager : MonoBehaviourPunCallbacks,IPunObservable
 
     public GameObject Wall;
 
+    int count;
+
     void Start()
     {
         sentences = new Queue<string>();
+        count = 3;
     }
 
     public void StartDialogue(Dialogue dialogue)
@@ -43,7 +46,7 @@ public class DialogueManager : MonoBehaviourPunCallbacks,IPunObservable
     [PunRPC]
     public void DisplayNextSentence()
     {
-        if (sentences.Count == 0)
+        if (count == 0)
         {
             EndDialogue();
             Wall.GetComponent<StartWall>().WallDown();
@@ -52,10 +55,10 @@ public class DialogueManager : MonoBehaviourPunCallbacks,IPunObservable
 
         nextDialogueButton.interactable = false;
         string sentence = sentences.Dequeue();
-        dialoguText.text = sentence;
+        /*dialoguText.text = sentence;
         nextDialogueButton.interactable = true;
-        //StopAllCoroutines();
-        //StartCoroutine(TypeSentence(sentence, speakDelay));
+        */StopAllCoroutines();
+        StartCoroutine(TypeSentence(sentence, speakDelay));
     }
 
     IEnumerator TypeSentence(string sentence, float delay)
@@ -81,10 +84,12 @@ public class DialogueManager : MonoBehaviourPunCallbacks,IPunObservable
         if (stream.IsWriting)
         {
             stream.SendNext(dialoguText.text);
+            stream.SendNext(sentences.Count);
         }
         else
         {
             dialoguText.text = (string)stream.ReceiveNext();
+            count = (int)stream.ReceiveNext();
         }
     }
 }

@@ -39,7 +39,7 @@ public class Camera_Move : MonoBehaviour
 
     private void LateUpdate()
     {
-        if ((animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.9895833f) && !b)
+        /*if ((animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.9895833f) && !b)
         {
             animator.enabled = false;
             cameraPosition.x = player.transform.position.x + offsetX;
@@ -60,8 +60,13 @@ public class Camera_Move : MonoBehaviour
 
             transform.position = cameraPosition;
 
-        }
-       // transform.position = Vector3.Lerp(transform.position,cameraPosition,followSpeed*Time.deltaTime);
+        }*/
+        cameraPosition.x = player.transform.position.x + offsetX;
+        cameraPosition.y = player.transform.position.y + offsetY;
+        cameraPosition.z = player.transform.position.z + offsetZ;
+
+        transform.position = cameraPosition;
+        // transform.position = Vector3.Lerp(transform.position,cameraPosition,followSpeed*Time.deltaTime);
     }
 
     IEnumerator Wait()

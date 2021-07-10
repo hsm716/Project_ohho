@@ -149,6 +149,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PV: {fileID: 3448280312010084221}
   atk: 0
+  shootPower: 0
 --- !u!114 &3448280312010084221
 MonoBehaviour:
   m_ObjectHideFlags: 0
