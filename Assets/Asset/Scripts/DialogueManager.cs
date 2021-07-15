@@ -2,10 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using Photon.Pun;
-using Photon.Realtime;
 
-public class DialogueManager : MonoBehaviourPunCallbacks,IPunObservable
+public class DialogueManager : MonoBehaviour
 {
     private Queue<string> sentences;
 
@@ -13,18 +11,12 @@ public class DialogueManager : MonoBehaviourPunCallbacks,IPunObservable
     public Text dialoguText;
     public Button nextDialogueButton;
     public Animator animator;
-    public PhotonView PV;
 
     public float speakDelay;
-
-    public GameObject Wall;
-
-    int count;
 
     void Start()
     {
         sentences = new Queue<string>();
-        count = 3;
     }
 
     public void StartDialogue(Dialogue dialogue)
@@ -43,21 +35,19 @@ public class DialogueManager : MonoBehaviourPunCallbacks,IPunObservable
 
         DisplayNextSentence();
     }
-    [PunRPC]
+
     public void DisplayNextSentence()
     {
-        if (count == 0)
+        if (sentences.Count == 0)
         {
             EndDialogue();
-            Wall.GetComponent<StartWall>().WallDown();
+            //Wall.GetComponent<StartWall>().WallDown();
             return;
         }
 
         nextDialogueButton.interactable = false;
         string sentence = sentences.Dequeue();
-        /*dialoguText.text = sentence;
-        nextDialogueButton.interactable = true;
-        */StopAllCoroutines();
+        StopAllCoroutines();
         StartCoroutine(TypeSentence(sentence, speakDelay));
     }
 
@@ -79,17 +69,4 @@ public class DialogueManager : MonoBehaviourPunCallbacks,IPunObservable
         animator.SetBool("IsOpen", false);
     }
 
-    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
-    {
-        if (stream.IsWriting)
-        {
-            stream.SendNext(dialoguText.text);
-            stream.SendNext(sentences.Count);
-        }
-        else
-        {
-            dialoguText.text = (string)stream.ReceiveNext();
-            count = (int)stream.ReceiveNext();
-        }
-    }
 }

@@ -68,7 +68,7 @@ public class Camera_Move : MonoBehaviour
         transform.position = cameraPosition;
         // transform.position = Vector3.Lerp(transform.position,cameraPosition,followSpeed*Time.deltaTime);
     }
-
+    /*
     IEnumerator Wait()
     {
         a = true;
@@ -76,6 +76,7 @@ public class Camera_Move : MonoBehaviour
         b = true;
         intromove = true;
     }
+    */
     /*
     private void CharacterRotation()
     {
