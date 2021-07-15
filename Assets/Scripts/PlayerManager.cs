@@ -7,6 +7,7 @@ using System.IO;
 public class PlayerManager : MonoBehaviour
 {
     PhotonView PV;
+    public GameObject MC;
 
     void Awake()
     {
@@ -17,7 +18,9 @@ public class PlayerManager : MonoBehaviour
     {
         if (PV.IsMine)
         {
+            MC = GameObject.Find("MainCanvas");
             CreateController();
+            
         }
     }
 
@@ -32,6 +35,8 @@ public class PlayerManager : MonoBehaviour
     {
         yield return new WaitForSeconds(24);
         PhotonNetwork.Instantiate("Player", new Vector3(-2, 23.5f, -4.1f), Quaternion.identity);
+        MC.transform.GetChild(2).gameObject.SetActive(true);
+
 
     }
 }
