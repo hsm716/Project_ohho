@@ -128,7 +128,6 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     }
     private void FixedUpdate()
     {
-        Zoom();
 
         if (curStyle == Style.WeaponStyle.Arrow||curStyle==Style.WeaponStyle.Magic)
         {
@@ -173,6 +172,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
             }
 
 
+
         }
         else if ((transform.position - curPos).sqrMagnitude >= 100) transform.position = curPos;
         else
@@ -180,6 +180,21 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
             transform.position = Vector3.Lerp(transform.position, curPos, Time.deltaTime * 10);
             transform.rotation = Quaternion.Lerp(transform.rotation, curRot, Time.deltaTime * 10);
             Hp_Bar.hpBar.value = curHpValue;
+        }
+        switch (curStyle)
+        {
+            case Style.WeaponStyle.None:
+                break;
+            case Style.WeaponStyle.Sword:
+                WeaponPosition_R.transform.GetChild(1).gameObject.SetActive(true);
+                WeaponPosition_L.transform.GetChild(1).gameObject.SetActive(true);
+                break;
+            case Style.WeaponStyle.Arrow:
+                WeaponPosition_L.transform.GetChild(2).gameObject.SetActive(true);
+                break;
+            case Style.WeaponStyle.Magic:
+                WeaponPosition_R.transform.GetChild(2).gameObject.SetActive(true);
+                break;
         }
     }
     // 키보드 및 마우스 입력관련, 210624_황승민
@@ -351,11 +366,11 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     }
 
     // 줌인 줌아웃 동작코드, 210624_황승민
-    void Zoom()
+/*    void Zoom()
     {
         var scroll = Input.mouseScrollDelta;
         characterCamera.fieldOfView = Mathf.Clamp(characterCamera.fieldOfView - scroll.y*2f, 30f, 70f);
-    }
+    }*/
 
 
     // 리스폰 동작코드, 210624_황승민
@@ -371,7 +386,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
         curHP -= atk_;
         if (curHP <= 0)
         {
-            GameObject.Find("Canvas").transform.Find("RespawnPanel").gameObject.SetActive(true);
+            GameObject.Find("MainCanvas").transform.Find("RespawnPanel").gameObject.SetActive(true);
             PV.RPC("DestroyRPC", RpcTarget.AllBuffered);
         }
     }
@@ -741,6 +756,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
             stream.SendNext(Hp_Bar.hpBar.value);
             stream.SendNext(atk);
             stream.SendNext(pullPower);
+            stream.SendNext(curStyle);
         }
         else
         {
@@ -750,6 +766,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
             curHpValue = (float)stream.ReceiveNext();
             atk = (float)stream.ReceiveNext();
             pullPower = (float)stream.ReceiveNext();
+            curStyle = (Style.WeaponStyle)stream.ReceiveNext();
         }
     }
 }

@@ -1,36 +1,37 @@
 using Photon.Pun;
+using Photon.Realtime;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Style : MonoBehaviour
+public class Style : MonoBehaviourPunCallbacks
 {
     public enum WeaponStyle { None,Sword, Arrow, Magic };
     public WeaponStyle selectStyle;
     public PhotonView PV;
-    public Player_Control myPlayer;
-
     public GameObject SelectPanel;
 
-    void FindMyPlayer()
+
+    Player_Control FindMyPlayer()
     {
         GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
-        foreach (GameObject p in players)
+
+        foreach( GameObject p in players)
         {
-            if (p.GetComponent<Player_Control>().PV.Owner.NickName == PV.Owner.NickName)
+            if( p.GetComponent<Player_Control>().PV.Owner.NickName == PhotonNetwork.LocalPlayer.NickName)
             {
-                myPlayer = p.GetComponent<Player_Control>();
-                break;
-            }
+                return p.GetComponent<Player_Control>();
+            } 
         }
+        return null;
     }
 
     public void Select_Sword()
     {
-        FindMyPlayer();
+        Player_Control myPlayer = FindMyPlayer();
         myPlayer.curStyle = WeaponStyle.Sword;
-        myPlayer.WeaponPosition_R.transform.GetChild(1).gameObject.SetActive(true);
-        myPlayer.WeaponPosition_L.transform.GetChild(1).gameObject.SetActive(true);
+        //myPlayer.WeaponPosition_R.transform.GetChild(1).gameObject.SetActive(true);
+        //myPlayer.WeaponPosition_L.transform.GetChild(1).gameObject.SetActive(true);
         myPlayer.atk = 200f;
         myPlayer.animator.Rebind();
         myPlayer.animator.Play("Idle_Sword");
@@ -40,9 +41,9 @@ public class Style : MonoBehaviour
 
     public void Select_Arrow()
     {
-        FindMyPlayer();
+        Player_Control myPlayer = FindMyPlayer();
         myPlayer.curStyle = WeaponStyle.Arrow;
-        myPlayer.WeaponPosition_L.transform.GetChild(2).gameObject.SetActive(true);
+       // myPlayer.WeaponPosition_L.transform.GetChild(2).gameObject.SetActive(true);
         myPlayer.atk = 150f;
         myPlayer.animator.Rebind();
         myPlayer.animator.Play("Idle_Arrow");
@@ -50,37 +51,17 @@ public class Style : MonoBehaviour
         SelectPanel.SetActive(false);
     }
 
+ 
     public void Select_Magic()
     {
-        FindMyPlayer();
+        Player_Control myPlayer = FindMyPlayer();
         myPlayer.curStyle = WeaponStyle.Magic;
-        myPlayer.WeaponPosition_R.transform.GetChild(2).gameObject.SetActive(true);
-        myPlayer.atk = 175f;
+        //myPlayer.WeaponPosition_R.transform.GetChild(2).gameObject.SetActive(true);
+        myPlayer.atk = 225f;
         myPlayer.animator.Rebind();
         myPlayer.animator.Play("Idle_Magic");
 
         SelectPanel.SetActive(false);
 
-    }
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.CompareTag("Player"))
-        {
-
-            switch (selectStyle)
-            {
-                case WeaponStyle.Sword:
-
-                    break;
-                case WeaponStyle.Arrow:
-
-
-                    break;
-                case WeaponStyle.Magic:
-
-                    break;
-
-            }
-        }
     }
 }

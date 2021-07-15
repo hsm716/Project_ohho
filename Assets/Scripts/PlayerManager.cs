@@ -16,9 +16,10 @@ public class PlayerManager : MonoBehaviour
 
     void Start()
     {
+        MC = GameObject.Find("MainCanvas");
         if (PV.IsMine)
         {
-            MC = GameObject.Find("MainCanvas");
+            
             CreateController();
             
         }
