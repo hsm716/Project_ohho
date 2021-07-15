@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: PhotonServerSettings
   m_EditorClassIdentifier: 
   AppSettings:
-    AppIdRealtime: d7512228-9895-456c-a450-011035fdf5ff
+    AppIdRealtime: cb5ca6f2-a0a3-4ab5-bfa9-7b2e25d27eb3
     AppIdChat: 
     AppIdVoice: 
     AppVersion: 
@@ -21,11 +21,13 @@ MonoBehaviour:
     FixedRegion: 
     Server: 
     Port: 0
+    ProxyServer: 
     Protocol: 0
+    EnableProtocolFallback: 1
     AuthMode: 0
     EnableLobbyStatistics: 0
     NetworkLogging: 1
-  DevRegion: kr
+  DevRegion: 
   PunLogging: 0
   EnableSupportLogger: 0
   RunInBackground: 1
@@ -36,6 +38,7 @@ MonoBehaviour:
   - DestroyRpc
   - DestroyRPC
   - DestroySpaceship
+  - DisplayNextSentence
   - Dodge
   - DodgeOut
   - DoubleJump
@@ -48,7 +51,6 @@ MonoBehaviour:
   - Turn
   - Walk
   - WallDown
-  - DisplayNextSentence
   DisableAutoOpenWizard: 1
-  ShowSettings: 1
-  DevRegionSetOnce: 1
+  ShowSettings: 0
+  DevRegionSetOnce: 0
