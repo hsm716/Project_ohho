@@ -97,7 +97,12 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
 
     public GameObject shootPoint;
     public BoxCollider attackArea;
+    public TrailRenderer attackEffect;
     public float attackDelay = 0f;
+
+
+    public AudioSource sound_Slash1;
+    public AudioSource sound_Slash2;
 
     [PunRPC]
     void DestroyRPC() => Destroy(gameObject);
@@ -406,6 +411,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
                 
                 if (isAttackReady && mLDown && !isDodge)
                 {
+
                     animator.SetTrigger("doSlash");
                     isAttack = true;
                     //Invoke("Slash", 0f);
@@ -465,6 +471,25 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     {
         attackArea.enabled = false;
     }
+
+
+    public void EffectOn_Slash()
+    {
+        attackEffect.enabled = true;
+    }
+    public void EffectOff_Slash()
+    {
+        attackEffect.enabled = false;
+    }
+    public void Sound_Slash1()
+    {
+        sound_Slash1.Play();
+    }
+    public void Sound_Slash2()
+    {
+        sound_Slash2.Play();
+    }
+
     void Shoot()
     {
         RaycastHit hitResult;
