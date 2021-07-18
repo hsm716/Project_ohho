@@ -8,6 +8,8 @@ TagManager:
   - Player_Sword
   - Player_Arrow
   - Player_Attack
+  - Attack_spot
+  - Player_UI
   layers:
   - Default
   - TransparentFX

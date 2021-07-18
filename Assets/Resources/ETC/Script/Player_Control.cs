@@ -78,7 +78,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     public bool isAttackReady = false;
     private bool isRunning;
     private bool isRunningBack;
-
+    private bool isDeffensing;
 
     public bool isDodge;
 
@@ -87,6 +87,8 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
 
     private bool mLDown;//마우스 왼쪽
     private bool mRDown;//마우스 오른쪽
+    
+
 
     float horizontalMove;
     float verticalMove;
@@ -103,6 +105,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
 
     public AudioSource sound_Slash1;
     public AudioSource sound_Slash2;
+    public AudioSource sound_Shoot1;
 
     [PunRPC]
     void DestroyRPC() => Destroy(gameObject);
@@ -227,6 +230,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     }
     void Deffense()
     {
+        isDeffensing = true;
         if (curStyle == Style.WeaponStyle.Sword)
         {
             animator.SetTrigger("doDeffense");
@@ -234,6 +238,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     }
     void DeffenseOut()
     {
+        isDeffensing = false;
         mRDown = false;
     }
 /*    private Arrow CreateNewArrow()
@@ -330,7 +335,9 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
 
         if (isDodge)
         {
-            movement.Set(dodgeVec.x, dodgeVec.y, dodgeVec.z);
+            if (curStyle != Style.WeaponStyle.Magic)
+                movement.Set(dodgeVec.x, dodgeVec.y, dodgeVec.z);
+
         }
         else
         {
@@ -409,7 +416,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
             case Style.WeaponStyle.Sword:
                 isAttackReady = 0.15f < attackDelay;
                 
-                if (isAttackReady && mLDown && !isDodge)
+                if (isAttackReady && mLDown && !isDodge && !isDeffensing)
                 {
 
                     animator.SetTrigger("doSlash");
@@ -417,6 +424,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
                     //Invoke("Slash", 0f);
                     attackDelay = 0f;
                 }
+
                 
                 break;
             case Style.WeaponStyle.Arrow:
@@ -488,6 +496,10 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     public void Sound_Slash2()
     {
         sound_Slash2.Play();
+    }
+    public void Sound_Shoot1()
+    {
+        sound_Shoot1.Play();
     }
 
     void Shoot()
