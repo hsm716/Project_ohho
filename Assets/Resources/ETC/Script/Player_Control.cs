@@ -95,7 +95,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
 
 
 
-    public float pullPower=20f;
+    public float pullPower;
 
     public GameObject shootPoint;
     public BoxCollider attackArea;
@@ -119,6 +119,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
         NickNameText.color = PV.IsMine ? Color.green : Color.red;
         maxHP = 2000f;
         curHP = 2000f;
+        pullPower = 20f;
 
         if (PV.IsMine)
         {
@@ -167,7 +168,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
 
             if (mRDown&&!isDodge)
             {
-                pullPower += Time.deltaTime *7f;
+                pullPower += Time.deltaTime *14f;
                 if (pullPower >= 40f)
                 {
                     pullPower = 40f;
@@ -187,6 +188,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
         {
             transform.position = Vector3.Lerp(transform.position, curPos, Time.deltaTime * 10);
             transform.rotation = Quaternion.Lerp(transform.rotation, curRot, Time.deltaTime * 10);
+            //Hp_Bar.transform.rotation = Quaternion.Euler(new Vector3())
             Hp_Bar.hpBar.value = curHpValue;
         }
         switch (curStyle)
@@ -435,6 +437,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
 
                     animator.SetBool("isAim_Arrow", true);
                     animator.SetTrigger("doShoot");
+                    sound_Shoot1.volume = pullPower / 120f; 
                     Invoke("Shoot", 0.1f);
                     isAttack = true;
                     Invoke("PullPower_valueChange", 0.1f);

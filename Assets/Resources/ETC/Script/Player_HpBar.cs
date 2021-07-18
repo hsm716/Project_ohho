@@ -8,6 +8,7 @@ public class Player_HpBar : MonoBehaviour
     public Transform player;
     Player_Control player_data;
     public Slider hpBar;
+    public Slider subBar;
     public GameObject HpLineFolder;
     //  public PhotonView PV;
 
@@ -27,6 +28,9 @@ public class Player_HpBar : MonoBehaviour
                PV.RPC("DestroyRPC", RpcTarget.AllBuffered);*/
         transform.position = player.position + offset;
         hpBar.value = player_data.curHP / player_data.maxHP;
+        subBar.value = player_data.pullPower / 40f;
+
+        
     }
     public void GetHpBoost()
     {
