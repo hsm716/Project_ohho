@@ -11,9 +11,6 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
 {
     public static GameObject Instance;
 
-    [SerializeField]
-    private GameObject arrowPrefab;
-
 /*    private Queue<Arrow> arrowQ = new Queue<Arrow>();*/
 
     public Animator animator;
@@ -36,19 +33,12 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
 
    /* public Arrow curArrow;*/
 
-    public AudioSource jump;
-    public AudioSource Dbjump;
-
-
     [SerializeField] private float rotateSpeed;
     [SerializeField] private float moveSpeed;
     public float curHP;
     public float maxHP;
 
     public float atk;
-
-    [SerializeField]
-    private int jumpCount = 2;
 
 
     public CapsuleCollider myCollider;
@@ -63,50 +53,56 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     private Vector3 mouseDir;
     public Vector3 dir_;
 
-    private bool isWall = false;
-    private bool isRespawn = false;
-    private bool isGrounded = true;
-    private bool isJumping;
-    private bool isDoubleJump;
-    private bool isHi;
-    private bool isPicking;
-    private bool isItemEnter;
-    private bool clickC;
+    #region
+    // 상태관련 변수
+    private bool isRespawn = false; // 리스폰
+    private bool isAttack = false; // 공격중인지
+    public bool isAttackReady = false; // 공격가능한 상태인지
+    private bool isRunning; // 움직이고 있는지
+    private bool isRunningBack; // 뒤로 움직이고 있는지
+    private bool isDeffensing; // 방어중인지 (class.Sword만 가능)
+
+    public bool isDodge; // 구르기 중인지 
+    #endregion
 
 
-    private bool isAttack = false;
-    public bool isAttackReady = false;
-    private bool isRunning;
-    private bool isRunningBack;
-    private bool isDeffensing;
+    #region
+    // 입력 관련 변수
 
-    public bool isDodge;
+    float horizontalMove; // 키보드 입력
+    float verticalMove;   // 키보드 입력
 
-    private bool dDown;
+    private bool dDown; //LShift 입력
+    private bool mLDown;//마우스 왼쪽 입력
+    private bool mRDown;//마우스 오른쪽 입력
 
-
-    private bool mLDown;//마우스 왼쪽
-    private bool mRDown;//마우스 오른쪽
-    
+    #endregion
 
 
-    float horizontalMove;
-    float verticalMove;
+    #region
+    //------------ 클래스별 내용들--------------//
+    // Class.Arrow 관련 내용들..
+    public GameObject shootPoint; // Class.Arrow의 화살이 나가는 지점
+    public float pullPower; // 활 당기는 힘
 
 
-    public float shieldAmount;
-    public float pullPower;
-
-    public GameObject shootPoint;
+    // Class.Sword 관련 내용들..
+    public float shieldAmount; // 쉴드량 정도
     public BoxCollider attackArea;
     public TrailRenderer attackEffect;
+
+
+    // 공통 사용 변수
     public float attackDelay = 0f;
 
+    #endregion
 
+    #region  
+    //사운드소스
     public AudioSource sound_Slash1;
     public AudioSource sound_Slash2;
     public AudioSource sound_Shoot1;
-
+    #endregion
     [PunRPC]
     void DestroyRPC() => Destroy(gameObject);
 
@@ -179,11 +175,11 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
             {
                 shieldAmount = 0f;
             }
-            if (shieldAmount >= 2000f)
+            if (shieldAmount >= 1000f)
             {
-                shieldAmount = 2000f;
+                shieldAmount = 1000f;
             }
-            shieldAmount += Time.deltaTime * 40f;
+            shieldAmount += Time.deltaTime * 50f;
 
             if (transform.position.y < -100)
             {
@@ -417,7 +413,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
                 shieldAmount -= atk_;
                 if (dmg < 0)
                 {
-                    curHP += dmg;
+                    curHP -= (-dmg);
                 }
             }
             else
@@ -616,29 +612,6 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
         }
 
 
-    }
-    [PunRPC]
-    void head_jump()
-    {
-        //rgbd.velocity = Vector3.zero;
-        //rgbd.AddForce(Vector3.up * jumpPower, ForceMode.Impulse);
-    }
-
-
-
-    public void Pickup(GameObject item)
-    {
-        SetEquip(item, true);
-
-        isPicking = true;
-    }
-    void Drop()
-    {
-        GameObject item = playerEquipPoint.GetComponentInChildren<Rigidbody>().gameObject;
-        SetEquip(item, false);
-
-        playerEquipPoint.transform.DetachChildren();
-        isPicking = false;
     }
     void SetEquip(GameObject item, bool isEquip)
     {

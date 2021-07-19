@@ -2565,7 +2565,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6cdf7202f8314d2438f88f64b86524ed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  arrowPrefab: {fileID: 111768, guid: 802986766a97b4a108b97eb5fdf6e02f, type: 3}
   animator: {fileID: 7044034116310767683}
   rgbd: {fileID: 7044034116310768113}
   PV: {fileID: 7044034116310767101}
@@ -2577,22 +2576,20 @@ MonoBehaviour:
   GunHead: {fileID: 0}
   Head_color: {r: 0, g: 0, b: 0, a: 0}
   curStyle: 0
-  jump: {fileID: 0}
-  Dbjump: {fileID: 0}
   rotateSpeed: 5
   moveSpeed: 5
   curHP: 0
   maxHP: 0
   atk: 0
-  jumpCount: 2
   myCollider: {fileID: 7044034116310767728}
   WeaponPosition_R: {fileID: 7044034116310768708}
   WeaponPosition_L: {fileID: 7044034116310768731}
   dir_: {x: 0, y: 0, z: 0}
   isAttackReady: 0
   isDodge: 0
-  pullPower: 0
   shootPoint: {fileID: 2043468228809240835}
+  pullPower: 0
+  shieldAmount: 0
   attackArea: {fileID: 7044034116310767692}
   attackEffect: {fileID: 1291657894855945549}
   attackDelay: 0

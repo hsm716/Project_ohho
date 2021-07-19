@@ -35,7 +35,7 @@ public class Player_HpBar : MonoBehaviour
         }
         else if(player_data.curStyle == Style.WeaponStyle.Sword)
         {
-            subBar.value = player_data.shieldAmount / 500f;
+            subBar.value = player_data.shieldAmount / 1000f;
         }
 
         
