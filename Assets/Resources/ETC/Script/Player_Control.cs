@@ -94,7 +94,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     float verticalMove;
 
 
-
+    public float shieldAmount;
     public float pullPower;
 
     public GameObject shootPoint;
@@ -120,6 +120,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
         maxHP = 2000f;
         curHP = 2000f;
         pullPower = 20f;
+        shieldAmount = 500f;
 
         if (PV.IsMine)
         {
@@ -174,6 +175,15 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
                     pullPower = 40f;
                 }
             }
+            if (shieldAmount <= 0f)
+            {
+                shieldAmount = 0f;
+            }
+            if (shieldAmount >= 2000f)
+            {
+                shieldAmount = 2000f;
+            }
+            shieldAmount += Time.deltaTime * 40f;
 
             if (transform.position.y < -100)
             {
@@ -189,6 +199,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
             transform.position = Vector3.Lerp(transform.position, curPos, Time.deltaTime * 10);
             transform.rotation = Quaternion.Lerp(transform.rotation, curRot, Time.deltaTime * 10);
             //Hp_Bar.transform.rotation = Quaternion.Euler(new Vector3())
+            //Hp_Bar.transform.rotation = Quaternion.Euler(new Vector3)
             Hp_Bar.hpBar.value = curHpValue;
         }
         switch (curStyle)
@@ -397,7 +408,24 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     }
     public void Hit(float atk_)
     {
-        curHP -= atk_;
+
+        if (isDeffensing)
+        {
+            if (shieldAmount > 0)
+            {
+                float dmg = shieldAmount - atk_;
+                shieldAmount -= atk_;
+                if (dmg < 0)
+                {
+                    curHP += dmg;
+                }
+            }
+            else
+                curHP -= atk_;
+        }
+        else
+            curHP -= atk_;
+
         if (curHP <= 0)
         {
             GameObject.Find("MainCanvas").transform.Find("RespawnPanel").gameObject.SetActive(true);
@@ -797,6 +825,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
             stream.SendNext(atk);
             stream.SendNext(pullPower);
             stream.SendNext(curStyle);
+            stream.SendNext(shieldAmount);
         }
         else
         {
@@ -807,6 +836,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
             atk = (float)stream.ReceiveNext();
             pullPower = (float)stream.ReceiveNext();
             curStyle = (Style.WeaponStyle)stream.ReceiveNext();
+            shieldAmount = (float)stream.ReceiveNext();
         }
     }
 }

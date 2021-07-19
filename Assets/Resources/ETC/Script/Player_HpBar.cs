@@ -28,7 +28,15 @@ public class Player_HpBar : MonoBehaviour
                PV.RPC("DestroyRPC", RpcTarget.AllBuffered);*/
         transform.position = player.position + offset;
         hpBar.value = player_data.curHP / player_data.maxHP;
-        subBar.value = player_data.pullPower / 40f;
+
+        if (player_data.curStyle == Style.WeaponStyle.Arrow)
+        {
+            subBar.value = player_data.pullPower / 40f;
+        }
+        else if(player_data.curStyle == Style.WeaponStyle.Sword)
+        {
+            subBar.value = player_data.shieldAmount / 500f;
+        }
 
         
     }
