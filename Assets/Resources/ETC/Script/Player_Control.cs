@@ -24,6 +24,8 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     public GameObject Head;
     public GameObject GunHead;
 
+    public ParticleSystem telportEffect;
+
     public Color Head_color;
 
     public Style.WeaponStyle curStyle;
@@ -140,7 +142,8 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
             if (isAttackReady == true)
             {
                 Moving();
-                Dodge();
+                if (curStyle != Style.WeaponStyle.Magic)
+                    Dodge();
                 Turn();
             }
         }
@@ -221,6 +224,11 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
         verticalMove = Input.GetAxisRaw("Vertical");
         dDown = Input.GetKey(KeyCode.LeftShift);
         mLDown = Input.GetMouseButtonDown(0);
+        if (Input.GetKeyDown(KeyCode.LeftShift))
+        {
+            if(curStyle == Style.WeaponStyle.Magic)
+                Teleport();
+        }
         if (Input.GetMouseButtonDown(1))
         {
             mRDown = true;
@@ -232,6 +240,12 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
             Invoke("DeffenseOut", 0.0f);
             Invoke("PullPower_valueChange",0.1f);
         }
+    }
+    void Teleport()
+    {
+        telportEffect.Play();
+        rgbd.AddForce(movement*1000f, ForceMode.Impulse);
+        
     }
     void PullPower_valueChange()
     {
