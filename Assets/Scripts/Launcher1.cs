@@ -18,6 +18,7 @@ public class Launcher1 : MonoBehaviourPunCallbacks
     [SerializeField] GameObject roomListItemPrefab;
     [SerializeField] GameObject playerListItemPrefab;
     [SerializeField] GameObject startGameButton;
+    [SerializeField] InputField usernameInput;
 
     private void Awake()
     {
@@ -28,6 +29,17 @@ public class Launcher1 : MonoBehaviourPunCallbacks
     {
         Debug.Log("Connecting to Master");
         PhotonNetwork.ConnectUsingSettings();
+
+        if (PlayerPrefs.HasKey("username"))
+        {
+            usernameInput.text = PlayerPrefs.GetString("username");
+            PhotonNetwork.NickName = PlayerPrefs.GetString("username");
+        }
+        else
+        {
+            usernameInput.text = "Player " + Random.Range(0, 10000).ToString("0000");
+            OnUsernameInputValueChanged();
+        }
     }
 
     public override void OnConnectedToMaster()
@@ -41,7 +53,6 @@ public class Launcher1 : MonoBehaviourPunCallbacks
     {
         MenuManager.Instance.OpenMenu("Title");
         Debug.Log("Joined Lobby");
-        PhotonNetwork.NickName = "Player " + Random.Range(0, 1000).ToString("0000");
     }
 
     public void CreateRoom()
@@ -102,6 +113,11 @@ public class Launcher1 : MonoBehaviourPunCallbacks
         MenuManager.Instance.OpenMenu("Loading");
     }
 
+    public void OnUsernameInputValueChanged()
+    {
+        PhotonNetwork.NickName = usernameInput.text;
+    }
+
     public override void OnLeftRoom()
     {
         MenuManager.Instance.OpenMenu("Title");
@@ -125,5 +141,6 @@ public class Launcher1 : MonoBehaviourPunCallbacks
     public override void OnPlayerEnteredRoom(Player newPlayer)
     {
         Instantiate(playerListItemPrefab, playerListContent).GetComponent<PlayerListItem>().Setup(newPlayer);
+        PlayerPrefs.SetString("username", usernameInput.text);
     }
 }
