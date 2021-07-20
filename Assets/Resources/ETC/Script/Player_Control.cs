@@ -195,8 +195,8 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
         else if ((transform.position - curPos).sqrMagnitude >= 100) transform.position = curPos;
         else
         {
-            transform.position = Vector3.Lerp(transform.position, curPos, Time.deltaTime * 10);
-            transform.rotation = Quaternion.Lerp(transform.rotation, curRot, Time.deltaTime * 10);
+            transform.position = Vector3.Lerp(transform.position, curPos, Time.deltaTime * 20);
+            transform.rotation = Quaternion.Lerp(transform.rotation, curRot, Time.deltaTime * 20);
             //Hp_Bar.transform.rotation = Quaternion.Euler(new Vector3())
             //Hp_Bar.transform.rotation = Quaternion.Euler(new Vector3)
             Hp_Bar.hpBar.value = curHpValue;
@@ -227,7 +227,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
         if (Input.GetKeyDown(KeyCode.LeftShift))
         {
             if(curStyle == Style.WeaponStyle.Magic)
-                Teleport();
+                PV.RPC("Teleport",RpcTarget.All);
         }
         if (Input.GetMouseButtonDown(1))
         {
@@ -241,11 +241,11 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
             Invoke("PullPower_valueChange",0.1f);
         }
     }
+    [PunRPC]
     void Teleport()
     {
         telportEffect.Play();
         rgbd.AddForce(movement*1000f, ForceMode.Impulse);
-        
     }
     void PullPower_valueChange()
     {

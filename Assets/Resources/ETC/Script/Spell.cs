@@ -10,6 +10,7 @@ public class Spell : MonoBehaviourPunCallbacks
     Player_Control myPlayer;
     public float atk;
 
+    public GameObject boom;
 
 
     /*[PunRPC]
@@ -27,6 +28,7 @@ public class Spell : MonoBehaviourPunCallbacks
         atk = myPlayer.atk;
         rgbd.isKinematic = false;
         rgbd.AddForce(transform.forward * 10f, ForceMode.Impulse);
+        boom.GetComponent<SpellExplosion>().atk = atk;
         StartCoroutine("Boom");
         Invoke("DestroyRPC", 1.0f);
 
@@ -45,20 +47,25 @@ public class Spell : MonoBehaviourPunCallbacks
     }
     private void OnTriggerEnter(Collider col)
     {
-        if (col.CompareTag("Ground")||(!PV.IsMine && col.CompareTag("Player") ))
+        if (col.CompareTag("Ground")||(/*PV.Owner.NickName != PhotonNetwork.LocalPlayer.NickName &&*/ col.CompareTag("Player") ))
         {
             rgbd.isKinematic = true;
-            PhotonNetwork.Instantiate("Explosion", transform.position+new Vector3(0f,0.3f,0f), Quaternion.Euler(new Vector3(-transform.rotation.x,-transform.rotation.y,-transform.rotation.z)));
-            col.GetComponent<Player_Control>().Hit(atk);
+            boom.SetActive(true);
+            boom.transform.parent = null;
+            //PhotonNetwork.Instantiate("Explosion", transform.position+new Vector3(0f,0.3f,0f), Quaternion.Euler(new Vector3(-transform.rotation.x,-transform.rotation.y,-transform.rotation.z)));
+            //col.GetComponent<Player_Control>().Hit(atk);
 
-            PV.RPC("DestroyRPC", RpcTarget.AllBuffered);
+            Invoke("DestroyRPC",0f);
         }
     }
 
     IEnumerator Boom()
     {
-        yield return new WaitForSeconds(0.97f);
-        PhotonNetwork.Instantiate("Explosion", transform.position, transform.rotation);
+        yield return new WaitForSeconds(0.95f);
+        rgbd.isKinematic = true;
+        boom.SetActive(true);
+        boom.transform.parent = null;
+        //PhotonNetwork.Instantiate("Explosion", transform.position, transform.rotation);
     }
     [PunRPC]
     void DestroyRPC()
