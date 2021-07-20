@@ -104,6 +104,8 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     public AudioSource sound_Slash1;
     public AudioSource sound_Slash2;
     public AudioSource sound_Shoot1;
+
+    public AudioSource sound_Teleport;
     #endregion
     [PunRPC]
     void DestroyRPC() => Destroy(gameObject);
@@ -245,6 +247,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     void Teleport()
     {
         telportEffect.Play();
+        sound_Teleport.Play();
         rgbd.AddForce(movement*1000f, ForceMode.Impulse);
     }
     void PullPower_valueChange()
