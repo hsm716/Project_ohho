@@ -47,6 +47,16 @@ public class Soldier : MonoBehaviourPunCallbacks
             }
         }
     }
+    public void Hit(float atk_)
+    {
+        curHP -= atk_;
+
+        if (curHP <= 0)
+        {
+            GameObject.Find("MainCanvas").transform.Find("RespawnPanel").gameObject.SetActive(true);
+            PV.RPC("DestroyRPC", RpcTarget.AllBuffered);
+        }
+    }
     void FindMyLocation()
     {
         GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
