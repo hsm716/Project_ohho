@@ -1,6 +1,7 @@
 using Microsoft.Win32.SafeHandles;
 using Photon.Pun;
 using Photon.Pun.UtilityScripts;
+using Photon.Realtime;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -14,8 +15,10 @@ public class Soldier : MonoBehaviourPunCallbacks,IPunObservable
     public PhotonView PV;
     public Soldier_HpBar SHP_bar;
 
-    Player_Control myPlayer;
+    public CapsuleCollider myCol;
     public BoxCollider meleeArea;
+
+    private Player_Control myPlayer;
     Animator anim;
     NavMeshAgent agent;
     Rigidbody rgbd;
@@ -28,9 +31,11 @@ public class Soldier : MonoBehaviourPunCallbacks,IPunObservable
 
     Vector3 mouseDir;
 
-    bool isFollow;
-    bool isAttack;
-    bool isComeback;
+
+    public bool isAttack;
+    public bool isFollow;
+    public bool isChase;
+    public bool isDead;
 
     public float curHP;
     public float maxHP;
@@ -42,11 +47,14 @@ public class Soldier : MonoBehaviourPunCallbacks,IPunObservable
 
         CM = GameObject.Find("Main Camera");
         characterCamera = CM.GetComponent<Camera>();
-        curHP = 500f;
-        maxHP = 500f;
+        curHP = 5000f;
+        maxHP = 5000f;
         atk = 100f;
-        isComeback = true;
+        isFollow=true;
+        isAttack = false;
+        isChase = false;
 
+        FindMyPlayer();
     }
     void FindMyPlayer()
     {
@@ -56,8 +64,8 @@ public class Soldier : MonoBehaviourPunCallbacks,IPunObservable
             if (p.GetComponent<Player_Control>().PV.Owner.NickName == PV.Owner.NickName)
             {
                 target = p.transform;
-                myPlayer = p.GetComponent<Player_Control>();
                 mySet = target.GetChild(16).GetChild(myNumber);
+                myPlayer = p.GetComponent<Player_Control>();
                 break;
             }
         }
@@ -66,23 +74,14 @@ public class Soldier : MonoBehaviourPunCallbacks,IPunObservable
     {
         curHP -= atk_;
 
-        if (curHP <= 0)
+        if (curHP <= 0 && !isDead)
         {
-            PV.RPC("DestroyRPC", RpcTarget.AllBuffered);
+            myCol.enabled = false;
+            isDead = true;
+            anim.SetTrigger("doDead");
         }
     }
-    void FindMyLocation()
-    {
-        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
-        foreach (GameObject p in players)
-        {
-            if (p.GetComponent<Player_Control>().PV.Owner.NickName == PV.Owner.NickName)
-            {
-                target = p.transform.GetChild(5).transform.GetChild(myNumber);
-                break;
-            }
-        }
-    }
+
     private void FixedUpdate()
     {
         FreezeVelocity();
@@ -103,7 +102,7 @@ public class Soldier : MonoBehaviourPunCallbacks,IPunObservable
     [PunRPC]
     void Targeting()
     {
-        float targetRadius = 3f;
+        float targetRadius = 10f;
         float targetRange = 3f;
 
         RaycastHit[] rayHits =
@@ -111,28 +110,24 @@ public class Soldier : MonoBehaviourPunCallbacks,IPunObservable
 
         if (rayHits.Length >0 && !isAttack)
         {
-            int count = 0;
+            float min_dist = Mathf.Infinity;
             for (int i = 0; i < rayHits.Length; i++) 
             {
-                if(rayHits[i].collider.transform.GetComponent<Soldier>().PV.Owner != PV.Owner)
+                if(rayHits[i].collider.transform.GetComponent<Soldier>().PV.Owner != PV.Owner && rayHits[i].collider.CompareTag("Soldier"))
                 {
-                    count++;
-                    target = rayHits[0].collider.transform;
-                    ChaseObject(target.position);
-                    Attack();
+
+                    float playerToEnemy = Vector3.Magnitude(transform.position - rayHits[i].transform.position);
+                    if (min_dist > playerToEnemy)
+                    {
+                        min_dist = playerToEnemy;
+                        target = rayHits[i].collider.transform;
+                    }
+                  
                 }
-                break;
+                
             }
-            if (count == 0)
-            {
-                isComeback = true;
-            }
-            else
-            {
-                isComeback = false;
-            }
-            
-           
+
+
         }
     }
     [PunRPC]
@@ -141,10 +136,10 @@ public class Soldier : MonoBehaviourPunCallbacks,IPunObservable
         
         isFollow = false;
         isAttack = true;
-        anim.transform.forward = target.position;
+        anim.transform.forward = target.position - transform.position;
         agent.isStopped = true;
         anim.SetTrigger("doAttack");
-        Invoke("AttackEnd",0.8f);
+        Invoke("AttackEnd",1.2f);
     }
     
     public void Attack_areaOn()
@@ -190,51 +185,86 @@ public class Soldier : MonoBehaviourPunCallbacks,IPunObservable
     // Update is called once per frame
     void Update()
     {
-
-        if (PV.IsMine)
+        if (!isDead)
         {
-            if(!isAttack)
-                Turn();
-           
-        }
-        else
-        {
-            transform.position = Vector3.Lerp(transform.position, curPos, Time.deltaTime * 20f);
-            transform.rotation = Quaternion.Lerp(transform.rotation, curRot, Time.deltaTime * 20f);
-        }
-
-        Targeting();
-
-        if (target == null)
-        {
-            FindMyPlayer();
-            //FindMyLocation();
-        }
-        if (target != null)
-        {
-            if (Vector3.Distance(transform.position, mySet.position) <= 0.1f)
+            Targeting();
+            if (PV.IsMine)
             {
-                agent.isStopped = true;
-                agent.velocity = Vector3.zero;
+                if (Input.GetKeyDown(KeyCode.Alpha5))
+                {
+                    isChase = (isChase == false ? true : false);
+                }
+                if (!isAttack)
+                    Turn();
+
+
+                if (isChase)
+                {
+
+                    ChaseObject(target.position);
+
+                    if (Vector3.Distance(transform.position, target.position) <= 1.5f && !isAttack)
+                    {
+                        if (!target.CompareTag("SetNumber") && target.GetComponent<Soldier>().PV.Owner != PV.Owner)
+                            Attack();
+                    }
+                }
 
             }
+            else if ((transform.position - curPos).sqrMagnitude >= 100) transform.position = curPos;
             else
+            {
+                transform.position = Vector3.Lerp(transform.position, curPos, Time.deltaTime * 20f);
+                transform.rotation = Quaternion.Lerp(transform.rotation, curRot, Time.deltaTime * 20f);
+            }
+
+
+
+
+            if (!target)
+            {
+                FindMyPlayer();
+                //FindMyLocation();
+            }
+            else if (target)
             {
                 if (!isAttack)
                 {
-                    agent.isStopped = false;
-                    target = mySet;
-                    if (isComeback == true)
+
+                    if (isFollow && !isChase)
                     {
+                        agent.isStopped = false;
+                        ChaseObject(mySet.position);
+                    }
+                    else if (isFollow && isChase)
+                    {
+                        agent.isStopped = false;
                         ChaseObject(target.position);
+                    }
+
+                    if (Vector3.Distance(transform.position, mySet.position) <= 0.5f && !isChase)
+                    {
+                        agent.isStopped = true;
+                        agent.velocity = Vector3.zero;
+
+                    }
+                    if (Vector3.Distance(transform.position, target.position) <= 1.5f && isChase)
+                    {
+                        agent.isStopped = true;
+                        agent.velocity = Vector3.zero;
                     }
                     //PV.RPC("ChaseObject", RpcTarget.All, mySet.position);
                 }
+
+
             }
         }
 
 
-
+    }
+    public void Dead()
+    {
+        PV.RPC("DestroyRPC", RpcTarget.AllBuffered);
     }
     [PunRPC]
     void ChaseObject(Vector3 pos)
@@ -253,6 +283,7 @@ public class Soldier : MonoBehaviourPunCallbacks,IPunObservable
             stream.SendNext(transform.rotation);
             stream.SendNext(myNumber);
             stream.SendNext(curHP);
+            stream.SendNext(isChase);
             //stream.SendNext(mySet);
         }
         else
@@ -261,6 +292,7 @@ public class Soldier : MonoBehaviourPunCallbacks,IPunObservable
             curRot = (Quaternion)stream.ReceiveNext();
             myNumber = (int)stream.ReceiveNext();
             curHP = (float)stream.ReceiveNext();
+            isChase = (bool)stream.ReceiveNext();
             //mySet = (Transform)stream.ReceiveNext();
         }
     }

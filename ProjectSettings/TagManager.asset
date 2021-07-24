@@ -11,6 +11,8 @@ TagManager:
   - Attack_spot
   - Player_UI
   - Soldier_Attack
+  - SetNumber
+  - Soldier
   layers:
   - Default
   - TransparentFX
