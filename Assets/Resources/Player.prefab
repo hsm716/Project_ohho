@@ -3280,6 +3280,9 @@ MonoBehaviour:
   - Type: 4
     SynchronizeType: 2
     Name: isDeffensing
+  - Type: 9
+    SynchronizeType: 1
+    Name: doShieldAttack_Sword
   m_SynchronizeLayers:
   - SynchronizeType: 1
     LayerIndex: 0

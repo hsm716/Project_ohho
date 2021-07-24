@@ -90,6 +90,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
 
     // Class.Sword 관련 내용들..
     public float shieldAmount; // 쉴드량 정도
+    private bool isShieldCharge; // 쉴드공격 챠지
     public BoxCollider attackArea;
     public TrailRenderer attackEffect;
 
@@ -231,16 +232,27 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
         horizontalMove = Input.GetAxisRaw("Horizontal");
         verticalMove = Input.GetAxisRaw("Vertical");
         dDown = Input.GetKey(KeyCode.LeftShift);
-        mLDown = Input.GetMouseButtonDown(0);
         if (Input.GetKeyDown(KeyCode.LeftShift))
         {
             if(curStyle == Style.WeaponStyle.Magic)
                 PV.RPC("Teleport",RpcTarget.All);
         }
+
+        mLDown = Input.GetMouseButtonDown(0);
+        if (Input.GetMouseButtonDown(0) && isDeffensing && shieldAmount >=500f)
+        {
+            if (curStyle == Style.WeaponStyle.Sword)
+                PV.RPC("ShieldAttack", RpcTarget.All);
+        }
+
         if (Input.GetMouseButtonDown(1))
         {
             mRDown = true;
-            Deffense();
+            if (curStyle == Style.WeaponStyle.Sword && !dDown)
+            {
+                isDeffensing = true;
+            }
+            //Deffense();
         }
         if (mRDown && Input.GetMouseButtonUp(1))
         {
@@ -249,6 +261,21 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
             Invoke("PullPower_valueChange",0.1f);
         }
     }
+    [PunRPC]
+    void ShieldAttack()
+    {
+        animator.SetTrigger("doShieldAttack_Sword");
+        shieldAmount -= 500f;
+        Invoke("ShieldAttack_body", 0.1f);
+    }
+
+    void ShieldAttack_body()
+    {
+        rgbd.AddForce(transform.forward * 100f, ForceMode.Impulse);
+        rgbd.AddForce(Vector3.up * 7f, ForceMode.Impulse);
+    }
+
+
     [PunRPC]
     void Teleport()
     {
@@ -265,13 +292,16 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
         isDeffensing = true;
         if (curStyle == Style.WeaponStyle.Sword)
         {
-            animator.SetTrigger("doDeffense");
+            if(isDeffensing)
+                animator.SetBool("isDeffensing", true);
+            //animator.SetTrigger("doDeffense");
         }
     }
     void DeffenseOut()
     {
         isDeffensing = false;
         mRDown = false;
+        moveSpeed = 5f;
     }
 /*    private Arrow CreateNewArrow()
     {
@@ -325,7 +355,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     [PunRPC]
     void Dodge()
     {
-        if (!isDodge && dDown &&!isAttack)
+        if (!isDodge && dDown &&!isAttack &&!isDeffensing)
         {
             dodgeVec = movement;
             
@@ -345,7 +375,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
             
             isDodge = true;
 
-            Invoke("DodgeOut", 0.6f);
+            Invoke("DodgeOut", 0.7f);
         }
 
     }
@@ -375,7 +405,11 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
         {
             movement.Set(horizontalMove,0, verticalMove);
         }
-        
+
+        if (isDeffensing)
+        {
+            moveSpeed = 3f;
+        }
         movement = movement.normalized * moveSpeed * Time.deltaTime;
         rgbd.transform.position += movement;
        
@@ -680,6 +714,16 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
                 }
                 break;
             case Style.WeaponStyle.Sword:
+
+                if (isDeffensing)
+                {
+                    animator.SetBool("isDeffensing", true);
+                }
+                else
+                {
+                    animator.SetBool("isDeffensing", false);
+                }
+
                 //정지 시,
                 if (horizontalMove == 0 && verticalMove == 0)
                 {

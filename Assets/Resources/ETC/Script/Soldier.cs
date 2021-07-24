@@ -110,12 +110,13 @@ public class Soldier : MonoBehaviourPunCallbacks,IPunObservable
 
         if (rayHits.Length >0 && !isAttack)
         {
+            int count = 0;
             float min_dist = Mathf.Infinity;
             for (int i = 0; i < rayHits.Length; i++) 
             {
                 if(rayHits[i].collider.transform.GetComponent<Soldier>().PV.Owner != PV.Owner && rayHits[i].collider.CompareTag("Soldier"))
                 {
-
+                    count++;
                     float playerToEnemy = Vector3.Magnitude(transform.position - rayHits[i].transform.position);
                     if (min_dist > playerToEnemy)
                     {
@@ -126,9 +127,12 @@ public class Soldier : MonoBehaviourPunCallbacks,IPunObservable
                 }
                 
             }
-
-
+            if (count == 0)
+            {
+                target = mySet.transform;
+            }
         }
+
     }
     [PunRPC]
     void Attack()
