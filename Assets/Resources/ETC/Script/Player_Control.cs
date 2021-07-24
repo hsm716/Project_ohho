@@ -122,16 +122,17 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
         pullPower = 20f;
         shieldAmount = 500f;
 
-        for (int i = 0; i < 10; i++)
-        {
-            GameObject go = PhotonNetwork.Instantiate("Solider_main_melee", transform.position, transform.rotation);
-            go.transform.GetChild(0).GetComponent<Soldier>().myNumber = i;
-        }
+
         if (PV.IsMine)
         {
             Instance = this.gameObject;
-/*            Instance = this;
-            ArrowIntialize(10);*/
+            for (int i = 0; i < 10; i++)
+            {
+                GameObject go = PhotonNetwork.Instantiate("Solider_main_melee", transform.position, transform.rotation);
+                go.transform.GetChild(0).GetComponent<Soldier>().myNumber = i;
+            }
+            /*            Instance = this;
+                        ArrowIntialize(10);*/
 
             CM = GameObject.Find("Main Camera");
             characterCamera = CM.GetComponent<Camera>();

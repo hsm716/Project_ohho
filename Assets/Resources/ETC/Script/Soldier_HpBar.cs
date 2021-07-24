@@ -1,15 +1,17 @@
+using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Soldier_HpBar : MonoBehaviour
+public class Soldier_HpBar : MonoBehaviourPunCallbacks
 {
     public Transform soldier;
     Soldier soldier_data;
     public Slider hpBar;
     public GameObject HpLineFolder;
-    //  public PhotonView PV;
+    public Image hpColor;
+    public PhotonView PV;
 
     //   private Player_Control playerLogic;
     Vector3 offset = new Vector3(0f, 2.3f, 0f);
@@ -18,6 +20,14 @@ public class Soldier_HpBar : MonoBehaviour
     {
         soldier_data = soldier.GetComponent<Soldier>();
         GetHpBoost();
+        if (PV.IsMine)
+        {
+            hpColor.color = new Color32(212,233,45,255);
+        }
+        else
+        {
+            hpColor.color = new Color32(233, 68, 45,255);
+        }
     }
 
     void Update()

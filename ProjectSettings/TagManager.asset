@@ -10,6 +10,7 @@ TagManager:
   - Player_Attack
   - Attack_spot
   - Player_UI
+  - Soldier_Attack
   layers:
   - Default
   - TransparentFX
@@ -17,7 +18,7 @@ TagManager:
   - 
   - Water
   - UI
-  - 
+  - Enemy
   - 
   - PostProcessing
   - 

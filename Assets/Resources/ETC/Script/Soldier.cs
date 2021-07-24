@@ -6,19 +6,31 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class Soldier : MonoBehaviourPunCallbacks
+public class Soldier : MonoBehaviourPunCallbacks,IPunObservable
 {
     public Transform mySet;
     public int myNumber;
     public Transform target;
     public PhotonView PV;
+    public Soldier_HpBar SHP_bar;
+
+    Player_Control myPlayer;
+    public BoxCollider meleeArea;
     Animator anim;
     NavMeshAgent agent;
     Rigidbody rgbd;
     public GameObject CM;
     private Camera characterCamera;
 
+    Vector3 curPos;
+    Quaternion curRot;
+    public float atk;
+
     Vector3 mouseDir;
+
+    bool isFollow;
+    bool isAttack;
+    bool isComeback;
 
     public float curHP;
     public float maxHP;
@@ -32,6 +44,8 @@ public class Soldier : MonoBehaviourPunCallbacks
         characterCamera = CM.GetComponent<Camera>();
         curHP = 500f;
         maxHP = 500f;
+        atk = 100f;
+        isComeback = true;
 
     }
     void FindMyPlayer()
@@ -42,6 +56,7 @@ public class Soldier : MonoBehaviourPunCallbacks
             if (p.GetComponent<Player_Control>().PV.Owner.NickName == PV.Owner.NickName)
             {
                 target = p.transform;
+                myPlayer = p.GetComponent<Player_Control>();
                 mySet = target.GetChild(16).GetChild(myNumber);
                 break;
             }
@@ -53,7 +68,6 @@ public class Soldier : MonoBehaviourPunCallbacks
 
         if (curHP <= 0)
         {
-            GameObject.Find("MainCanvas").transform.Find("RespawnPanel").gameObject.SetActive(true);
             PV.RPC("DestroyRPC", RpcTarget.AllBuffered);
         }
     }
@@ -71,7 +85,8 @@ public class Soldier : MonoBehaviourPunCallbacks
     }
     private void FixedUpdate()
     {
-        if(agent.isStopped==true)
+        FreezeVelocity();
+        if (agent.isStopped==true)
         {
             anim.SetBool("isRunning", false);
         }
@@ -79,6 +94,73 @@ public class Soldier : MonoBehaviourPunCallbacks
         {
             anim.SetBool("isRunning", true);
         }
+    }
+    void FreezeVelocity()
+    {
+        rgbd.velocity = Vector3.zero;
+        rgbd.angularVelocity = Vector3.zero;
+    }
+    [PunRPC]
+    void Targeting()
+    {
+        float targetRadius = 3f;
+        float targetRange = 3f;
+
+        RaycastHit[] rayHits =
+            Physics.SphereCastAll(transform.position, targetRadius, Vector3.up, targetRange, LayerMask.GetMask("Enemy"));
+
+        if (rayHits.Length >0 && !isAttack)
+        {
+            int count = 0;
+            for (int i = 0; i < rayHits.Length; i++) 
+            {
+                if(rayHits[i].collider.transform.GetComponent<Soldier>().PV.Owner != PV.Owner)
+                {
+                    count++;
+                    target = rayHits[0].collider.transform;
+                    ChaseObject(target.position);
+                    Attack();
+                }
+                break;
+            }
+            if (count == 0)
+            {
+                isComeback = true;
+            }
+            else
+            {
+                isComeback = false;
+            }
+            
+           
+        }
+    }
+    [PunRPC]
+    void Attack()
+    {
+        
+        isFollow = false;
+        isAttack = true;
+        anim.transform.forward = target.position;
+        agent.isStopped = true;
+        anim.SetTrigger("doAttack");
+        Invoke("AttackEnd",0.8f);
+    }
+    
+    public void Attack_areaOn()
+    {
+        meleeArea.enabled = true;
+        Invoke("Attack_areaOff", 0.2f);
+    }
+    public void Attack_areaOff()
+    {
+        meleeArea.enabled = false;
+    }
+    public void AttackEnd()
+    {
+        isFollow = true;
+        isAttack = false;
+        agent.isStopped = false;
     }
     void Turn()
     {
@@ -91,12 +173,38 @@ public class Soldier : MonoBehaviourPunCallbacks
 
         }
     }
+    private void OnTriggerEnter(Collider other)
+    {
+
+        if (other.CompareTag("Soldier_Attack") && other.transform.parent.GetComponent<Soldier>().PV.Owner != PV.Owner)
+        {
+            Hit(other.transform.parent.GetComponent<Soldier>().atk);
+        }
+        if(other.CompareTag("Player_Sword") && other.transform.parent.GetComponent<Player_Control>().PV.Owner != PV.Owner)
+        {
+            Hit(other.transform.parent.GetComponent<Player_Control>().atk);
+        }
+
+
+    }
     // Update is called once per frame
     void Update()
     {
-        rgbd.velocity = Vector3.zero;
-        rgbd.angularVelocity = Vector3.zero;
-        Turn();
+
+        if (PV.IsMine)
+        {
+            if(!isAttack)
+                Turn();
+           
+        }
+        else
+        {
+            transform.position = Vector3.Lerp(transform.position, curPos, Time.deltaTime * 20f);
+            transform.rotation = Quaternion.Lerp(transform.rotation, curRot, Time.deltaTime * 20f);
+        }
+
+        Targeting();
+
         if (target == null)
         {
             FindMyPlayer();
@@ -108,13 +216,52 @@ public class Soldier : MonoBehaviourPunCallbacks
             {
                 agent.isStopped = true;
                 agent.velocity = Vector3.zero;
-               
+
             }
             else
             {
-                agent.isStopped = false;
-                agent.SetDestination(mySet.position);
+                if (!isAttack)
+                {
+                    agent.isStopped = false;
+                    target = mySet;
+                    if (isComeback == true)
+                    {
+                        ChaseObject(target.position);
+                    }
+                    //PV.RPC("ChaseObject", RpcTarget.All, mySet.position);
+                }
             }
+        }
+
+
+
+    }
+    [PunRPC]
+    void ChaseObject(Vector3 pos)
+    {
+        agent.SetDestination(pos);
+    }
+
+    [PunRPC]
+    void DestroyRPC() => Destroy(gameObject);
+
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        if (stream.IsWriting)
+        {
+            stream.SendNext(transform.position);
+            stream.SendNext(transform.rotation);
+            stream.SendNext(myNumber);
+            stream.SendNext(curHP);
+            //stream.SendNext(mySet);
+        }
+        else
+        {
+            curPos = (Vector3)stream.ReceiveNext();
+            curRot = (Quaternion)stream.ReceiveNext();
+            myNumber = (int)stream.ReceiveNext();
+            curHP = (float)stream.ReceiveNext();
+            //mySet = (Transform)stream.ReceiveNext();
         }
     }
 }
