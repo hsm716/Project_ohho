@@ -11,7 +11,9 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
 {
     public static GameObject Instance;
 
-/*    private Queue<Arrow> arrowQ = new Queue<Arrow>();*/
+    /*    private Queue<Arrow> arrowQ = new Queue<Arrow>();*/
+
+    //public bool[] duringQuestlist = { false };  //index = npcId(sectionID)
 
     public Animator animator;
     public Rigidbody rgbd;
