@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7632288019909748664}
   - component: {fileID: 7632288019909748665}
+  - component: {fileID: 176828309}
   m_Layer: 0
   m_Name: DialogueManager
   m_TagString: Untagged
@@ -48,3 +49,26 @@ MonoBehaviour:
   nextDialogueButton: {fileID: 0}
   animator: {fileID: 0}
   speakDelay: 0
+--- !u!114 &176828309
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7632288019909748666}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 0
+  ObservedComponents:
+  - {fileID: 7632288019909748665}
+  sceneViewId: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0

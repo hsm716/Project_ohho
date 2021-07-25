@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Photon.Pun;
 
 public class DialogueTrigger : MonoBehaviour
 {
@@ -11,15 +12,20 @@ public class DialogueTrigger : MonoBehaviour
     {
         if (other.tag == "Player")
         {
-            TriggerDialogue();
+            //TriggerDialogue(QuestManager.Instance.QuestClearCheck(dialogue.npcId));   //퀘스트 클리어 여부에 따라 대화 생성
+            TriggerDialogue(other.GetComponent<QuestData>().questClearCheck[dialogue.npcId]);   //퀘스트 클리어 여부에 따라 대화 생성
         }
     }
+
     private void OnTriggerExit(Collider other)
     {
         FindObjectOfType<DialogueManager>().EndDialogue();
     }
-    public void TriggerDialogue()
+
+    public void TriggerDialogue(bool isComplete)
     {
-        FindObjectOfType<DialogueManager>().StartDialogue(dialogue);
+        FindObjectOfType<DialogueManager>().StartDialogue(dialogue, isComplete);
     }
+
+
 }
