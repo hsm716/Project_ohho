@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Photon.Pun;
 
-public class QuestManager : MonoBehaviour
+public class QuestManager : MonoBehaviourPunCallbacks
 {
     public static QuestManager Instance;
     public bool[] questOk = { false, false, false, false, false, false };   //false > 미완료상태 각 섹션의 퀘스트
@@ -16,6 +16,8 @@ public class QuestManager : MonoBehaviour
 
     public Dialogue dialogue;
     public Text questText;
+
+    public PhotonView PV;
 
     void Awake()
     {
@@ -76,7 +78,13 @@ public class QuestManager : MonoBehaviour
         QuestARUI.SetActive(false);
     }
 
-    public void QuestClear() //다시 말을 걸었을 때로 임시
+    public void QuestClear()
+    {
+        PV.RPC("QuestClear2", RpcTarget.All);
+    }
+
+    [PunRPC]
+    public void QuestClear2() //다시 말을 걸었을 때로 임시
     {
         GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
 
@@ -103,5 +111,4 @@ public class QuestManager : MonoBehaviour
         QuestClearUI.SetActive(false);
 
     }
-
 }

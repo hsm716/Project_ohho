@@ -10,7 +10,7 @@ public class DialogueTrigger : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.tag == "Player")
+        if (other.tag == "Player" && other.GetComponent<Player_Control>().PV.IsMine)
         {
             //TriggerDialogue(QuestManager.Instance.QuestClearCheck(dialogue.npcId));   //퀘스트 클리어 여부에 따라 대화 생성
             TriggerDialogue(other.GetComponent<QuestData>().questClearCheck[dialogue.npcId]);   //퀘스트 클리어 여부에 따라 대화 생성
@@ -19,7 +19,8 @@ public class DialogueTrigger : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        FindObjectOfType<DialogueManager>().EndDialogue();
+        if(other.GetComponent<Player_Control>().PV.IsMine)
+            FindObjectOfType<DialogueManager>().EndDialogue();
     }
 
     public void TriggerDialogue(bool isComplete)
