@@ -11,7 +11,8 @@ public class DialogueManager : MonoBehaviour
     public Text nameText;
     public Text dialoguText;
     public Button nextDialogueButton;
-    public Animator animator;
+    //public Animator animator;
+    public GameObject dialoguePanel;
 
     public float speakDelay;
 
@@ -39,7 +40,8 @@ public class DialogueManager : MonoBehaviour
     public void StartDialogue(Dialogue _dialogue, bool isComplete)
     {
         dialogue = _dialogue;
-        animator.SetBool("IsOpen", true);
+        //animator.SetBool("IsOpen", true);
+        dialoguePanel.SetActive(true);
 
         nameText.text = dialogue.name;
         this.speakDelay = dialogue.speakDelay;
@@ -136,18 +138,21 @@ public class DialogueManager : MonoBehaviour
 
     public void EndDialogue()
     {
-        animator.SetBool("IsOpen", false);
+        //animator.SetBool("IsOpen", false);
+        dialoguePanel.SetActive(false);
     }
 
     public void QuestUI(Dialogue dialogue)
     {
-        animator.SetBool("IsOpen", false);
+        //animator.SetBool("IsOpen", false);
+        dialoguePanel.SetActive(false);
         QuestManager.Instance.ShowQuest(dialogue);
     }
 
     public void QuestClearUI(Dialogue dialogue)
     {
-        animator.SetBool("IsOpen", false);
+        //animator.SetBool("IsOpen", false);
+        dialoguePanel.SetActive(false);
         QuestManager.Instance.ShowQuestClear(dialogue);
     }
 

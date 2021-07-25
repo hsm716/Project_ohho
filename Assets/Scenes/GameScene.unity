@@ -212,6 +212,11 @@ PrefabInstance:
       objectReference: {fileID: 328698505}
     - target: {fileID: 7632288019909748665, guid: 5f940b89b2e68d646b4cbeb1074e4efb,
         type: 3}
+      propertyPath: dialoguePanel
+      value: 
+      objectReference: {fileID: 175063807}
+    - target: {fileID: 7632288019909748665, guid: 5f940b89b2e68d646b4cbeb1074e4efb,
+        type: 3}
       propertyPath: nextDialogueButton
       value: 
       objectReference: {fileID: 2069115894}
@@ -780,6 +785,12 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 160601940}
   m_CullTransparentMesh: 1
+--- !u!1 &175063807 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6560322398984147376, guid: de39c35a2b9b7f14ba6f7f0e9687f761,
+    type: 3}
+  m_PrefabInstance: {fileID: 1838291840}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &255298676
 GameObject:
   m_ObjectHideFlags: 0
@@ -5301,6 +5312,16 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 6560322398984147376, guid: de39c35a2b9b7f14ba6f7f0e9687f761,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6560322398984147380, guid: de39c35a2b9b7f14ba6f7f0e9687f761,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6560322399985666934, guid: de39c35a2b9b7f14ba6f7f0e9687f761,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
