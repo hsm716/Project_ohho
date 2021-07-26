@@ -3145,6 +3145,7 @@ MonoBehaviour:
   - {fileID: 7044034116310766630}
   - {fileID: 7044034116310767100}
   - {fileID: 7044034116310767099}
+  - {fileID: 7146764721617380019}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -3737,6 +3738,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 43c35efd42054e64fa519a53b7accd8d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  PV: {fileID: 7044034116310767101}
   questIsActive: 000000000000
   questClearCheck: 000000000000
   areaReach: 0
