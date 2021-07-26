@@ -19,8 +19,10 @@ public class DialogueTrigger : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        if(other.GetComponent<Player_Control>().PV.IsMine)
+        if (other.tag == "Player" && other.GetComponent<Player_Control>().PV.IsMine)
+        {
             FindObjectOfType<DialogueManager>().EndDialogue();
+        }
     }
 
     public void TriggerDialogue(bool isComplete)
