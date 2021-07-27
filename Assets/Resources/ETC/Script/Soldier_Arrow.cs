@@ -3,13 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
-public class Arrow : MonoBehaviourPunCallbacks
+public class Soldier_Arrow : MonoBehaviourPunCallbacks
 {
     Rigidbody rgbd;
     public PhotonView PV;
-    Player_Control myPlayer;
+    Soldier mySoldier;
     public float atk;
-    public float shootPower;
 
 
     /*[PunRPC]
@@ -24,21 +23,20 @@ public class Arrow : MonoBehaviourPunCallbacks
     {
         rgbd = GetComponent<Rigidbody>();
         rgbd.isKinematic = false;
-        FindMyPlayer();
-        atk = myPlayer.atk*(myPlayer.pullPower/20f);
-        shootPower = myPlayer.pullPower;
-        rgbd.AddForce(transform.forward * shootPower, ForceMode.Impulse);
+        FindMySoldier();
+        atk = mySoldier.atk;
+        rgbd.AddForce(transform.forward * 35f, ForceMode.Impulse);
         Invoke("DestroyRPC", 3f);
 
     }
-    void FindMyPlayer()
+    void FindMySoldier()
     {
-        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
-        foreach(GameObject p in players)
+        GameObject[] soldiers = GameObject.FindGameObjectsWithTag("Soldier");
+        foreach (GameObject p in soldiers)
         {
-            if (p.GetComponent<Player_Control>().PV.Owner.NickName == PV.Owner.NickName)
+            if (p.GetComponent<Soldier>().soldierType==Soldier.Type.arrow&&p.GetComponent<Soldier>().PV.Owner == PV.Owner)
             {
-                myPlayer = p.GetComponent<Player_Control>();
+                mySoldier = p.GetComponent<Soldier>();
                 break;
             }
         }
@@ -51,10 +49,10 @@ public class Arrow : MonoBehaviourPunCallbacks
         if (!PV.IsMine && col.CompareTag("Player") && col.GetComponent<PhotonView>().IsMine)
         {
             col.GetComponent<Player_Control>().Hit(atk);
-            Debug.Log(col.gameObject.name+"를 맞춤 "+"데미지 : " + atk);
+            Debug.Log(col.gameObject.name + "를 맞춤 " + "데미지 : " + atk);
             PV.RPC("DestroyRPC", RpcTarget.AllBuffered);
         }
-        if (col.CompareTag("Soldier")&& col.GetComponent<PhotonView>().Owner != PV.Owner)
+        if (col.CompareTag("Soldier") && col.GetComponent<PhotonView>().Owner != PV.Owner)
         {
             col.GetComponent<Soldier>().Hit(atk);
             Debug.Log(col.gameObject.name + "를 맞춤 " + "데미지 : " + atk);
