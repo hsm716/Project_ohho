@@ -79,6 +79,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     private bool dDown; //LShift 입력
     private bool mLDown;//마우스 왼쪽 입력
     private bool mRDown;//마우스 오른쪽 입력
+    private bool eDown; //e 입력 (스킬 사용)
 
     #endregion
 
@@ -243,6 +244,16 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     {
         horizontalMove = Input.GetAxisRaw("Horizontal");
         verticalMove = Input.GetAxisRaw("Vertical");
+
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            eDown = true;
+        }
+        if(eDown && Input.GetMouseButtonDown(0))
+        {
+            Invoke("Skill_arrow_E",0.1f);
+        }
+
         dDown = Input.GetKey(KeyCode.LeftShift);
         if (Input.GetKeyDown(KeyCode.LeftShift))
         {
@@ -628,6 +639,17 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
         mRDown = false;/*
         curArrow = null;*/
     }
+
+    void Skill_arrow_E()
+    {
+        PhotonNetwork.Instantiate("Arrow", shootPoint.transform.position+new Vector3(-0.2f,0,0), shootPoint.transform.rotation * Quaternion.Euler(new Vector3(0f,-10f,0f)));
+        PhotonNetwork.Instantiate("Arrow", shootPoint.transform.position+new Vector3(-0.1f,0,0), shootPoint.transform.rotation * Quaternion.Euler(new Vector3(0f, -5f, 0f)));
+        PhotonNetwork.Instantiate("Arrow", shootPoint.transform.position+new Vector3(0.1f,0,0), shootPoint.transform.rotation * Quaternion.Euler(new Vector3(0f, 5f, 0f)));
+        PhotonNetwork.Instantiate("Arrow", shootPoint.transform.position+new Vector3(0.2f,0,0), shootPoint.transform.rotation * Quaternion.Euler(new Vector3(0f, 10f, 0f)));
+
+        eDown = false;
+    }
+
 
     void Spell()
     {
