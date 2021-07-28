@@ -13,13 +13,21 @@ public class SpellExplosion : MonoBehaviourPunCallbacks
     }
     private void OnTriggerEnter(Collider col)
     {
-        if ( (!PV.IsMine && col.CompareTag("Player")))
+        if ( (!PV.IsMine && col.CompareTag("Player")&& col.GetComponent<PhotonView>().Owner != PV.Owner))
         {
            
             //PhotonNetwork.Instantiate("Explosion", transform.position+new Vector3(0f,0.3f,0f), Quaternion.Euler(new Vector3(-transform.rotation.x,-transform.rotation.y,-transform.rotation.z)));
             col.GetComponent<Player_Control>().Hit(atk);
 
           
+        }
+        if ((!PV.IsMine && col.CompareTag("Soldier") && col.GetComponent<PhotonView>().Owner != PV.Owner))
+        {
+
+            //PhotonNetwork.Instantiate("Explosion", transform.position+new Vector3(0f,0.3f,0f), Quaternion.Euler(new Vector3(-transform.rotation.x,-transform.rotation.y,-transform.rotation.z)));
+            col.GetComponent<Soldier>().Hit(atk);
+
+
         }
     }
     [PunRPC]

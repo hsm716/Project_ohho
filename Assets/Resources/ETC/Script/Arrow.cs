@@ -54,6 +54,12 @@ public class Arrow : MonoBehaviourPunCallbacks
             Debug.Log(col.gameObject.name+"를 맞춤 "+"데미지 : " + atk);
             PV.RPC("DestroyRPC", RpcTarget.AllBuffered);
         }
+        if (col.CompareTag("Soldier")&& col.GetComponent<PhotonView>().Owner != PV.Owner)
+        {
+            col.GetComponent<Soldier>().Hit(atk);
+            Debug.Log(col.gameObject.name + "를 맞춤 " + "데미지 : " + atk);
+            PV.RPC("DestroyRPC", RpcTarget.AllBuffered);
+        }
         if (col.CompareTag("Ground"))
         {
             rgbd.isKinematic = true;

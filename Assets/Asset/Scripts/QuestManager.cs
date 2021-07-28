@@ -7,12 +7,12 @@ using Photon.Pun;
 public class QuestManager : MonoBehaviourPunCallbacks//, IPunObservable
 {
     public static QuestManager Instance;
-    public bool[] questOk = { false, false, false, false, false, false };   //false > ¹Ì¿Ï·á»óÅÂ °¢ ¼½¼ÇÀÇ Äù½ºÆ®
-    public int[] SectionOwner = { 0, 0, 0, 0, 0, 0 };   //°¢ ÇÃ·¹ÀÌ¾îÀÇ Photon viewID > ¾î¶² ÇÃ·¹ÀÌ¾î°¡ ¼½¼ÇÀÇ ÁÖÀÎÀÎÁö
+    public bool[] questOk = { false, false, false, false, false, false };   //false > ï¿½Ì¿Ï·ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Æ®
+    public int[] SectionOwner = { 0, 0, 0, 0, 0, 0 };   //ï¿½ï¿½ ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ï¿½ï¿½ Photon viewID > ï¿½î¶² ï¿½Ã·ï¿½ï¿½Ì¾î°¡ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 
-    public GameObject QuestARUI;    //Äù½ºÆ® ¼ö¶ô °ÅÀý UI
-    public GameObject QuestClearUI;   //Äù½ºÆ® ¸®½ºÆ® UI
-    public GameObject QuestBoardUI;   //Äù½ºÆ® ¸®½ºÆ® UI
+    public GameObject QuestARUI;    //ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ UI
+    public GameObject QuestClearUI;   //ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½Æ® UI
+    public GameObject QuestBoardUI;   //ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½Æ® UI
 
     public Dialogue dialogue;
     public Text questText;
@@ -40,7 +40,7 @@ public class QuestManager : MonoBehaviourPunCallbacks//, IPunObservable
     {
         QuestARUI.SetActive(true);
         dialogue = _dialogue;
-        questText.text = dialogue.npcId + "¹ø ±¸¿ªÀÇ Äù½ºÆ®¸¦ ¼ö¶ôÇÏ½Ã°Ú½À´Ï±î?";   //dialogue¿¡ ¼ö¶ô¿ë ¹®Àå µû·Î ¸¸µé¾îµµ ‰Î
+        questText.text = dialogue.npcId + "ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï½Ã°Ú½ï¿½ï¿½Ï±ï¿½?";   //dialogueï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½îµµ ï¿½ï¿½
     }
 
     public void ShowQuestClear(Dialogue _dialogue)
@@ -59,7 +59,7 @@ public class QuestManager : MonoBehaviourPunCallbacks//, IPunObservable
         QuestBoardUI.SetActive(false);
     }
 
-    public void AcceptQuest()  //Äù½ºÆ® ¼ö¶ô
+    public void AcceptQuest()  //ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½
     {
         GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
 
@@ -67,7 +67,7 @@ public class QuestManager : MonoBehaviourPunCallbacks//, IPunObservable
         {
             if (p.GetComponent<Player_Control>().PV.Owner.NickName == PhotonNetwork.LocalPlayer.NickName)
             {
-                p.GetComponent<QuestData>().questIsActive[dialogue.npcId] = true;    //ÇØ´ç ÇÃ·¹ÀÌ¾î¿¡°Ô ÇØ´ç Äù½ºÆ®¸¦ ÁøÇàÁßÀ¸·Î ÀüÈ¯
+                p.GetComponent<QuestData>().questIsActive[dialogue.npcId] = true;    //ï¿½Ø´ï¿½ ï¿½Ã·ï¿½ï¿½Ì¾î¿¡ï¿½ï¿½ ï¿½Ø´ï¿½ ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¯
             }
         }
         QuestARUI.SetActive(false);
@@ -85,18 +85,18 @@ public class QuestManager : MonoBehaviourPunCallbacks//, IPunObservable
     }
 
     [PunRPC]
-    public void QuestClear2() //´Ù½Ã ¸»À» °É¾úÀ» ¶§·Î ÀÓ½Ã
+    public void QuestClear2() //ï¿½Ù½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½É¾ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ó½ï¿½
     {
         GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
 
         foreach (GameObject p in players)
         {
-            if (p.GetComponent<Player_Control>().PV.Owner.NickName == PhotonNetwork.LocalPlayer.NickName)//ÇØ´ç ÇÃ·¹ÀÌ¾î
+            if (p.GetComponent<Player_Control>().PV.Owner.NickName == PhotonNetwork.LocalPlayer.NickName)//ï¿½Ø´ï¿½ ï¿½Ã·ï¿½ï¿½Ì¾ï¿½
             {
-                if (p.GetComponent<QuestData>().questClearCheck[dialogue.npcId])    //Å¬¸®¾î Çß´Ù¸é
+                if (p.GetComponent<QuestData>().questClearCheck[dialogue.npcId])    //Å¬ï¿½ï¿½ï¿½ï¿½ ï¿½ß´Ù¸ï¿½
                 {
-                    SectionOwner[dialogue.npcId] = p.GetComponent<PhotonView>().ViewID;   //ÁÖÀÎ
-                    questOk[dialogue.npcId] = true;       //Á¡·É¿©ºÎ
+                    SectionOwner[dialogue.npcId] = p.GetComponent<PhotonView>().ViewID;   //ï¿½ï¿½ï¿½ï¿½
+                    questOk[dialogue.npcId] = true;       //ï¿½ï¿½ï¿½É¿ï¿½ï¿½ï¿½
                 }
             }
         }
@@ -104,8 +104,8 @@ public class QuestManager : MonoBehaviourPunCallbacks//, IPunObservable
         foreach (GameObject p in players)
         {
             int i = 0;
-            p.GetComponent<QuestData>().questClearCheck[dialogue.npcId] = false;    //´©±º°¡°¡ ³ªÁß¿¡ Á¡·ÉÇßÀ» ¶§ ÇØ´ç Äù½ºÆ® Å¬¸®¾î Ãë¼Ò
-            p.GetComponent<QuestData>().questIsActive[dialogue.npcId] = false;   //ÁøÇàÁßÀÎ Äù½ºÆ® Ãë¼Ò
+            p.GetComponent<QuestData>().questClearCheck[dialogue.npcId] = false;    //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ß¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ø´ï¿½ ï¿½ï¿½ï¿½ï¿½Æ® Å¬ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+            p.GetComponent<QuestData>().questIsActive[dialogue.npcId] = false;   //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½
             i++;
         }
 
@@ -131,9 +131,9 @@ public class QuestManager : MonoBehaviourPunCallbacks//, IPunObservable
         */
         foreach (GameObject p in players)
         {
-            if (p.GetComponent<Player_Control>().PV.Owner.NickName == PhotonNetwork.LocalPlayer.NickName)//ÇØ´ç ÇÃ·¹ÀÌ¾î
+            if (p.GetComponent<Player_Control>().PV.Owner.NickName == PhotonNetwork.LocalPlayer.NickName)//ï¿½Ø´ï¿½ ï¿½Ã·ï¿½ï¿½Ì¾ï¿½
             {
-                if (p.GetComponent<QuestData>().questClearCheck[dialogue.npcId])    //Å¬¸®¾î Çß´Ù¸é
+                if (p.GetComponent<QuestData>().questClearCheck[dialogue.npcId])    //Å¬ï¿½ï¿½ï¿½ï¿½ ï¿½ß´Ù¸ï¿½
                 {
                     npcID = dialogue.npcId;
                     viewID = p.GetComponent<PhotonView>().ViewID;
@@ -147,7 +147,7 @@ public class QuestManager : MonoBehaviourPunCallbacks//, IPunObservable
     }
 
     [PunRPC]
-    public void QuestClear2(int npcID, int viewID, bool ok) //´Ù½Ã ¸»À» °É¾úÀ» ¶§·Î ÀÓ½Ã
+    public void QuestClear2(int npcID, int viewID, bool ok) //ï¿½Ù½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½É¾ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ó½ï¿½
     {
         SectionOwner[npcID] = viewID;
         questOk[npcID] = ok;
@@ -156,8 +156,8 @@ public class QuestManager : MonoBehaviourPunCallbacks//, IPunObservable
 
         foreach (GameObject p in players)
         {
-            p.GetComponent<QuestData>().questClearCheck[npcID] = false;    //´©±º°¡°¡ ³ªÁß¿¡ Á¡·ÉÇßÀ» ¶§ ÇØ´ç Äù½ºÆ® Å¬¸®¾î Ãë¼Ò
-            p.GetComponent<QuestData>().questIsActive[npcID] = false;   //ÁøÇàÁßÀÎ Äù½ºÆ® Ãë¼Ò
+            p.GetComponent<QuestData>().questClearCheck[npcID] = false;    //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ß¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ø´ï¿½ ï¿½ï¿½ï¿½ï¿½Æ® Å¬ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+            p.GetComponent<QuestData>().questIsActive[npcID] = false;   //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½
         }
     }
 

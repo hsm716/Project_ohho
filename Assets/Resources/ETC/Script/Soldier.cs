@@ -9,7 +9,14 @@ using UnityEngine.AI;
 
 public class Soldier : MonoBehaviourPunCallbacks,IPunObservable
 {
+    public enum Type { melee,arrow};
+    public Type soldierType;
+
+    public GameObject arrow;
+
     public Transform mySet;
+
+    public int mySetNumber;
     public int myNumber;
     public Transform target;
     public PhotonView PV;
@@ -17,6 +24,11 @@ public class Soldier : MonoBehaviourPunCallbacks,IPunObservable
 
     public CapsuleCollider myCol;
     public BoxCollider meleeArea;
+    public GameObject shotPoint;
+
+    public AudioSource melee_slash;
+    public AudioSource arrow_shoot;
+
 
     private Player_Control myPlayer;
     Animator anim;
@@ -35,6 +47,7 @@ public class Soldier : MonoBehaviourPunCallbacks,IPunObservable
     public bool isAttack;
     public bool isFollow;
     public bool isChase;
+    public bool isStop;
     public bool isDead;
 
     public float curHP;
@@ -64,7 +77,11 @@ public class Soldier : MonoBehaviourPunCallbacks,IPunObservable
             if (p.GetComponent<Player_Control>().PV.Owner.NickName == PV.Owner.NickName)
             {
                 target = p.transform;
-                mySet = target.GetChild(16).GetChild(myNumber);
+                if(mySetNumber==1)
+                    mySet = target.GetChild(16).GetChild(myNumber);
+                else
+                    mySet = target.GetChild(15).GetChild(myNumber);
+
                 myPlayer = p.GetComponent<Player_Control>();
                 break;
             }
@@ -84,14 +101,18 @@ public class Soldier : MonoBehaviourPunCallbacks,IPunObservable
 
     private void FixedUpdate()
     {
-        FreezeVelocity();
-        if (agent.isStopped==true)
+        if (!isDead)
         {
-            anim.SetBool("isRunning", false);
-        }
-        else
-        {
-            anim.SetBool("isRunning", true);
+            FreezeVelocity();
+            Targeting();
+            if (agent.isStopped == true)
+            {
+                anim.SetBool("isRunning", false);
+            }
+            else
+            {
+                anim.SetBool("isRunning", true);
+            }
         }
     }
     void FreezeVelocity()
@@ -114,7 +135,7 @@ public class Soldier : MonoBehaviourPunCallbacks,IPunObservable
             float min_dist = Mathf.Infinity;
             for (int i = 0; i < rayHits.Length; i++) 
             {
-                if(rayHits[i].collider.transform.GetComponent<Soldier>().PV.Owner != PV.Owner && rayHits[i].collider.CompareTag("Soldier"))
+                if(rayHits[i].collider.GetComponent<PhotonView>().Owner != PV.Owner && (rayHits[i].collider.CompareTag("Soldier") || rayHits[i].collider.CompareTag("Player")) )
                 {
                     count++;
                     float playerToEnemy = Vector3.Magnitude(transform.position - rayHits[i].transform.position);
@@ -131,24 +152,60 @@ public class Soldier : MonoBehaviourPunCallbacks,IPunObservable
             {
                 target = mySet.transform;
             }
+            
         }
 
     }
     [PunRPC]
     void Attack()
     {
+        if (soldierType == Type.melee)
+        {
+            if (Vector3.Distance(transform.position, target.position) <= 1.5f && !isAttack)
+            {
+                if (!target.CompareTag("SetNumber") && target.GetComponent<Soldier>().PV.Owner != PV.Owner)
+                {
+                    isFollow = false;
+                    isAttack = true;
+                    anim.transform.forward = target.position - transform.position;
+                    agent.isStopped = true;
+                    anim.SetTrigger("doAttack");
+                    Invoke("AttackEnd", 1.2f);
+                }
+            }
+        }
+        else if(soldierType == Type.arrow)
+        {
+            if (Vector3.Distance(transform.position, target.position) <= 14f && !isAttack)
+            {
+                if (!target.CompareTag("SetNumber") && target.GetComponent<Soldier>().PV.Owner != PV.Owner)
+                {
+                    isFollow = false;
+                    isAttack = true;
+                    anim.transform.forward = target.position - transform.position;
+                    agent.isStopped = true;
+                    anim.SetTrigger("doAttack");
+                    
+                }
+            }
+        }
         
-        isFollow = false;
-        isAttack = true;
-        anim.transform.forward = target.position - transform.position;
-        agent.isStopped = true;
-        anim.SetTrigger("doAttack");
-        Invoke("AttackEnd",1.2f);
     }
-    
+    public void Shot()
+    {
+        PhotonNetwork.Instantiate("Soldier_Arrow", shotPoint.transform.position, shotPoint.transform.rotation);
+        Sound_arrow_shoot();
+        Invoke("AttackEnd", 1.0f);
+    }
+    public void Sound_arrow_shoot()
+    {
+        arrow_shoot.Play();
+    }
+    // melee 공격 관련 ////////////////
     public void Attack_areaOn()
     {
         meleeArea.enabled = true;
+        Sound_melee_slash();
         Invoke("Attack_areaOff", 0.2f);
     }
     public void Attack_areaOff()
@@ -161,6 +218,11 @@ public class Soldier : MonoBehaviourPunCallbacks,IPunObservable
         isAttack = false;
         agent.isStopped = false;
     }
+    public void Sound_melee_slash()
+    {
+        melee_slash.Play();
+    }
+    ///////////////////////////////////
     void Turn()
     {
         Ray ray = characterCamera.ScreenPointToRay(Input.mousePosition);
@@ -191,27 +253,27 @@ public class Soldier : MonoBehaviourPunCallbacks,IPunObservable
     {
         if (!isDead)
         {
-            Targeting();
+
             if (PV.IsMine)
             {
-                if (Input.GetKeyDown(KeyCode.Alpha5))
+                if (Input.GetKeyDown(KeyCode.T))
                 {
                     isChase = (isChase == false ? true : false);
+                }
+                if (Input.GetKeyDown(KeyCode.H))
+                {
+                    isStop = (isStop == false ? true : false);
                 }
                 if (!isAttack)
                     Turn();
 
-
+                
                 if (isChase)
                 {
 
                     ChaseObject(target.position);
+                    Attack();
 
-                    if (Vector3.Distance(transform.position, target.position) <= 1.5f && !isAttack)
-                    {
-                        if (!target.CompareTag("SetNumber") && target.GetComponent<Soldier>().PV.Owner != PV.Owner)
-                            Attack();
-                    }
                 }
 
             }
@@ -230,38 +292,49 @@ public class Soldier : MonoBehaviourPunCallbacks,IPunObservable
                 FindMyPlayer();
                 //FindMyLocation();
             }
-            else if (target)
+            else if (target || mySet)
             {
                 if (!isAttack)
                 {
 
-                    if (isFollow && !isChase)
+                    if (isFollow && !isChase && !isStop)
                     {
                         agent.isStopped = false;
                         ChaseObject(mySet.position);
                     }
-                    else if (isFollow && isChase)
+                    else if (isFollow && isChase && !isStop)
                     {
                         agent.isStopped = false;
                         ChaseObject(target.position);
                     }
 
-                    if (Vector3.Distance(transform.position, mySet.position) <= 0.5f && !isChase)
+                    if (isStop)
                     {
                         agent.isStopped = true;
-                        agent.velocity = Vector3.zero;
-
                     }
-                    if (Vector3.Distance(transform.position, target.position) <= 1.5f && isChase)
+                    else
                     {
-                        agent.isStopped = true;
-                        agent.velocity = Vector3.zero;
+                        if (Vector3.Distance(transform.position, mySet.position) <= 0.5f && !isChase)
+                        {
+                            agent.isStopped = true;
+                            agent.velocity = Vector3.zero;
+
+                        }
+                        if (Vector3.Distance(transform.position, target.position) <= 1.5f && isChase)
+                        {
+                            agent.isStopped = true;
+                            agent.velocity = Vector3.zero;
+                        }
                     }
                     //PV.RPC("ChaseObject", RpcTarget.All, mySet.position);
                 }
 
 
             }
+        }
+        else
+        {
+            agent.isStopped = true;
         }
 
 

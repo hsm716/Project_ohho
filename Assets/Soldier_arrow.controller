@@ -47,7 +47,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 2169956834373909353, guid: 95b0379881c5cab43aa680158fa6d44a,
+  m_Motion: {fileID: -203655887218126122, guid: b359e64a41b87bb44bd3544c1ccd36c2,
     type: 3}
   m_Tag: 
   m_SpeedParameter: 
@@ -126,7 +126,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 4362794303157540682, guid: 04ebec8f48c28bb4f8e3fbd9c6721e7f,
+  m_Motion: {fileID: -203655887218126122, guid: 0cc2c647f9b135d40a38783f6174680b,
     type: 3}
   m_Tag: 
   m_SpeedParameter: 
@@ -198,7 +198,7 @@ AnimatorController:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Soldier
+  m_Name: Soldier_arrow
   serializedVersion: 5
   m_AnimatorParameters:
   - m_Name: isRunning
@@ -290,7 +290,7 @@ AnimatorState:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Running
-  m_Speed: 1
+  m_Speed: 1.5
   m_CycleOffset: 0
   m_Transitions:
   - {fileID: 4620261263904779821}
@@ -304,7 +304,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: -203655887218126122, guid: 504e1f14bdf0d874494a6b46d59db285,
+  m_Motion: {fileID: -203655887218126122, guid: f6317a024692ab94cafb40bbe28af242,
     type: 3}
   m_Tag: 
   m_SpeedParameter: 
