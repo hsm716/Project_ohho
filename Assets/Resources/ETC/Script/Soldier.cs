@@ -47,6 +47,7 @@ public class Soldier : MonoBehaviourPunCallbacks,IPunObservable
     public bool isAttack;
     public bool isFollow;
     public bool isChase;
+    public bool isStop;
     public bool isDead;
 
     public float curHP;
@@ -255,14 +256,18 @@ public class Soldier : MonoBehaviourPunCallbacks,IPunObservable
 
             if (PV.IsMine)
             {
-                if (Input.GetKeyDown(KeyCode.Alpha5))
+                if (Input.GetKeyDown(KeyCode.T))
                 {
                     isChase = (isChase == false ? true : false);
+                }
+                if (Input.GetKeyDown(KeyCode.H))
+                {
+                    isStop = (isStop == false ? true : false);
                 }
                 if (!isAttack)
                     Turn();
 
-
+                
                 if (isChase)
                 {
 
@@ -287,32 +292,39 @@ public class Soldier : MonoBehaviourPunCallbacks,IPunObservable
                 FindMyPlayer();
                 //FindMyLocation();
             }
-            else if (target)
+            else if (target || mySet)
             {
                 if (!isAttack)
                 {
 
-                    if (isFollow && !isChase)
+                    if (isFollow && !isChase && !isStop)
                     {
                         agent.isStopped = false;
                         ChaseObject(mySet.position);
                     }
-                    else if (isFollow && isChase)
+                    else if (isFollow && isChase && !isStop)
                     {
                         agent.isStopped = false;
                         ChaseObject(target.position);
                     }
 
-                    if (Vector3.Distance(transform.position, mySet.position) <= 0.5f && !isChase)
+                    if (isStop)
                     {
                         agent.isStopped = true;
-                        agent.velocity = Vector3.zero;
-
                     }
-                    if (Vector3.Distance(transform.position, target.position) <= 1.5f && isChase)
+                    else
                     {
-                        agent.isStopped = true;
-                        agent.velocity = Vector3.zero;
+                        if (Vector3.Distance(transform.position, mySet.position) <= 0.5f && !isChase)
+                        {
+                            agent.isStopped = true;
+                            agent.velocity = Vector3.zero;
+
+                        }
+                        if (Vector3.Distance(transform.position, target.position) <= 1.5f && isChase)
+                        {
+                            agent.isStopped = true;
+                            agent.velocity = Vector3.zero;
+                        }
                     }
                     //PV.RPC("ChaseObject", RpcTarget.All, mySet.position);
                 }
