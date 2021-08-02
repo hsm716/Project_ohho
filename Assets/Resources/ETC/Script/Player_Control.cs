@@ -117,6 +117,16 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     public GameObject CM;
     private Camera characterCamera;
 
+
+    #region
+    // Soldier 세트 정보
+    public GameObject SoldierAllSet;
+    public Transform Set1;
+    public Transform Set2;
+    Vector3 Set1_Init_pos;
+    Vector3 Set2_Init_pos;
+    #endregion
+
     private void Awake()
     {
         NickNameText.text = PV.IsMine ? PhotonNetwork.NickName : PV.Owner.NickName;
@@ -129,6 +139,8 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
 
         if (PV.IsMine)
         {
+            Set1_Init_pos = Set1.localPosition;
+            Set2_Init_pos = Set2.localPosition;
             Instance = this.gameObject;
             for (int i = 0; i < 10; i++)
             {
@@ -283,6 +295,21 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
             Invoke("DeffenseOut", 0.0f);
             Invoke("PullPower_valueChange",0.1f);
         }
+
+/*        if (Input.GetMouseButtonDown(2))
+        {
+            RaycastHit hit;
+            if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition),out hit)){
+                Set1.transform.localPosition = new Vector3(hit.point.x - Set1.transform.localPosition.x, 0f, hit.point.y - Set1.transform.localPosition.z) + new Vector3(Set1_Init_pos.x, 0, Set1_Init_pos.z);
+                Set2.transform.localPosition = new Vector3(hit.point.x - Set2.transform.localPosition.x, 0f, hit.point.y - Set2.transform.localPosition.z) + new Vector3(Set1_Init_pos.x, 0, Set1_Init_pos.z);
+            }
+
+        }
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            Set1.transform.localPosition = new Vector3(Set1_Init_pos.x,0,Set1_Init_pos.z);
+            Set2.transform.localPosition = new Vector3(Set2_Init_pos.x, 0, Set2_Init_pos.z);
+        }*/
     }
     [PunRPC]
     void ShieldAttack()

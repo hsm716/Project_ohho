@@ -3195,6 +3195,9 @@ MonoBehaviour:
   sound_Shoot1: {fileID: 8445971448879983316}
   sound_Teleport: {fileID: 900916152791002128}
   CM: {fileID: 0}
+  SoldierAllSet: {fileID: 0}
+  Set1: {fileID: 4100917533340405256}
+  Set2: {fileID: 4871741710740773771}
 --- !u!114 &7044034116310767099
 MonoBehaviour:
   m_ObjectHideFlags: 0

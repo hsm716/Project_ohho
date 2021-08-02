@@ -320,7 +320,7 @@ public class Soldier : MonoBehaviourPunCallbacks,IPunObservable
                             agent.velocity = Vector3.zero;
 
                         }
-                        if (Vector3.Distance(transform.position, target.position) <= 1.5f && isChase)
+                        else if (Vector3.Distance(transform.position, target.position) <= 1.5f && isChase)
                         {
                             agent.isStopped = true;
                             agent.velocity = Vector3.zero;
