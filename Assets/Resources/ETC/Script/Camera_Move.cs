@@ -61,17 +61,15 @@ public class Camera_Move : MonoBehaviour
             transform.position = cameraPosition;
 
         }*/
-        
+
         // transform.position = Vector3.Lerp(transform.position,cameraPosition,followSpeed*Time.deltaTime);
-    }
-    private void FixedUpdate()
-    {
         cameraPosition.x = player.transform.position.x + offsetX;
         cameraPosition.y = player.transform.position.y + offsetY;
         cameraPosition.z = player.transform.position.z + offsetZ;
 
-        transform.position = Vector3.Slerp(transform.position, cameraPosition, 10f * Time.deltaTime);
+        transform.position = cameraPosition;
     }
+
     /*
     IEnumerator Wait()
     {
