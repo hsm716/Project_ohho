@@ -26,6 +26,8 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     public GameObject Head;
     public GameObject GunHead;
 
+    int SoldierType; // 0~6;
+
     public ParticleSystem telportEffect;
 
     public Color Head_color;
@@ -139,12 +141,27 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
 
         if (PV.IsMine)
         {
+
+            SoldierType = Random.Range(0,2);
             Set1_Init_pos = Set1.localPosition;
             Set2_Init_pos = Set2.localPosition;
             Instance = this.gameObject;
+            string SoldierType_melee_str = "";
+            string SoldierType_arrow_str = "";
+            if (SoldierType == 0)
+            {
+                SoldierType_melee_str = "Soldier_main_melee";
+                SoldierType_arrow_str = "Soldier_main_arrow";
+            }
+            else
+            {
+                SoldierType_melee_str = "Soldier_main_melee_B";
+                SoldierType_arrow_str = "Soldier_main_arrow_B";
+            }
             for (int i = 0; i < 10; i++)
             {
-                GameObject go = PhotonNetwork.Instantiate("Solider_main_melee", transform.position, transform.rotation);
+
+                GameObject go = PhotonNetwork.Instantiate(SoldierType_melee_str, transform.position, transform.rotation);
                 Soldier so = go.transform.GetChild(0).GetComponent<Soldier>();
                 so.myNumber = i;
                 so.mySetNumber = 2;
@@ -152,7 +169,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
             }
             for (int i = 0; i < 10; i++)
             {
-                GameObject go = PhotonNetwork.Instantiate("Solider_main_arrow", transform.position, transform.rotation);
+                GameObject go = PhotonNetwork.Instantiate(SoldierType_arrow_str, transform.position, transform.rotation);
                 Soldier so = go.transform.GetChild(0).GetComponent<Soldier>();
                 so.myNumber = i;
                 so.mySetNumber = 1;

@@ -1821,7 +1821,6 @@ SkinnedMeshRenderer:
   m_Materials:
   - {fileID: 2100000, guid: 2a12d3fc0532ba64e972160db18dfd99, type: 2}
   - {fileID: 2100000, guid: 2a12d3fc0532ba64e972160db18dfd99, type: 2}
-  - {fileID: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -5515,7 +5514,7 @@ GameObject:
   - component: {fileID: 2418964201409419934}
   - component: {fileID: 7569907095016576319}
   m_Layer: 6
-  m_Name: Solider_main_melee
+  m_Name: Soldier_main_melee
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

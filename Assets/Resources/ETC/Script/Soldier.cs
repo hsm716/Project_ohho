@@ -163,7 +163,7 @@ public class Soldier : MonoBehaviourPunCallbacks,IPunObservable
         {
             if (Vector3.Distance(transform.position, target.position) <= 1.5f && !isAttack)
             {
-                if (!target.CompareTag("SetNumber") && target.GetComponent<Soldier>().PV.Owner != PV.Owner)
+                if (!target.CompareTag("SetNumber") && target.GetComponent<PhotonView>().Owner != PV.Owner)
                 {
                     isFollow = false;
                     isAttack = true;
@@ -178,7 +178,7 @@ public class Soldier : MonoBehaviourPunCallbacks,IPunObservable
         {
             if (Vector3.Distance(transform.position, target.position) <= 14f && !isAttack)
             {
-                if (!target.CompareTag("SetNumber") && target.GetComponent<Soldier>().PV.Owner != PV.Owner)
+                if (!target.CompareTag("SetNumber") && target.GetComponent<PhotonView>().Owner != PV.Owner)
                 {
                     isFollow = false;
                     isAttack = true;
