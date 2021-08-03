@@ -103,7 +103,7 @@ ModelImporter:
       maskType: 3
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 0
-    isReadable: 0
+    isReadable: 1
   meshes:
     lODScreenPercentages: []
     globalScale: 1
@@ -139,7 +139,7 @@ ModelImporter:
   tangentSpace:
     normalSmoothAngle: 60
     normalImportMode: 0
-    tangentImportMode: 3
+    tangentImportMode: 2
     normalCalculationMode: 4
     legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 0
     blendShapeNormalImportMode: 1
@@ -486,68 +486,68 @@ ModelImporter:
         length: 0
         modified: 0
     skeleton:
-    - name: SwordShieldOn(Clone)
+    - name: SwordShielding(Clone)
       parentName: 
       position: {x: 0, y: 0, z: 0}
       rotation: {x: 0, y: 0, z: 0, w: 1}
       scale: {x: 1, y: 1, z: 1}
     - name: Chr_Hero_Female_01
-      parentName: SwordShieldOn(Clone)
+      parentName: SwordShielding(Clone)
       position: {x: -0, y: 0, z: 0}
       rotation: {x: 0, y: -0, z: -0, w: 1}
       scale: {x: 1, y: 1, z: 1}
     - name: Chr_Hero_Male_01
-      parentName: SwordShieldOn(Clone)
+      parentName: SwordShielding(Clone)
       position: {x: -0, y: 0, z: 0}
       rotation: {x: 0, y: -0, z: -0, w: 1}
       scale: {x: 1, y: 1, z: 1}
     - name: Chr_Nomad_Female_01
-      parentName: SwordShieldOn(Clone)
+      parentName: SwordShielding(Clone)
       position: {x: -0, y: 0, z: 0}
       rotation: {x: 0, y: -0, z: -0, w: 1}
       scale: {x: 1, y: 1, z: 1}
     - name: Chr_Nomad_Female_02
-      parentName: SwordShieldOn(Clone)
+      parentName: SwordShielding(Clone)
       position: {x: -0, y: 0, z: 0}
       rotation: {x: 0, y: -0, z: -0, w: 1}
       scale: {x: 1, y: 1, z: 1}
     - name: Chr_Nomad_Male_01
-      parentName: SwordShieldOn(Clone)
+      parentName: SwordShielding(Clone)
       position: {x: -0, y: 0, z: 0}
       rotation: {x: 0, y: -0, z: -0, w: 1}
       scale: {x: 1, y: 1, z: 1}
     - name: Chr_Nomad_Male_02
-      parentName: SwordShieldOn(Clone)
+      parentName: SwordShielding(Clone)
       position: {x: -0, y: 0, z: 0}
       rotation: {x: 0, y: -0, z: -0, w: 1}
       scale: {x: 1, y: 1, z: 1}
     - name: Chr_Nomad_Male_03
-      parentName: SwordShieldOn(Clone)
+      parentName: SwordShielding(Clone)
       position: {x: -0, y: 0, z: 0}
       rotation: {x: 0, y: -0, z: -0, w: 1}
       scale: {x: 1, y: 1, z: 1}
     - name: Chr_Skeleton_01
-      parentName: SwordShieldOn(Clone)
+      parentName: SwordShielding(Clone)
       position: {x: -0, y: 0, z: 0}
       rotation: {x: 0, y: -0, z: -0, w: 1}
       scale: {x: 1, y: 1, z: 1}
     - name: Chr_Skeleton_02
-      parentName: SwordShieldOn(Clone)
+      parentName: SwordShielding(Clone)
       position: {x: -0, y: 0, z: 0}
       rotation: {x: 0, y: -0, z: -0, w: 1}
       scale: {x: 1, y: 1, z: 1}
     - name: Chr_Skeleton_03
-      parentName: SwordShieldOn(Clone)
+      parentName: SwordShielding(Clone)
       position: {x: -0, y: 0, z: 0}
       rotation: {x: 0, y: -0, z: -0, w: 1}
       scale: {x: 1, y: 1, z: 1}
     - name: Chr_Undead_Knight_01
-      parentName: SwordShieldOn(Clone)
+      parentName: SwordShielding(Clone)
       position: {x: -0, y: 0, z: 0}
       rotation: {x: 0, y: -0, z: -0, w: 1}
       scale: {x: 1, y: 1, z: 1}
     - name: Root
-      parentName: SwordShieldOn(Clone)
+      parentName: SwordShielding(Clone)
       position: {x: -0.0972078, y: -0.13388756, z: -0.08263605}
       rotation: {x: -0.0000000029103835, y: 0.000000023283068, z: -0.0000000029103835,
         w: 1}

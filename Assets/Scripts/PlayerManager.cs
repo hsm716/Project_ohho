@@ -24,8 +24,6 @@ public class PlayerManager : MonoBehaviour
             
         }
     }
-
-    
     void CreateController()
     {
         //PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "PlayerController"), new Vector3(-2,23.5f,-4.1f), Quaternion.identity);
@@ -37,7 +35,5 @@ public class PlayerManager : MonoBehaviour
         yield return new WaitForSeconds(2);
         PhotonNetwork.Instantiate("Player", new Vector3(-2, 23.5f, -4.1f), Quaternion.identity);
         MC.transform.GetChild(2).gameObject.SetActive(true);
-
-
     }
 }
