@@ -67,7 +67,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     private bool isRunning; // 움직이고 있는지
     private bool isRunningBack; // 뒤로 움직이고 있는지
     private bool isDeffensing; // 방어중인지 (class.Sword만 가능)
-
+    private bool isSkill;
     public bool isDodge; // 구르기 중인지 
     #endregion
 
@@ -272,7 +272,13 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
         }
         if(eDown && Input.GetMouseButtonDown(0))
         {
-            Invoke("Skill_arrow_E",0.1f);
+            if(curStyle == Style.WeaponStyle.Arrow)
+                Invoke("Skill_arrow_E",0.1f);
+            else if(curStyle == Style.WeaponStyle.Sword)
+            {
+                Skill_E();
+                
+            }
         }
 
         dDown = Input.GetKey(KeyCode.LeftShift);
@@ -443,26 +449,48 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     void DodgeOut()
     {
         moveSpeed = 5f;
+
         isDodge = false;
 
     }
 
+    Vector3 Skill_Vector;
+    void Skill_E()
+    {
+        isSkill = true;
+        attackEffect.enabled = false;
+        animator.SetTrigger("doSkill_E");
+        Invoke("Slash", 0.2f);
+        moveSpeed = 2f;
+        Skill_Vector = mouseDir.normalized;
+        Invoke("Skill_E_Out", 0.7076923f);
+    }
+    void Skill_E_Out()
+    {
+        moveSpeed = 5f;
+        attackEffect.enabled = false;
+        isSkill = false;
+        eDown = false;
 
+    }
     // 움직임 동작코드, 210624_황승민
     [PunRPC]
     void Moving()
     {
 
 
-        if (isDodge)
+        if (!isDodge && !isSkill)
         {
-            if (curStyle != Style.WeaponStyle.Magic)
-                movement.Set(dodgeVec.x, dodgeVec.y, dodgeVec.z);
-
+            movement.Set(horizontalMove, 0, verticalMove);
         }
         else
         {
-            movement.Set(horizontalMove,0, verticalMove);
+            if(isDodge)
+                if (curStyle != Style.WeaponStyle.Magic)
+                    movement.Set(dodgeVec.x, dodgeVec.y, dodgeVec.z);
+            if (isSkill)
+                if (curStyle == Style.WeaponStyle.Sword)
+                    movement.Set(Skill_Vector.x, Skill_Vector.y, Skill_Vector.z);
         }
 
         if (isDeffensing)
@@ -479,11 +507,16 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     [PunRPC]
     void Turn()
     {
-        if (!isDodge)
+        if (!isDodge && !isSkill)
         {
             Ray ray = characterCamera.ScreenPointToRay(Input.mousePosition);
+
+            // 레이어마스크 /////
+            int layerMask = 1 << LayerMask.NameToLayer("Default");
             RaycastHit hitResult;
-            if (Physics.Raycast(ray, out hitResult))
+            /////////////////////
+            ///
+            if (Physics.Raycast(ray, out hitResult,200f,layerMask))
             {
                 mouseDir = new Vector3(hitResult.point.x, transform.position.y, hitResult.point.z) - transform.position;
                 animator.transform.forward = mouseDir;
@@ -558,7 +591,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
             case Style.WeaponStyle.Sword:
                 isAttackReady = 0.15f < attackDelay;
                 
-                if (isAttackReady && mLDown && !isDodge && !isDeffensing)
+                if (isAttackReady && mLDown && !isDodge && !isDeffensing && !eDown)
                 {
 
                     animator.SetTrigger("doSlash");
@@ -648,23 +681,22 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     void Shoot()
     {
         RaycastHit hitResult;
-        if(Physics.Raycast(characterCamera.ScreenPointToRay(Input.mousePosition),out hitResult))
+        PhotonNetwork.Instantiate("Arrow", shootPoint.transform.position, shootPoint.transform.rotation);
+        /*if(Physics.Raycast(characterCamera.ScreenPointToRay(Input.mousePosition),out hitResult,10))
         {
             var direction = new Vector3(hitResult.point.x, transform.position.y, hitResult.point.z) - transform.position;
-            /*if (curArrow != null)
+            *//*if (curArrow != null)
             {
                 curArrow.transform.SetParent(null);
                 curArrow.transform.position = curArrow.transform.position + direction.normalized;
                 
                 curArrow.PV.RPC("Shoot", RpcTarget.AllBuffered, direction.normalized);
                 curArrow = null;
-            }*/
-            PhotonNetwork.Instantiate("Arrow", shootPoint.transform.position, shootPoint.transform.rotation);
-        }
+            }*//*
+            
+        }*/
     }
-    
-
-
+ 
     // Style::Arrow 공격모션 벗어나는 동작코드, 210624_황승민
     void ShootOut()
     {/*
