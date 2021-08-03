@@ -117,7 +117,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     void DestroyRPC() => Destroy(gameObject);
 
     public GameObject CM;
-    private Camera characterCamera;
+    public Camera characterCamera;
 
 
     #region
@@ -129,6 +129,8 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     Vector3 Set2_Init_pos;
     #endregion
 
+    string[] SoldierType_melee_str = { "Soldier_main_melee", "Soldier_main_melee_B", "Soldier_main_melee_C" };
+    string[] SoldierType_arrow_str = {"Soldier_main_arrow","Soldier_main_arrow_B", "Soldier_main_arrow_C" };
     private void Awake()
     {
         NickNameText.text = PV.IsMine ? PhotonNetwork.NickName : PV.Owner.NickName;
@@ -142,26 +144,16 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
         if (PV.IsMine)
         {
 
-            SoldierType = Random.Range(0,2);
+            SoldierType = Random.Range(0,3);
             Set1_Init_pos = Set1.localPosition;
             Set2_Init_pos = Set2.localPosition;
             Instance = this.gameObject;
-            string SoldierType_melee_str = "";
-            string SoldierType_arrow_str = "";
-            if (SoldierType == 0)
-            {
-                SoldierType_melee_str = "Soldier_main_melee";
-                SoldierType_arrow_str = "Soldier_main_arrow";
-            }
-            else
-            {
-                SoldierType_melee_str = "Soldier_main_melee_B";
-                SoldierType_arrow_str = "Soldier_main_arrow_B";
-            }
+
+
             for (int i = 0; i < 10; i++)
             {
 
-                GameObject go = PhotonNetwork.Instantiate(SoldierType_melee_str, transform.position, transform.rotation);
+                GameObject go = PhotonNetwork.Instantiate(SoldierType_melee_str[SoldierType], transform.position, transform.rotation);
                 Soldier so = go.transform.GetChild(0).GetComponent<Soldier>();
                 so.myNumber = i;
                 so.mySetNumber = 2;
@@ -169,21 +161,21 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
             }
             for (int i = 0; i < 10; i++)
             {
-                GameObject go = PhotonNetwork.Instantiate(SoldierType_arrow_str, transform.position, transform.rotation);
+                GameObject go = PhotonNetwork.Instantiate(SoldierType_arrow_str[SoldierType], transform.position, transform.rotation);
                 Soldier so = go.transform.GetChild(0).GetComponent<Soldier>();
                 so.myNumber = i;
                 so.mySetNumber = 1;
             }
             /*            Instance = this;
                         ArrowIntialize(10);*/
-
+            rgbd = GetComponent<Rigidbody>();
+            animator = GetComponent<Animator>();
             CM = GameObject.Find("Main Camera");
             characterCamera = CM.GetComponent<Camera>();
             var CM_cm = CM.GetComponent<Camera_Move>();
             CM_cm.player = this.gameObject;
         }
-        rgbd = GetComponent<Rigidbody>();
-        animator = GetComponent<Animator>();
+
     }
     private void FixedUpdate()
     {
@@ -246,8 +238,8 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
         else if ((transform.position - curPos).sqrMagnitude >= 100) transform.position = curPos;
         else
         {
-            transform.position = Vector3.Lerp(transform.position, curPos, Time.deltaTime * 20);
-            transform.rotation = Quaternion.Lerp(transform.rotation, curRot, Time.deltaTime * 20);
+            transform.position = Vector3.Lerp(transform.position, curPos, Time.fixedDeltaTime * 20);
+            transform.rotation = Quaternion.Lerp(transform.rotation, curRot, Time.fixedDeltaTime * 20);
             //Hp_Bar.transform.rotation = Quaternion.Euler(new Vector3())
             //Hp_Bar.transform.rotation = Quaternion.Euler(new Vector3)
             Hp_Bar.hpBar.value = curHpValue;

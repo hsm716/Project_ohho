@@ -37,6 +37,7 @@ public class Camera_Move : MonoBehaviour
         animator = gameObject.GetComponent<Animator>();
     }
 
+    Vector3 currentVelocity;
     private void LateUpdate()
     {
         /*if ((animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.9895833f) && !b)
@@ -63,13 +64,18 @@ public class Camera_Move : MonoBehaviour
         }*/
 
         // transform.position = Vector3.Lerp(transform.position,cameraPosition,followSpeed*Time.deltaTime);
+
+        //transform.position = cameraPosition;
+    }
+
+    private void FixedUpdate()
+    {
         cameraPosition.x = player.transform.position.x + offsetX;
         cameraPosition.y = player.transform.position.y + offsetY;
         cameraPosition.z = player.transform.position.z + offsetZ;
 
-        transform.position = cameraPosition;
+        transform.position = Vector3.SmoothDamp(transform.position, cameraPosition, ref currentVelocity, Time.fixedDeltaTime);
     }
-
     /*
     IEnumerator Wait()
     {

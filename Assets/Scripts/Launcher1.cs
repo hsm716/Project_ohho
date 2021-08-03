@@ -23,7 +23,7 @@ public class Launcher1 : MonoBehaviourPunCallbacks
     private void Awake()
     {
         Instance = this;
-        Screen.SetResolution(1280, 960, false);
+        Screen.SetResolution(960, 540, false);
         PhotonNetwork.SendRate = 144;
         PhotonNetwork.SerializationRate = 144;
     }
