@@ -26,6 +26,8 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     public GameObject Head;
     public GameObject GunHead;
 
+    int SoldierType; // 0~6;
+
     public ParticleSystem telportEffect;
 
     public Color Head_color;
@@ -65,7 +67,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     private bool isRunning; // 움직이고 있는지
     private bool isRunningBack; // 뒤로 움직이고 있는지
     private bool isDeffensing; // 방어중인지 (class.Sword만 가능)
-
+    private bool isSkill;
     public bool isDodge; // 구르기 중인지 
     #endregion
 
@@ -115,8 +117,20 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     void DestroyRPC() => Destroy(gameObject);
 
     public GameObject CM;
-    private Camera characterCamera;
+    public Camera characterCamera;
 
+
+    #region
+    // Soldier 세트 정보
+    public GameObject SoldierAllSet;
+    public Transform Set1;
+    public Transform Set2;
+    Vector3 Set1_Init_pos;
+    Vector3 Set2_Init_pos;
+    #endregion
+
+    string[] SoldierType_melee_str = { "Soldier_main_melee", "Soldier_main_melee_B", "Soldier_main_melee_C" };
+    string[] SoldierType_arrow_str = {"Soldier_main_arrow","Soldier_main_arrow_B", "Soldier_main_arrow_C" };
     private void Awake()
     {
         NickNameText.text = PV.IsMine ? PhotonNetwork.NickName : PV.Owner.NickName;
@@ -129,10 +143,17 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
 
         if (PV.IsMine)
         {
+
+            SoldierType = Random.Range(0,3);
+            Set1_Init_pos = Set1.localPosition;
+            Set2_Init_pos = Set2.localPosition;
             Instance = this.gameObject;
+
+
             for (int i = 0; i < 10; i++)
             {
-                GameObject go = PhotonNetwork.Instantiate("Solider_main_melee", transform.position, transform.rotation);
+
+                GameObject go = PhotonNetwork.Instantiate(SoldierType_melee_str[SoldierType], transform.position, transform.rotation);
                 Soldier so = go.transform.GetChild(0).GetComponent<Soldier>();
                 so.myNumber = i;
                 so.mySetNumber = 2;
@@ -140,21 +161,21 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
             }
             for (int i = 0; i < 10; i++)
             {
-                GameObject go = PhotonNetwork.Instantiate("Solider_main_arrow", transform.position, transform.rotation);
+                GameObject go = PhotonNetwork.Instantiate(SoldierType_arrow_str[SoldierType], transform.position, transform.rotation);
                 Soldier so = go.transform.GetChild(0).GetComponent<Soldier>();
                 so.myNumber = i;
                 so.mySetNumber = 1;
             }
             /*            Instance = this;
                         ArrowIntialize(10);*/
-
+            rgbd = GetComponent<Rigidbody>();
+            animator = GetComponent<Animator>();
             CM = GameObject.Find("Main Camera");
             characterCamera = CM.GetComponent<Camera>();
             var CM_cm = CM.GetComponent<Camera_Move>();
             CM_cm.player = this.gameObject;
         }
-        rgbd = GetComponent<Rigidbody>();
-        animator = GetComponent<Animator>();
+
     }
     private void FixedUpdate()
     {
@@ -217,8 +238,8 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
         else if ((transform.position - curPos).sqrMagnitude >= 100) transform.position = curPos;
         else
         {
-            transform.position = Vector3.Lerp(transform.position, curPos, Time.deltaTime * 20);
-            transform.rotation = Quaternion.Lerp(transform.rotation, curRot, Time.deltaTime * 20);
+            transform.position = Vector3.Lerp(transform.position, curPos, Time.fixedDeltaTime * 20);
+            transform.rotation = Quaternion.Lerp(transform.rotation, curRot, Time.fixedDeltaTime * 20);
             //Hp_Bar.transform.rotation = Quaternion.Euler(new Vector3())
             //Hp_Bar.transform.rotation = Quaternion.Euler(new Vector3)
             Hp_Bar.hpBar.value = curHpValue;
@@ -251,7 +272,13 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
         }
         if(eDown && Input.GetMouseButtonDown(0))
         {
-            Invoke("Skill_arrow_E",0.1f);
+            if(curStyle == Style.WeaponStyle.Arrow)
+                Invoke("Skill_arrow_E",0.1f);
+            else if(curStyle == Style.WeaponStyle.Sword)
+            {
+                Skill_E();
+                
+            }
         }
 
         dDown = Input.GetKey(KeyCode.LeftShift);
@@ -283,6 +310,21 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
             Invoke("DeffenseOut", 0.0f);
             Invoke("PullPower_valueChange",0.1f);
         }
+
+/*        if (Input.GetMouseButtonDown(2))
+        {
+            RaycastHit hit;
+            if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition),out hit)){
+                Set1.transform.localPosition = new Vector3(hit.point.x - Set1.transform.localPosition.x, 0f, hit.point.y - Set1.transform.localPosition.z) + new Vector3(Set1_Init_pos.x, 0, Set1_Init_pos.z);
+                Set2.transform.localPosition = new Vector3(hit.point.x - Set2.transform.localPosition.x, 0f, hit.point.y - Set2.transform.localPosition.z) + new Vector3(Set1_Init_pos.x, 0, Set1_Init_pos.z);
+            }
+
+        }
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            Set1.transform.localPosition = new Vector3(Set1_Init_pos.x,0,Set1_Init_pos.z);
+            Set2.transform.localPosition = new Vector3(Set2_Init_pos.x, 0, Set2_Init_pos.z);
+        }*/
     }
     [PunRPC]
     void ShieldAttack()
@@ -407,26 +449,48 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     void DodgeOut()
     {
         moveSpeed = 5f;
+
         isDodge = false;
 
     }
 
+    Vector3 Skill_Vector;
+    void Skill_E()
+    {
+        isSkill = true;
+        attackEffect.enabled = false;
+        animator.SetTrigger("doSkill_E");
+        Invoke("Slash", 0.2f);
+        moveSpeed = 2f;
+        Skill_Vector = mouseDir.normalized;
+        Invoke("Skill_E_Out", 0.7076923f);
+    }
+    void Skill_E_Out()
+    {
+        moveSpeed = 5f;
+        attackEffect.enabled = false;
+        isSkill = false;
+        eDown = false;
 
+    }
     // 움직임 동작코드, 210624_황승민
     [PunRPC]
     void Moving()
     {
 
 
-        if (isDodge)
+        if (!isDodge && !isSkill)
         {
-            if (curStyle != Style.WeaponStyle.Magic)
-                movement.Set(dodgeVec.x, dodgeVec.y, dodgeVec.z);
-
+            movement.Set(horizontalMove, 0, verticalMove);
         }
         else
         {
-            movement.Set(horizontalMove,0, verticalMove);
+            if(isDodge)
+                if (curStyle != Style.WeaponStyle.Magic)
+                    movement.Set(dodgeVec.x, dodgeVec.y, dodgeVec.z);
+            if (isSkill)
+                if (curStyle == Style.WeaponStyle.Sword)
+                    movement.Set(Skill_Vector.x, Skill_Vector.y, Skill_Vector.z);
         }
 
         if (isDeffensing)
@@ -443,11 +507,16 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     [PunRPC]
     void Turn()
     {
-        if (!isDodge)
+        if (!isDodge && !isSkill)
         {
             Ray ray = characterCamera.ScreenPointToRay(Input.mousePosition);
+
+            // 레이어마스크 /////
+            int layerMask = 1 << LayerMask.NameToLayer("Default");
             RaycastHit hitResult;
-            if (Physics.Raycast(ray, out hitResult))
+            /////////////////////
+            ///
+            if (Physics.Raycast(ray, out hitResult,200f,layerMask))
             {
                 mouseDir = new Vector3(hitResult.point.x, transform.position.y, hitResult.point.z) - transform.position;
                 animator.transform.forward = mouseDir;
@@ -522,7 +591,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
             case Style.WeaponStyle.Sword:
                 isAttackReady = 0.15f < attackDelay;
                 
-                if (isAttackReady && mLDown && !isDodge && !isDeffensing)
+                if (isAttackReady && mLDown && !isDodge && !isDeffensing && !eDown)
                 {
 
                     animator.SetTrigger("doSlash");
@@ -612,23 +681,22 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     void Shoot()
     {
         RaycastHit hitResult;
-        if(Physics.Raycast(characterCamera.ScreenPointToRay(Input.mousePosition),out hitResult))
+        PhotonNetwork.Instantiate("Arrow", shootPoint.transform.position, shootPoint.transform.rotation);
+        /*if(Physics.Raycast(characterCamera.ScreenPointToRay(Input.mousePosition),out hitResult,10))
         {
             var direction = new Vector3(hitResult.point.x, transform.position.y, hitResult.point.z) - transform.position;
-            /*if (curArrow != null)
+            *//*if (curArrow != null)
             {
                 curArrow.transform.SetParent(null);
                 curArrow.transform.position = curArrow.transform.position + direction.normalized;
                 
                 curArrow.PV.RPC("Shoot", RpcTarget.AllBuffered, direction.normalized);
                 curArrow = null;
-            }*/
-            PhotonNetwork.Instantiate("Arrow", shootPoint.transform.position, shootPoint.transform.rotation);
-        }
+            }*//*
+            
+        }*/
     }
-    
-
-
+ 
     // Style::Arrow 공격모션 벗어나는 동작코드, 210624_황승민
     void ShootOut()
     {/*

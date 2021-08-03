@@ -46,7 +46,7 @@ public class Soldier_Arrow : MonoBehaviourPunCallbacks
     {
 
 
-        if (!PV.IsMine && col.CompareTag("Player") && col.GetComponent<PhotonView>().IsMine)
+        if (!PV.IsMine && col.CompareTag("Player") && col.GetComponent<PhotonView>().Owner !=PV.Owner)
         {
             col.GetComponent<Player_Control>().Hit(atk);
             Debug.Log(col.gameObject.name + "를 맞춤 " + "데미지 : " + atk);

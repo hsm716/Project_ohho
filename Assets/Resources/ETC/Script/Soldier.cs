@@ -4,6 +4,7 @@ using Photon.Pun.UtilityScripts;
 using Photon.Realtime;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -58,8 +59,8 @@ public class Soldier : MonoBehaviourPunCallbacks,IPunObservable
        rgbd = GetComponent<Rigidbody>();
         agent = GetComponent<NavMeshAgent>();
 
-        CM = GameObject.Find("Main Camera");
-        characterCamera = CM.GetComponent<Camera>();
+       // CM = GameObject.Find("Main Camera");
+        //characterCamera = CM.GetComponent<Camera>();
         curHP = 5000f;
         maxHP = 5000f;
         atk = 100f;
@@ -101,6 +102,8 @@ public class Soldier : MonoBehaviourPunCallbacks,IPunObservable
 
     private void FixedUpdate()
     {
+        if (!PV.IsMine)
+            return;
         if (!isDead)
         {
             FreezeVelocity();
@@ -163,7 +166,7 @@ public class Soldier : MonoBehaviourPunCallbacks,IPunObservable
         {
             if (Vector3.Distance(transform.position, target.position) <= 1.5f && !isAttack)
             {
-                if (!target.CompareTag("SetNumber") && target.GetComponent<Soldier>().PV.Owner != PV.Owner)
+                if (!target.CompareTag("SetNumber") && target.GetComponent<PhotonView>().Owner != PV.Owner)
                 {
                     isFollow = false;
                     isAttack = true;
@@ -178,7 +181,7 @@ public class Soldier : MonoBehaviourPunCallbacks,IPunObservable
         {
             if (Vector3.Distance(transform.position, target.position) <= 14f && !isAttack)
             {
-                if (!target.CompareTag("SetNumber") && target.GetComponent<Soldier>().PV.Owner != PV.Owner)
+                if (!target.CompareTag("SetNumber") && target.GetComponent<PhotonView>().Owner != PV.Owner)
                 {
                     isFollow = false;
                     isAttack = true;
@@ -225,7 +228,7 @@ public class Soldier : MonoBehaviourPunCallbacks,IPunObservable
     ///////////////////////////////////
     void Turn()
     {
-        Ray ray = characterCamera.ScreenPointToRay(Input.mousePosition);
+        Ray ray = myPlayer.characterCamera.ScreenPointToRay(Input.mousePosition);
         RaycastHit hitResult;
         if (Physics.Raycast(ray, out hitResult))
         {
@@ -280,10 +283,12 @@ public class Soldier : MonoBehaviourPunCallbacks,IPunObservable
             else if ((transform.position - curPos).sqrMagnitude >= 100) transform.position = curPos;
             else
             {
-                transform.position = Vector3.Lerp(transform.position, curPos, Time.deltaTime * 20f);
-                transform.rotation = Quaternion.Lerp(transform.rotation, curRot, Time.deltaTime * 20f);
+                transform.position = Vector3.Lerp(transform.position, curPos, Time.fixedDeltaTime * 20f);
+                transform.rotation = Quaternion.Lerp(transform.rotation, curRot, Time.fixedDeltaTime * 20f);
             }
 
+            if (!PV.IsMine)
+                return;
 
 
 
@@ -320,7 +325,7 @@ public class Soldier : MonoBehaviourPunCallbacks,IPunObservable
                             agent.velocity = Vector3.zero;
 
                         }
-                        if (Vector3.Distance(transform.position, target.position) <= 1.5f && isChase)
+                        else if (Vector3.Distance(transform.position, target.position) <= 1.5f && isChase)
                         {
                             agent.isStopped = true;
                             agent.velocity = Vector3.zero;
