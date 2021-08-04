@@ -3196,6 +3196,7 @@ MonoBehaviour:
   sound_Teleport: {fileID: 900916152791002128}
   CM: {fileID: 0}
   characterCamera: {fileID: 0}
+  Respawn_Center: {fileID: 0}
   SoldierAllSet: {fileID: 0}
   Set1: {fileID: 4100917533340405256}
   Set2: {fileID: 4871741710740773771}
