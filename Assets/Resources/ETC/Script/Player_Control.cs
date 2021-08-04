@@ -120,6 +120,8 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     public Camera characterCamera;
 
 
+    public GameObject Respawn_Center;
+
     #region
     // Soldier 세트 정보
     public GameObject SoldierAllSet;
@@ -139,18 +141,19 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
         curHP = 2000f;
         pullPower = 20f;
         shieldAmount = 500f;
-
+        Respawn_Center = GameObject.Find("Respawn_Spots");
 
         if (PV.IsMine)
         {
 
+            transform.position = Respawn_Center.transform.GetChild((int)(PV.ViewID / 1000)).transform.position;
             SoldierType = Random.Range(0,3);
             Set1_Init_pos = Set1.localPosition;
             Set2_Init_pos = Set2.localPosition;
             Instance = this.gameObject;
 
 
-            for (int i = 0; i < 10; i++)
+/*            for (int i = 0; i < 10; i++)
             {
 
                 GameObject go = PhotonNetwork.Instantiate(SoldierType_melee_str[SoldierType], transform.position, transform.rotation);
@@ -165,7 +168,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
                 Soldier so = go.transform.GetChild(0).GetComponent<Soldier>();
                 so.myNumber = i;
                 so.mySetNumber = 1;
-            }
+            }*/
             /*            Instance = this;
                         ArrowIntialize(10);*/
             rgbd = GetComponent<Rigidbody>();

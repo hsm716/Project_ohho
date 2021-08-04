@@ -43,10 +43,8 @@ public class PlayerManager : MonoBehaviour
 
     IEnumerator LateSpawn()
     {
-        yield return new WaitForSeconds(2);
+        yield return new WaitForSeconds(0);
         PhotonNetwork.Instantiate("Player", new Vector3(-2, 23.5f, -4.1f), Quaternion.identity);
         MC.transform.GetChild(2).gameObject.SetActive(true);
-
-
     }
 }
