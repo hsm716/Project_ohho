@@ -143,9 +143,11 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
         shieldAmount = 500f;
         Respawn_Center = GameObject.Find("Respawn_Spots");
 
+        //
+
         if (PV.IsMine)
         {
-
+            
             transform.position = Respawn_Center.transform.GetChild((int)(PV.ViewID / 1000)).transform.position;
             SoldierType = Random.Range(0,3);
             Set1_Init_pos = Set1.localPosition;
@@ -683,7 +685,6 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
 
     void Shoot()
     {
-        RaycastHit hitResult;
         PhotonNetwork.Instantiate("Arrow", shootPoint.transform.position, shootPoint.transform.rotation);
         /*if(Physics.Raycast(characterCamera.ScreenPointToRay(Input.mousePosition),out hitResult,10))
         {
@@ -771,6 +772,14 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
         if (PV.IsMine && other.CompareTag("Player_Sword"))
         {
             Hit(other.transform.parent.GetComponent<Player_Control>().atk);
+        }
+        if (PV.IsMine && other.CompareTag("Soldier_Attack"))
+        {
+            Hit(other.transform.parent.GetComponent<Player_Control>().atk);
+        }
+        if (other.CompareTag("Monster_Attack"))
+        {
+            Hit(other.transform.parent.GetComponent<Monster>().atk);
         }
 
 

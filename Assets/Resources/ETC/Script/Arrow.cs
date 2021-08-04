@@ -7,7 +7,7 @@ public class Arrow : MonoBehaviourPunCallbacks
 {
     Rigidbody rgbd;
     public PhotonView PV;
-    Player_Control myPlayer;
+    public Player_Control myPlayer;
     public float atk;
     public float shootPower;
 
@@ -60,11 +60,21 @@ public class Arrow : MonoBehaviourPunCallbacks
             Debug.Log(col.gameObject.name + "를 맞춤 " + "데미지 : " + atk);
             PV.RPC("DestroyRPC", RpcTarget.AllBuffered);
         }
+        if (col.CompareTag("Monster"))
+        {
+            col.GetComponent<Monster>().Hit(atk);
+            col.GetComponent<Monster>().Last_Hiter = myPlayer;
+            Debug.Log(col.gameObject.name + "를 맞춤 " + "데미지 : " + atk);
+            PV.RPC("DestroyRPC", RpcTarget.AllBuffered);
+        }
         if (col.CompareTag("Ground"))
         {
             rgbd.isKinematic = true;
         }
     }
+
+
+
     [PunRPC]
     void DestroyRPC() => Destroy(this.gameObject);
 

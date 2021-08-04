@@ -149,6 +149,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PV: {fileID: 3448280312010084221}
+  myPlayer: {fileID: 0}
   atk: 0
   shootPower: 0
 --- !u!114 &3448280312010084221

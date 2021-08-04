@@ -15,6 +15,10 @@ TagManager:
   - Soldier
   - Soldier_Arrow
   - PlayerList
+  - wall
+  - Weapon
+  - Monster
+  - Monster_Attack
   layers:
   - Default
   - TransparentFX
