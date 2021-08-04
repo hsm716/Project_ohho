@@ -8,7 +8,7 @@ ModelImporter:
     second: Take 001
   - first:
       74: -203655887218126122
-    second: mixamo.com
+    second: SwordShielding
   - first:
       74: 3325419645613220692
     second: SwordDeffensing
@@ -75,7 +75,7 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 0
     - serializedVersion: 16
-      name: mixamo.com
+      name: SwordShielding
       takeName: mixamo.com
       internalID: 0
       firstFrame: 0
