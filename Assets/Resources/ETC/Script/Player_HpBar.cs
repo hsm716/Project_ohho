@@ -10,6 +10,7 @@ public class Player_HpBar : MonoBehaviour
     public Slider hpBar;
     public Slider subBar;
     public GameObject HpLineFolder;
+    public Text Level_text;
     //  public PhotonView PV;
 
     //   private Player_Control playerLogic;
@@ -27,6 +28,7 @@ public class Player_HpBar : MonoBehaviour
         /*   if (Input.GetKeyDown(KeyCode.Escape))
                PV.RPC("DestroyRPC", RpcTarget.AllBuffered);*/
         transform.position = player.position + offset;
+        Level_text.text = "" + player_data.level;
         hpBar.value = player_data.curHP / player_data.maxHP;
 
         if (player_data.curStyle == Style.WeaponStyle.Arrow)

@@ -40,12 +40,15 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
    /* public Arrow curArrow;*/
 
     [SerializeField] private float rotateSpeed;
-    [SerializeField] private float moveSpeed;
+    [SerializeField] private float walkSpeed;
+    [SerializeField] private float curSpeed;
     public float curHP;
     public float maxHP;
 
     public float atk;
-
+    public int level;
+    public float curEXP;
+    public float maxEXP;
 
     public CapsuleCollider myCollider;
 
@@ -68,6 +71,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     private bool isRunningBack; // 뒤로 움직이고 있는지
     private bool isDeffensing; // 방어중인지 (class.Sword만 가능)
     private bool isSkill;
+    private bool isLevelUp;
     public bool isDodge; // 구르기 중인지 
     #endregion
 
@@ -122,6 +126,8 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
 
     public GameObject Respawn_Center;
 
+    public GameObject interface_player;
+
     #region
     // Soldier 세트 정보
     public GameObject SoldierAllSet;
@@ -139,6 +145,8 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
         NickNameText.color = PV.IsMine ? Color.green : Color.red;
         maxHP = 2000f;
         curHP = 2000f;
+        curEXP = 0f;
+        maxEXP = 100f;
         pullPower = 20f;
         shieldAmount = 500f;
         Respawn_Center = GameObject.Find("Respawn_Spots");
@@ -147,7 +155,10 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
 
         if (PV.IsMine)
         {
-            
+            interface_player.SetActive(true);
+            level = 1;
+            walkSpeed = 4f;
+            curSpeed = walkSpeed;
             transform.position = Respawn_Center.transform.GetChild((int)(PV.ViewID / 1000)).transform.position;
             SoldierType = Random.Range(0,3);
             Set1_Init_pos = Set1.localPosition;
@@ -235,6 +246,11 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
             if (transform.position.y < -100)
             {
                 isRespawn = true;
+            }
+
+            if(curEXP >= maxEXP && !isLevelUp)
+            {
+                LevelUp();
             }
 
 
@@ -341,7 +357,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
 
     void ShieldAttack_body()
     {
-        rgbd.AddForce(transform.forward * 100f, ForceMode.Impulse);
+        rgbd.AddForce(transform.forward * 60f, ForceMode.Impulse);
         rgbd.AddForce(Vector3.up * 7f, ForceMode.Impulse);
     }
 
@@ -371,7 +387,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     {
         isDeffensing = false;
         mRDown = false;
-        moveSpeed = 5f;
+        curSpeed = walkSpeed;
     }
 /*    private Arrow CreateNewArrow()
     {
@@ -429,7 +445,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
         {
             dodgeVec = movement;
             
-            moveSpeed = 7;
+            curSpeed = 7;
             if (isRunningBack)
             {
                 animator.SetTrigger("doDodge_back");
@@ -453,7 +469,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     [PunRPC]
     void DodgeOut()
     {
-        moveSpeed = 5f;
+        curSpeed = walkSpeed;
 
         isDodge = false;
 
@@ -466,13 +482,13 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
         attackEffect.enabled = false;
         animator.SetTrigger("doSkill_E");
         Invoke("Slash", 0.2f);
-        moveSpeed = 2f;
+        curSpeed = 2f;
         Skill_Vector = mouseDir.normalized;
         Invoke("Skill_E_Out", 0.7076923f);
     }
     void Skill_E_Out()
     {
-        moveSpeed = 5f;
+        curSpeed = walkSpeed;
         attackEffect.enabled = false;
         isSkill = false;
         eDown = false;
@@ -500,9 +516,9 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
 
         if (isDeffensing)
         {
-            moveSpeed = 3f;
+            curSpeed = 3f;
         }
-        movement = movement.normalized * moveSpeed * Time.deltaTime;
+        movement = movement.normalized * curSpeed * Time.deltaTime;
         rgbd.transform.position += movement;
        
         //rgbd.MovePosition(transform.position + movement);
@@ -967,6 +983,29 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
         }
     }
 
+    public void LevelUp()
+    {
+        isLevelUp = true;
+        curEXP = 0f;
+        maxEXP += 50f;
+        level += 1;
+        Invoke("LevelUpDelay", 0.2f);
+    }
+    void LevelUpDelay()
+    {
+        isLevelUp = false;
+    }
+
+    public void SpeedUp()
+    {
+        walkSpeed += 1;
+        curSpeed = walkSpeed;
+        animator.SetFloat("RunningAmount", animator.GetFloat("RunningAmount") + 0.2f);
+    }
+    public void PowerUp()
+    {
+        atk *= 1.25f;
+    }
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
@@ -980,6 +1019,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
             stream.SendNext(pullPower);
             stream.SendNext(curStyle);
             stream.SendNext(shieldAmount);
+            stream.SendNext(level);
         }
         else
         {
@@ -991,6 +1031,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
             pullPower = (float)stream.ReceiveNext();
             curStyle = (Style.WeaponStyle)stream.ReceiveNext();
             shieldAmount = (float)stream.ReceiveNext();
+            level = (int)stream.ReceiveNext();
         }
     }
 }
