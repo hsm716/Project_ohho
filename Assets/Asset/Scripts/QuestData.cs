@@ -13,15 +13,24 @@ public class QuestData : MonoBehaviourPunCallbacks//, IPunObservable
     public bool[] questClearCheck = { false };  //퀘스트 클리어함(각 플레이어)(점령X)
 
     public bool areaReach = false;
+    public int killcount = 0;
 
     public void Quest()
     {
         if(questIsActive[0] == true)    //첫 번째(섹션1)의 퀘스트를 받았을 때
         {
-            if (areaReach)  //QuestTrigger 스크립트 작성 > collider에 넣기
+            if (killcount >= 5) //슬라임 5마리 처치
             {
                 questClearCheck[0] = true;
             }
+        }
+        if (questIsActive[1] == true)
+        {
+
+        }
+        if (questIsActive[2] == true)
+        {
+
         }
     }
 
