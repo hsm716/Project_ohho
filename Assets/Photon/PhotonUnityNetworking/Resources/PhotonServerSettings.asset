@@ -60,6 +60,7 @@ MonoBehaviour:
   - ShieldAttack
   - QuestClear
   - QuestClear2
+  - Set_LastHiter
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

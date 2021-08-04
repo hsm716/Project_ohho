@@ -6,10 +6,24 @@ using UnityEngine;
 public class SpellExplosion : MonoBehaviourPunCallbacks
 {
     public PhotonView PV;
+    public Player_Control myPlayer;
     public float atk;
     void Awake()
     {
+        FindMyPlayer();
         Invoke("DestroyRPC", 1.5f);
+    }
+    void FindMyPlayer()
+    {
+        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+        foreach (GameObject p in players)
+        {
+            if (p.GetComponent<Player_Control>().PV.Owner.NickName == PV.Owner.NickName)
+            {
+                myPlayer = p.GetComponent<Player_Control>();
+                break;
+            }
+        }
     }
     private void OnTriggerEnter(Collider col)
     {
@@ -29,6 +43,21 @@ public class SpellExplosion : MonoBehaviourPunCallbacks
 
 
         }
+        if (col.CompareTag("Monster"))
+        {
+
+            //PhotonNetwork.Instantiate("Explosion", transform.position+new Vector3(0f,0.3f,0f), Quaternion.Euler(new Vector3(-transform.rotation.x,-transform.rotation.y,-transform.rotation.z)));
+            col.GetComponent<Monster>().Hit(atk);
+            col.GetComponent<Monster>().Last_Hiter = myPlayer;
+            PV.RPC("Set_LastHiter", RpcTarget.All, col);
+
+
+        }
+    }
+    [PunRPC]
+    void Set_LastHiter(Collider col)
+    {
+        col.GetComponent<Monster>().Last_Hiter = myPlayer;
     }
     [PunRPC]
     void DestroyRPC() => Destroy(this.gameObject);

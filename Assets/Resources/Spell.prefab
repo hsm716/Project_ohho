@@ -185,6 +185,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PV: {fileID: 349140914206041084}
+  myPlayer: {fileID: 0}
   atk: 0
   boom: {fileID: 3298907995747871940}
 --- !u!114 &349140914206041084

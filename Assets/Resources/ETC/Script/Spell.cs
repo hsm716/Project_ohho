@@ -7,7 +7,7 @@ public class Spell : MonoBehaviourPunCallbacks
 {
     Rigidbody rgbd;
     public PhotonView PV;
-    Player_Control myPlayer;
+    public Player_Control myPlayer;
     public float atk;
 
     public GameObject boom;
@@ -58,6 +58,16 @@ public class Spell : MonoBehaviourPunCallbacks
             Invoke("DestroyRPC",0f);
         }
         if ((col.CompareTag("Soldier") && col.GetComponent<Soldier>().PV.Owner != PV.Owner))
+        {
+            rgbd.isKinematic = true;
+            boom.SetActive(true);
+            boom.transform.parent = null;
+            //PhotonNetwork.Instantiate("Explosion", transform.position+new Vector3(0f,0.3f,0f), Quaternion.Euler(new Vector3(-transform.rotation.x,-transform.rotation.y,-transform.rotation.z)));
+            //col.GetComponent<Player_Control>().Hit(atk);
+
+            Invoke("DestroyRPC", 0f);
+        }
+        if (col.CompareTag("Monster"))
         {
             rgbd.isKinematic = true;
             boom.SetActive(true);
