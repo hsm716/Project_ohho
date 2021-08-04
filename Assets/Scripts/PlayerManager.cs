@@ -23,7 +23,7 @@ public class PlayerManager : MonoBehaviour
     bool spawnCheck = true;
     void Update()
     {
-        if(RoomManager.Instance.playerCount == 2 && spawnCheck)
+        if(RoomManager.Instance.playerCount == 1 && spawnCheck)
         {
             spawnCheck = false;
             if (PV.IsMine)

@@ -271,6 +271,9 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
         horizontalMove = Input.GetAxisRaw("Horizontal");
         verticalMove = Input.GetAxisRaw("Vertical");
 
+        //퀘스트보드
+
+
         if (Input.GetKeyDown(KeyCode.E))
         {
             eDown = true;

@@ -3747,6 +3747,7 @@ MonoBehaviour:
   questIsActive: 000000000000
   questClearCheck: 000000000000
   areaReach: 0
+  killcount: 0
 --- !u!1 &7044034116310768681
 GameObject:
   m_ObjectHideFlags: 0

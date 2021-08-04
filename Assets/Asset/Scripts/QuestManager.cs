@@ -7,15 +7,15 @@ using Photon.Pun;
 public class QuestManager : MonoBehaviourPunCallbacks//, IPunObservable
 {
     public static QuestManager Instance;
-    public bool[] questOk = { false, false, false, false, false, false };   //false > �̿Ϸ����� �� ������ ����Ʈ
-    public int[] SectionOwner = { 0, 0, 0, 0, 0, 0 };   //�� �÷��̾��� Photon viewID > � �÷��̾ ������ ��������
+    public bool[] questOk = { false, false, false, false, false, false };   //false > 구역이 점령되지 않은 상태
+    public int[] SectionOwner = { 0, 0, 0, 0, 0, 0 };   //> 각 구역의 점령자의 viewID
 
-    public GameObject QuestARUI;    //����Ʈ ���� ���� UI
-    public GameObject QuestClearUI;   //����Ʈ ����Ʈ UI
-    public GameObject QuestBoardUI;   //����Ʈ ����Ʈ UI
+    public GameObject QuestARUI;    //퀘스트 수락, 거절 UI
+    public GameObject QuestClearUI;   //퀘스트 완료 UI
+    public GameObject QuestBoardUI;   //퀘스트 보드 UI
 
     public Dialogue dialogue;
-    public Text questText;
+    public Text questARText;
 
     public PhotonView PV;
 
@@ -40,7 +40,7 @@ public class QuestManager : MonoBehaviourPunCallbacks//, IPunObservable
     {
         QuestARUI.SetActive(true);
         dialogue = _dialogue;
-        questText.text = dialogue.npcId + "�� ������ ����Ʈ�� �����Ͻðڽ��ϱ�?";   //dialogue�� ������ ���� ���� ����� ��
+        questARText.text = dialogue.npcId + "퀘스트를 수락하시겠습니까?";   //각 구역별로 다르게 가능
     }
 
     public void ShowQuestClear(Dialogue _dialogue)
@@ -67,7 +67,7 @@ public class QuestManager : MonoBehaviourPunCallbacks//, IPunObservable
         {
             if (p.GetComponent<Player_Control>().PV.Owner.NickName == PhotonNetwork.LocalPlayer.NickName)
             {
-                p.GetComponent<QuestData>().questIsActive[dialogue.npcId] = true;    //�ش� �÷��̾�� �ش� ����Ʈ�� ���������� ��ȯ
+                p.GetComponent<QuestData>().questIsActive[dialogue.npcId] = true;    //각 구역의 퀘스트를 진행중으로 전환
             }
         }
         QuestARUI.SetActive(false);
@@ -78,62 +78,18 @@ public class QuestManager : MonoBehaviourPunCallbacks//, IPunObservable
         QuestARUI.SetActive(false);
     }
 
-    /*
-    public void QuestClear()
-    {
-        PV.RPC("QuestClear2", RpcTarget.All);
-    }
-
-    [PunRPC]
-    public void QuestClear2() //�ٽ� ���� �ɾ��� ���� �ӽ�
-    {
-        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
-
-        foreach (GameObject p in players)
-        {
-            if (p.GetComponent<Player_Control>().PV.Owner.NickName == PhotonNetwork.LocalPlayer.NickName)//�ش� �÷��̾�
-            {
-                if (p.GetComponent<QuestData>().questClearCheck[dialogue.npcId])    //Ŭ���� �ߴٸ�
-                {
-                    SectionOwner[dialogue.npcId] = p.GetComponent<PhotonView>().ViewID;   //����
-                    questOk[dialogue.npcId] = true;       //���ɿ���
-                }
-            }
-        }
-
-        foreach (GameObject p in players)
-        {
-            int i = 0;
-            p.GetComponent<QuestData>().questClearCheck[dialogue.npcId] = false;    //�������� ���߿� �������� �� �ش� ����Ʈ Ŭ���� ����
-            p.GetComponent<QuestData>().questIsActive[dialogue.npcId] = false;   //�������� ����Ʈ ����
-            i++;
-        }
-
-        QuestClearUI.SetActive(false);
-
-    }
-    */
-
     public void QuestClear()
     {
         GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
-        //QuestData[] Q = { players[0].GetComponent<QuestData>(), players[1].GetComponent<QuestData>() };
 
         int npcID = 0, viewID = 0;
         bool ok = true;
-        /*
-        int i = 0;
-        foreach (var p in players)
-        {
-            Q[i] = p.GetComponent<QuestData>();
-            i++;
-        }
-        */
+
         foreach (GameObject p in players)
         {
-            if (p.GetComponent<Player_Control>().PV.Owner.NickName == PhotonNetwork.LocalPlayer.NickName)//�ش� �÷��̾�
+            if (p.GetComponent<Player_Control>().PV.Owner.NickName == PhotonNetwork.LocalPlayer.NickName)
             {
-                if (p.GetComponent<QuestData>().questClearCheck[dialogue.npcId])    //Ŭ���� �ߴٸ�
+                if (p.GetComponent<QuestData>().questClearCheck[dialogue.npcId])
                 {
                     npcID = dialogue.npcId;
                     viewID = p.GetComponent<PhotonView>().ViewID;
@@ -147,34 +103,18 @@ public class QuestManager : MonoBehaviourPunCallbacks//, IPunObservable
     }
 
     [PunRPC]
-    public void QuestClear2(int npcID, int viewID, bool ok) //�ٽ� ���� �ɾ��� ���� �ӽ�
+    public void QuestClear2(int npcID, int viewID, bool ok)
     {
         SectionOwner[npcID] = viewID;
         questOk[npcID] = ok;
 
         GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
 
-        foreach (GameObject p in players)
+        foreach (GameObject p in players)   //다른 사람의 퀘스트 진행을 삭제
         {
-            p.GetComponent<QuestData>().questClearCheck[npcID] = false;    //�������� ���߿� �������� �� �ش� ����Ʈ Ŭ���� ����
-            p.GetComponent<QuestData>().questIsActive[npcID] = false;   //�������� ����Ʈ ����
+            p.GetComponent<QuestData>().questClearCheck[npcID] = false;
+            p.GetComponent<QuestData>().questIsActive[npcID] = false;
         }
     }
 
-
-    /*
-    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
-    {
-        if (stream.IsWriting)
-        {
-            stream.SendNext(SectionOwner);
-            stream.SendNext(questOk);
-        }
-        else
-        {
-            SectionOwner = (int[])stream.ReceiveNext();
-            questOk = (bool[])stream.ReceiveNext();
-        }
-    }
-    */
 }
