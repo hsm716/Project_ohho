@@ -15,6 +15,7 @@ public class QuestData : MonoBehaviourPunCallbacks//, IPunObservable
     public bool areaReach = false;
     public int killcount = 0;
 
+
     public void Quest()
     {
         if(questIsActive[0] == true)    //첫 번째(섹션1)의 퀘스트를 받았을 때

@@ -62,8 +62,9 @@ public class Arrow : MonoBehaviourPunCallbacks
         }
         if (col.CompareTag("Monster"))
         {
-            col.GetComponent<Monster>().Hit(atk);
             col.GetComponent<Monster>().Last_Hiter = myPlayer;
+            col.GetComponent<Monster>().Hit(atk);
+
             Debug.Log(col.gameObject.name + "를 맞춤 " + "데미지 : " + atk);
             PV.RPC("DestroyRPC", RpcTarget.AllBuffered);
         }

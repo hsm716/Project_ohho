@@ -47,18 +47,15 @@ public class SpellExplosion : MonoBehaviourPunCallbacks
         {
 
             //PhotonNetwork.Instantiate("Explosion", transform.position+new Vector3(0f,0.3f,0f), Quaternion.Euler(new Vector3(-transform.rotation.x,-transform.rotation.y,-transform.rotation.z)));
-            col.GetComponent<Monster>().Hit(atk);
             col.GetComponent<Monster>().Last_Hiter = myPlayer;
-            PV.RPC("Set_LastHiter", RpcTarget.All, col);
+            col.GetComponent<Monster>().Hit(atk);
+            
+            //PV.RPC("Set_LastHiter", RpcTarget.All, col);
 
 
         }
     }
-    [PunRPC]
-    void Set_LastHiter(Collider col)
-    {
-        col.GetComponent<Monster>().Last_Hiter = myPlayer;
-    }
+
     [PunRPC]
     void DestroyRPC() => Destroy(this.gameObject);
 }

@@ -177,8 +177,8 @@ public class Monster : MonoBehaviourPunCallbacks, IPunObservable
 
         if (other.CompareTag("Player_Sword"))
         {
-            Hit(other.transform.parent.GetComponent<Player_Control>().atk);
             Last_Hiter = other.transform.parent.GetComponent<Player_Control>();
+            Hit(other.transform.parent.GetComponent<Player_Control>().atk);
         }
 
 
