@@ -16,16 +16,25 @@ public class PlayerManager : MonoBehaviour
 
     void Start()
     {
+        RoomManager.Instance.playerCount++;
         MC = GameObject.Find("MainCanvas");
-        if (PV.IsMine)
+
+    }
+    bool spawnCheck = true;
+    void Update()
+    {
+        if(RoomManager.Instance.playerCount == 2 && spawnCheck)
         {
-            
-            CreateController();
-            
+            spawnCheck = false;
+            if (PV.IsMine)
+            {
+
+                CreateController();
+
+            }
         }
     }
 
-    
     void CreateController()
     {
         //PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "PlayerController"), new Vector3(-2,23.5f,-4.1f), Quaternion.identity);
