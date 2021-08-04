@@ -5,10 +5,11 @@ using UnityEngine;
 
 public class MonsterSpawner : MonoBehaviour
 {
-    // Start is called before the first frame update
+    public PhotonView PV;
     void Start()
     {
-        StartCoroutine(Spawn());
+        if(PV.IsMine)
+            StartCoroutine(Spawn());
     }
 
     // Update is called once per frame

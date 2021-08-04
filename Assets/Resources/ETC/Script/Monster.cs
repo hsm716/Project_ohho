@@ -68,7 +68,7 @@ public class Monster : MonoBehaviourPunCallbacks, IPunObservable
         {
             if (Last_Hiter.GetComponent<QuestData>().questIsActive[0])
             {
-                //Last_Hiter.GetComponent<QuestData>().killCount++;
+                Last_Hiter.GetComponent<QuestData>().killcount++;
             }
         
             myCol.enabled = false;
