@@ -990,6 +990,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     public void LevelUp()
     {
         isLevelUp = true;
+        interface_player.GetComponent<Player_Interface>().StartCoroutine("Shuffle");
         curEXP = 0f;
         maxEXP += 50f;
         level += 1;
@@ -999,17 +1000,6 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     void LevelUpDelay()
     {
         isLevelUp = false;
-    }
-
-    public void SpeedUp()
-    {
-        walkSpeed += 1;
-        curSpeed = walkSpeed;
-        animator.SetFloat("RunningAmount", animator.GetFloat("RunningAmount") + 0.2f);
-    }
-    public void PowerUp()
-    {
-        atk *= 1.25f;
     }
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
