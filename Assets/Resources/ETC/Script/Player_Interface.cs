@@ -21,7 +21,7 @@ public class Player_Interface : MonoBehaviour
     string[] select_ability_names = { "HP", "SPEED", "POWER", "SHIELD", "MP" };
 
     // Update is called once per frame
-
+    // Im so sad
     void Update()
     {
         expBar.value = (player_data.curEXP / player_data.maxEXP)*100;
