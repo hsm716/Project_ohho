@@ -10,6 +10,7 @@ public class Player_Interface : MonoBehaviour
     
 
     // Update is called once per frame
+    // Im so sad
     void Update()
     {
         expBar.value = player_data.curEXP / player_data.maxEXP;
