@@ -6,6 +6,7 @@ using UnityEngine.UI;
 
 public class Player_Interface : MonoBehaviour
 {
+    //수정 테스트
     public Player_Control player_data;
     public Slider expBar;
     public TextMeshProUGUI expPercent;
@@ -20,6 +21,7 @@ public class Player_Interface : MonoBehaviour
     public Sprite[] select_ability_icons;
     string[] select_ability_names = { "HP", "SPEED", "POWER", "SHIELD", "MP" };
 
+    //리얼 수정좀 잘좀 해주세요;; ㅅㅂ
     // Update is called once per frame
     // Im so sad, wy
     void Update()

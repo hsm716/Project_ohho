@@ -40,6 +40,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
    /* public Arrow curArrow;*/
 
     [SerializeField] private float rotateSpeed;
+    //수정테스트 ㅅ비라 진짜 제발;;
     public float walkSpeed;
     public float curSpeed;
     public float curHP;
@@ -995,6 +996,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
         level += 1;
         Invoke("LevelUpDelay", 0.2f);
     }
+    //수정테스트
     void LevelUpDelay()
     {
         isLevelUp = false;
