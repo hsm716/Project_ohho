@@ -12640,6 +12640,7 @@ MonoBehaviour:
   sound_Teleport: {fileID: 900916152791002128}
   CM: {fileID: 0}
   characterCamera: {fileID: 0}
+  CVC: {fileID: 0}
   Respawn_Center: {fileID: 0}
   interface_player: {fileID: 4353305787579141131}
   SoldierAllSet: {fileID: 0}

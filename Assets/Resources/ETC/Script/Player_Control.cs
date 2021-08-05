@@ -6,6 +6,7 @@ using Photon.Realtime;
 using UnityEngine.UI;
 using System.Xml;
 using Photon.Pun.Demo.Asteroids;
+using Cinemachine;
 
 public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
 {
@@ -21,6 +22,8 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     public Text NickNameText;
     public Image HealthImage;
     public Player_HpBar Hp_Bar;
+
+   
 
     public GameObject playerEquipPoint;
     public GameObject Head;
@@ -124,6 +127,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     public GameObject CM;
     public Camera characterCamera;
 
+    public CinemachineVirtualCamera CVC;
 
     public GameObject Respawn_Center;
 
@@ -142,6 +146,8 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     string[] SoldierType_arrow_str = {"Soldier_main_arrow","Soldier_main_arrow_B", "Soldier_main_arrow_C" };
     private void Awake()
     {
+        
+
         NickNameText.text = PV.IsMine ? PhotonNetwork.NickName : PV.Owner.NickName;
         NickNameText.color = PV.IsMine ? Color.green : Color.red;
         maxHP = 2000f;
@@ -167,7 +173,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
             Instance = this.gameObject;
 
 
-/*            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < 10; i++)
             {
 
                 GameObject go = PhotonNetwork.Instantiate(SoldierType_melee_str[SoldierType], transform.position, transform.rotation);
@@ -182,15 +188,17 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
                 Soldier so = go.transform.GetChild(0).GetComponent<Soldier>();
                 so.myNumber = i;
                 so.mySetNumber = 1;
-            }*/
+            }
             /*            Instance = this;
                         ArrowIntialize(10);*/
             rgbd = GetComponent<Rigidbody>();
             animator = GetComponent<Animator>();
             CM = GameObject.Find("Main Camera");
+            CVC =CM.GetComponent<CinemachineVirtualCamera>();
+            CVC.Follow = this.transform;
             characterCamera = CM.GetComponent<Camera>();
-            var CM_cm = CM.GetComponent<Camera_Move>();
-            CM_cm.player = this.gameObject;
+            //var CM_cm = CM.GetComponent<Camera_Move>();
+            //CM_cm.player = this.gameObject;
         }
 
     }
