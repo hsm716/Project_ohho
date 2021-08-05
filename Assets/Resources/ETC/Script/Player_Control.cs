@@ -40,8 +40,9 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
    /* public Arrow curArrow;*/
 
     [SerializeField] private float rotateSpeed;
-    [SerializeField] private float walkSpeed;
-    [SerializeField] private float curSpeed;
+    //수정테스트 ㅅ비라 진짜 제발;;
+    public float walkSpeed;
+    public float curSpeed;
     public float curHP;
     public float maxHP;
 
@@ -72,7 +73,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     private bool isDeffensing; // 방어중인지 (class.Sword만 가능)
     private bool isSkill;
     private bool isLevelUp;
-    public bool isDodge; // 구르기 중인지 
+    public bool isDodge; // 구르기 중인지
     #endregion
 
 
@@ -109,7 +110,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
 
     #endregion
 
-    #region  
+    #region
     //사운드소스
     public AudioSource sound_Slash1;
     public AudioSource sound_Slash2;
@@ -213,7 +214,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
             Turn();
         }
         Respawn();
-        
+
 
     }
     void Update()
@@ -301,7 +302,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
             else if(curStyle == Style.WeaponStyle.Sword)
             {
                 Skill_E();
-                
+
             }
         }
 
@@ -411,7 +412,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     [PunRPC]
     public static Arrow GetArrow()
     {
-        if (Instance.arrowQ.Count > 0) 
+        if (Instance.arrowQ.Count > 0)
         {
             var obj = Instance.arrowQ.Dequeue();
             //obj.transform.SetParent(null);
@@ -447,7 +448,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
         if (!isDodge && dDown &&!isAttack &&!isDeffensing)
         {
             dodgeVec = movement;
-            
+
             curSpeed = 7;
             if (isRunningBack)
             {
@@ -461,7 +462,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
                 animator.transform.forward = dodgeVec;
 
             }
-            
+
             isDodge = true;
 
             Invoke("DodgeOut", 0.7f);
@@ -523,7 +524,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
         }
         movement = movement.normalized * curSpeed * Time.deltaTime;
         rgbd.transform.position += movement;
-       
+
         //rgbd.MovePosition(transform.position + movement);
     }
 
@@ -614,7 +615,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
         {
             case Style.WeaponStyle.Sword:
                 isAttackReady = 0.15f < attackDelay;
-                
+
                 if (isAttackReady && mLDown && !isDodge && !isDeffensing && !eDown)
                 {
 
@@ -624,7 +625,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
                     attackDelay = 0f;
                 }
 
-                
+
                 break;
             case Style.WeaponStyle.Arrow:
                 isAttackReady = 0.6f < attackDelay;
@@ -634,7 +635,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
 
                     animator.SetBool("isAim_Arrow", true);
                     animator.SetTrigger("doShoot");
-                    sound_Shoot1.volume = pullPower / 120f; 
+                    sound_Shoot1.volume = pullPower / 120f;
                     Invoke("Shoot", 0.1f);
                     isAttack = true;
                     Invoke("PullPower_valueChange", 0.1f);
@@ -712,14 +713,14 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
             {
                 curArrow.transform.SetParent(null);
                 curArrow.transform.position = curArrow.transform.position + direction.normalized;
-                
+
                 curArrow.PV.RPC("Shoot", RpcTarget.AllBuffered, direction.normalized);
                 curArrow = null;
             }*//*
-            
+
         }*/
     }
- 
+
     // Style::Arrow 공격모션 벗어나는 동작코드, 210624_황승민
     void ShootOut()
     {/*
@@ -752,7 +753,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
             {
                 curArrow.transform.SetParent(null);
                 curArrow.transform.position = curArrow.transform.position + direction.normalized;
-                
+
                 curArrow.PV.RPC("Shoot", RpcTarget.AllBuffered, direction.normalized);
                 curArrow = null;
             }*/
@@ -773,13 +774,13 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
         {
             Vector3 bottom = myCollider.bounds.center - (Vector3.up * myCollider.bounds.extents.y);
             Vector3 curve = bottom + (Vector3.up * myCollider.radius);
-            
+
             dir_ = curve - p.point;
 
-            
+
         }
 
-        
+
     }
     private void OnCollisionExit(Collision col)
     {
@@ -816,7 +817,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
 
     }
 
- 
+
 
     void AttackOut()
     {
@@ -898,11 +899,11 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
                 {
                     animator.SetBool("isDeffensing", false);
                 }
-                
+
 
                 break;
             case Style.WeaponStyle.Arrow:
-                
+
                 //정지 시,
                 if(horizontalMove == 0 && verticalMove == 0)
                 {
@@ -914,7 +915,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
                     else
                     {
                         animator.SetBool("isAim_Arrow", false);
-                        
+
 
 
                     }
@@ -955,9 +956,9 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
                 }
 
 
-                break;  
+                break;
 
-               
+
 
             case Style.WeaponStyle.Magic:
                 // 정지 시,
@@ -994,6 +995,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
         level += 1;
         Invoke("LevelUpDelay", 0.2f);
     }
+    //수정테스트
     void LevelUpDelay()
     {
         isLevelUp = false;
