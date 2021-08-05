@@ -8,12 +8,10 @@ public class DialogueManager : MonoBehaviour
 {
     private Queue<string> sentences;
 
-    public Text nameText;
-    public Text dialoguText;
-    public Button nextDialogueButton;
-    //public Animator animator;
     public GameObject dialoguePanel;
-
+    public Text nameText;
+    public Text dialogueText;
+    public Button nextDialogueButton;
     public float speakDelay;
 
     public Dialogue dialogue;
@@ -125,10 +123,10 @@ public class DialogueManager : MonoBehaviour
 
     IEnumerator TypeSentence(string sentence, float delay)
     {
-        dialoguText.text = "";
+        dialogueText.text = "";
         foreach (char letter in sentence.ToCharArray())
         {
-            dialoguText.text += letter;
+            dialogueText.text += letter;
             yield return new WaitForSeconds(delay);
             yield return null;
         }

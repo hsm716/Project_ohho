@@ -12,7 +12,6 @@ public class QuestManager : MonoBehaviourPunCallbacks//, IPunObservable
 
     public GameObject QuestARUI;    //퀘스트 수락, 거절 UI
     public GameObject QuestClearUI;   //퀘스트 완료 UI
-    public GameObject QuestBoardUI;   //퀘스트 보드 UI
 
     public Dialogue dialogue;
     public Text questARText;
@@ -40,7 +39,7 @@ public class QuestManager : MonoBehaviourPunCallbacks//, IPunObservable
     {
         QuestARUI.SetActive(true);
         dialogue = _dialogue;
-        questARText.text = dialogue.npcId + "퀘스트를 수락하시겠습니까?";   //각 구역별로 다르게 가능
+        questARText.text = dialogue.npcId + "번 구역의 퀘스트를 수락하시겠습니까?";   //각 구역별로 다르게 가능
     }
 
     public void ShowQuestClear(Dialogue _dialogue)
@@ -49,25 +48,20 @@ public class QuestManager : MonoBehaviourPunCallbacks//, IPunObservable
         dialogue = _dialogue;
     }
 
-    public void ShowQuestBoard()
-    {
-        QuestBoardUI.SetActive(true);
-    }
-
-    public void CloseQuestBoard()
-    {
-        QuestBoardUI.SetActive(false);
-    }
-
-    public void AcceptQuest()  //����Ʈ ����
+    public void AcceptQuest()  //퀘스트 수락
     {
         GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
 
+        //QuestBoard_List[dialogue.npcId].SetActive(true);        ///////////////
+
         foreach (GameObject p in players)
         {
-            if (p.GetComponent<Player_Control>().PV.Owner.NickName == PhotonNetwork.LocalPlayer.NickName)
+            if (p.GetComponent<Player_Control>().PV.Owner.NickName == PhotonNetwork.LocalPlayer.NickName)   //자신만
             {
                 p.GetComponent<QuestData>().questIsActive[dialogue.npcId] = true;    //각 구역의 퀘스트를 진행중으로 전환
+
+                p.GetComponent<QuestData>().ShowListComponent(dialogue.npcId);   //해당 구역의 퀘스트 요소 활성화
+                p.GetComponent<QuestData>().ShowButtonComponent(dialogue.npcId);   //각 구역의 퀘스트 포기버튼 활성화
             }
         }
         QuestARUI.SetActive(false);
@@ -87,17 +81,20 @@ public class QuestManager : MonoBehaviourPunCallbacks//, IPunObservable
 
         foreach (GameObject p in players)
         {
-            if (p.GetComponent<Player_Control>().PV.Owner.NickName == PhotonNetwork.LocalPlayer.NickName)
+            if (p.GetComponent<Player_Control>().PV.Owner.NickName == PhotonNetwork.LocalPlayer.NickName)   //자신만
             {
                 if (p.GetComponent<QuestData>().questClearCheck[dialogue.npcId])
                 {
                     npcID = dialogue.npcId;
                     viewID = p.GetComponent<PhotonView>().ViewID;
+                    
+                    p.GetComponent<QuestData>().CloseButtonComponent(npcID); //해당 퀘스트 포기 버튼 비활성화
                 }
             }
         }
 
         QuestClearUI.SetActive(false);
+        //QuestGiveUpButton[npcID].gameObject.SetActive(false);        ///////////////
 
         PV.RPC("QuestClear2", RpcTarget.All, npcID, viewID, ok);
     }
@@ -114,6 +111,12 @@ public class QuestManager : MonoBehaviourPunCallbacks//, IPunObservable
         {
             p.GetComponent<QuestData>().questClearCheck[npcID] = false;
             p.GetComponent<QuestData>().questIsActive[npcID] = false;
+
+            if (!(p.GetComponent<Player_Control>().PV.Owner.NickName == PhotonNetwork.LocalPlayer.NickName))    //자신을 제외한 나머지
+            {
+                p.GetComponent<QuestData>().CloseListComponent(npcID);   //퀘스트 보드에 그 구역 퀘스트 삭제
+            }
+
         }
     }
 

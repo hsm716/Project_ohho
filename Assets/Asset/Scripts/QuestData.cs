@@ -11,10 +11,13 @@ public class QuestData : MonoBehaviourPunCallbacks//, IPunObservable
 
     public bool[] questIsActive = { false };    //퀘스트 진행중(각 플레이어)
     public bool[] questClearCheck = { false };  //퀘스트 클리어함(각 플레이어)(점령X)
+    public GameObject QuestBoardPanel;   //퀘스트 보드 UI
+
+    public Transform QuestBoard_List;
+    public GameObject[] QuestGiveUpButton;
 
     public bool areaReach = false;
     public int killcount = 0;
-
 
     public void Quest()
     {
@@ -23,6 +26,7 @@ public class QuestData : MonoBehaviourPunCallbacks//, IPunObservable
             if (killcount >= 5) //슬라임 5마리 처치
             {
                 questClearCheck[0] = true;
+
             }
         }
         if (questIsActive[1] == true)
@@ -35,19 +39,37 @@ public class QuestData : MonoBehaviourPunCallbacks//, IPunObservable
         }
     }
 
-    /*
-    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+
+
+    public void ShowQuestBoard()
     {
-        if (stream.IsWriting)
-        {
-            stream.SendNext(questIsActive);
-            stream.SendNext(questClearCheck);
-        }
-        else
-        {
-            questIsActive = (bool[])stream.ReceiveNext();
-            questClearCheck = (bool[])stream.ReceiveNext();
-        }
+        QuestBoardPanel.SetActive(true);
     }
-    */
+
+    public void CloseQuestBoard()
+    {
+        QuestBoardPanel.SetActive(false);
+    }
+
+    public void ShowListComponent(int npcID)    //퀘스트 수락시
+    {
+        //QuestBoard_List[npcID].SetActive(true);
+        QuestBoard_List.GetChild(npcID).gameObject.SetActive(true);
+    }
+
+    public void CloseListComponent(int npcID)   //퀘스트 실패(다른 사람이 먼저 클리어)시
+    {
+        //QuestBoard_List[npcID].SetActive(false);
+        QuestBoard_List.GetChild(npcID).gameObject.SetActive(false);
+    }
+
+    public void ShowButtonComponent(int npcID)  //퀘스트 수락시
+    {
+        QuestGiveUpButton[npcID].SetActive(true);
+    }
+
+    public void CloseButtonComponent(int npcID) //퀘스트 클리어시(자신)
+    {
+        QuestGiveUpButton[npcID].SetActive(false);
+    }
 }
