@@ -21,7 +21,7 @@ public class Player_Interface : MonoBehaviour
     string[] select_ability_names = { "HP", "SPEED", "POWER", "SHIELD", "MP" };
 
     // Update is called once per frame
-    // Im so sad
+    // Im so sad, wy
     void Update()
     {
         expBar.value = (player_data.curEXP / player_data.maxEXP)*100;
@@ -31,6 +31,7 @@ public class Player_Interface : MonoBehaviour
     }
     public void Select(int index)
     {
+        //qwe
         switch (select_name[index].text)
         {
             case "HP":
@@ -69,6 +70,7 @@ public class Player_Interface : MonoBehaviour
 
     IEnumerator Shuffle()
     {
+        //qq
         yield return new WaitForSeconds(1f);
         bool[] selected_state = { false, false, false, false, false };
 
