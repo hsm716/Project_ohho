@@ -40,8 +40,8 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
    /* public Arrow curArrow;*/
 
     [SerializeField] private float rotateSpeed;
-    [SerializeField] private float walkSpeed;
-    [SerializeField] private float curSpeed;
+    public float walkSpeed;
+    public float curSpeed;
     public float curHP;
     public float maxHP;
 
@@ -128,6 +128,15 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
 
     public GameObject interface_player;
 
+    float playerHeight = 2f;
+    [SerializeField] float slopeRaycastExtention = 0.8f;
+    [SerializeField] float maxSlopeAngle = 60f;
+    RaycastHit currentSlopeRaycastHit;
+    Vector3 groundSlopeDirection;
+    float groundSlopeAngle;
+    public LayerMask groundMask;
+
+    Vector3 slopeMoveDirection;
     #region
     // Soldier 세트 정보
     public GameObject SoldierAllSet;
@@ -139,6 +148,33 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
 
     string[] SoldierType_melee_str = { "Soldier_main_melee", "Soldier_main_melee_B", "Soldier_main_melee_C" };
     string[] SoldierType_arrow_str = {"Soldier_main_arrow","Soldier_main_arrow_B", "Soldier_main_arrow_C" };
+    
+/*    private bool CanWalkSlope()
+    {
+        if(groundSlopeAngle <= maxSlopeAngle)
+        {
+            return true;
+        }
+        return false;
+    }
+
+    private bool DetectSlope()
+    {
+        if(Physics.Raycast(transform.position,Vector3.down, out currentSlopeRaycastHit, (playerHeight / 2) + slopeRaycastExtention, groundMask))
+        {
+            if(currentSlopeRaycastHit.normal != Vector3.up)
+            {
+                Vector3 slopeCross = Vector3.Cross(currentSlopeRaycastHit.normal, Vector3.down);
+                groundSlopeDirection = Vector3.Cross(slopeCross, currentSlopeRaycastHit.normal);
+                groundSlopeAngle = Vector3.Angle(currentSlopeRaycastHit.normal, Vector3.up);
+            }
+            else
+            {
+                return false;
+            }
+        }
+        return false;
+    }*/
     private void Awake()
     {
         NickNameText.text = PV.IsMine ? PhotonNetwork.NickName : PV.Owner.NickName;
@@ -520,7 +556,17 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
         }
         movement = movement.normalized * curSpeed * Time.deltaTime;
         rgbd.transform.position += movement;
-       
+        /*        if (!DetectSlope())
+                {
+                    movement = movement.normalized * curSpeed * Time.deltaTime;
+                    rgbd.transform.position += movement;
+                }
+                else if (DetectSlope() && CanWalkSlope())
+                {
+                    slopeMoveDirection = Vector3.ProjectOnPlane(movement, currentSlopeRaycastHit.normal);
+                    rgbd.transform.position += slopeMoveDirection;
+                }*/
+
         //rgbd.MovePosition(transform.position + movement);
     }
 
@@ -761,10 +807,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
 
 
 
-    private void OnCollisionEnter(Collision col)
-    {
-    }
-    private void OnCollisionStay(Collision col)
+/*    private void OnCollisionStay(Collision col)
     {
         foreach(ContactPoint p in col.contacts)
         {
@@ -773,14 +816,15 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
             
             dir_ = curve - p.point;
 
-            
+            if (dir_.y >= 0.2 && dir_.y <= 0.29f)
+            {
+                rgbd.AddForce(new Vector3(0f, dir_.y * 2f, 0f), ForceMode.Impulse);
+            }
         }
 
         
-    }
-    private void OnCollisionExit(Collision col)
-    {
-    }
+    }*/
+
 
     private void OnTriggerEnter(Collider other)
     {
@@ -986,6 +1030,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     public void LevelUp()
     {
         isLevelUp = true;
+        interface_player.GetComponent<Player_Interface>().StartCoroutine("Shuffle");
         curEXP = 0f;
         maxEXP += 50f;
         level += 1;
@@ -996,16 +1041,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
         isLevelUp = false;
     }
 
-    public void SpeedUp()
-    {
-        walkSpeed += 1;
-        curSpeed = walkSpeed;
-        animator.SetFloat("RunningAmount", animator.GetFloat("RunningAmount") + 0.2f);
-    }
-    public void PowerUp()
-    {
-        atk *= 1.25f;
-    }
+
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
