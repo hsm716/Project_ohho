@@ -52,8 +52,6 @@ public class QuestManager : MonoBehaviourPunCallbacks//, IPunObservable
     {
         GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
 
-        //QuestBoard_List[dialogue.npcId].SetActive(true);        ///////////////
-
         foreach (GameObject p in players)
         {
             if (p.GetComponent<Player_Control>().PV.Owner.NickName == PhotonNetwork.LocalPlayer.NickName)   //자신만
@@ -65,6 +63,22 @@ public class QuestManager : MonoBehaviourPunCallbacks//, IPunObservable
             }
         }
         QuestARUI.SetActive(false);
+    }
+
+    public void GiveupQuest(int npcID)
+    {
+        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+
+        foreach (GameObject p in players)
+        {
+            if (p.GetComponent<Player_Control>().PV.Owner.NickName == PhotonNetwork.LocalPlayer.NickName)   //자신만
+            {
+                p.GetComponent<QuestData>().questIsActive[npcID] = false;    //각 구역의 퀘스트를 포기
+                p.GetComponent<QuestData>().questClearCheck[npcID] = false;    //완료 조건을 만족시켰더라도 포기하면 사라짐
+
+                p.GetComponent<QuestData>().CloseListComponent(npcID);   //해당 구역의 퀘스트 요소 비활성화
+            }
+        }
     }
 
     public void RejectQuest()

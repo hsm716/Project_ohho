@@ -12,6 +12,8 @@ public class QuestData : MonoBehaviourPunCallbacks//, IPunObservable
     public bool[] questIsActive = { false };    //퀘스트 진행중(각 플레이어)
     public bool[] questClearCheck = { false };  //퀘스트 클리어함(각 플레이어)(점령X)
     public GameObject QuestBoardPanel;   //퀘스트 보드 UI
+    public GameObject GiveupPanel;   //퀘스트 보드 UI
+    public int questnum = 0;
 
     public Transform QuestBoard_List;
     public GameObject[] QuestGiveUpButton;
@@ -40,11 +42,22 @@ public class QuestData : MonoBehaviourPunCallbacks//, IPunObservable
     }
 
 
-    public void GiveUpQuest(int num)
+    public void ShowGiveupPanel(int num)
     {
-
+        GiveupPanel.SetActive(true);
+        questnum = num;
     }
 
+    public void CloseGiveupPanel()
+    {
+        GiveupPanel.SetActive(false);
+    }
+
+    public void Sure_Giveup()
+    {
+        GiveupPanel.SetActive(false);
+        QuestManager.Instance.GiveupQuest(questnum);
+    }
 
     public void ShowQuestBoard()
     {
