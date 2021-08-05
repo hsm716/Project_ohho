@@ -125,11 +125,14 @@ public class QuestManager : MonoBehaviourPunCallbacks//, IPunObservable
         {
             p.GetComponent<QuestData>().questClearCheck[npcID] = false;
             p.GetComponent<QuestData>().questIsActive[npcID] = false;
-
-            if (!(p.GetComponent<Player_Control>().PV.Owner.NickName == PhotonNetwork.LocalPlayer.NickName))    //자신을 제외한 나머지
+            
+            //if (!(p.GetComponent<Player_Control>().PV.Owner.NickName == PhotonNetwork.LocalPlayer.NickName))    //자신을 제외한 나머지
+            //if (!(p.GetComponent<Player_Control>().PV.Owner.NickName.Equals(PhotonNetwork.LocalPlayer.NickName) ))    //자신을 제외한 나머지
+            if (p.GetComponent<PhotonView>().ViewID != viewID)    //자신을 제외한 나머지
             {
                 p.GetComponent<QuestData>().CloseListComponent(npcID);   //퀘스트 보드에 그 구역 퀘스트 삭제
             }
+            
 
         }
     }
