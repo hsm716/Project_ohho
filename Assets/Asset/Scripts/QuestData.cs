@@ -40,6 +40,11 @@ public class QuestData : MonoBehaviourPunCallbacks//, IPunObservable
     }
 
 
+    public void GiveUpQuest(int num)
+    {
+
+    }
+
 
     public void ShowQuestBoard()
     {
