@@ -71,7 +71,7 @@ public class Monster : MonoBehaviourPunCallbacks, IPunObservable
                 Last_Hiter.GetComponent<QuestData>().killcount++;
                 Last_Hiter.GetComponent<QuestData>().Quest();
             }
-        
+            Last_Hiter.GetComponent<Player_Control>().curEXP += 20f;
             myCol.enabled = false;
             isDead = true;
             anim.SetTrigger("doDead");
