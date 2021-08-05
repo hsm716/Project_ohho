@@ -45,6 +45,9 @@ public class Monster : MonoBehaviourPunCallbacks, IPunObservable
 
     public float curHP;
     public float maxHP;
+
+    public AudioSource sound_source;
+    public AudioClip sound_hit;
     void Start()
     {
         anim = GetComponent<Animator>();
@@ -63,6 +66,7 @@ public class Monster : MonoBehaviourPunCallbacks, IPunObservable
     public void Hit(float atk_)
     {
         curHP -= atk_;
+        sound_source.PlayOneShot(sound_hit);
         isChase = true;
         if (curHP <= 0 && !isDead)
         {
