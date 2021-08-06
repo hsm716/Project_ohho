@@ -63,7 +63,8 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
 
     private Vector3 movement;
     private Vector3 dodgeVec;
-    private Vector3 mouseDir;
+    public Vector3 mouseDir;
+    public Vector3 mouseDir_y;
     public Vector3 dir_;
 
     #region
@@ -543,7 +544,6 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
         if (!isDodge && !isSkill)
         {
             Ray ray = characterCamera.ScreenPointToRay(Input.mousePosition);
-
             // 레이어마스크 /////
             int layerMask = 1 << LayerMask.NameToLayer("Default");
             RaycastHit hitResult;
@@ -553,6 +553,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
             {
                 mouseDir = new Vector3(hitResult.point.x, transform.position.y, hitResult.point.z) - transform.position;
                 animator.transform.forward = mouseDir;
+                mouseDir_y = new Vector3(hitResult.point.x, hitResult.point.y, hitResult.point.z) - transform.position;
                 if (mouseDir.x * horizontalMove <= 0f && mouseDir.z * verticalMove <= 0f)
                 {
                     if (mouseDir.x * horizontalMove == 0f && mouseDir.z * verticalMove == 0f)

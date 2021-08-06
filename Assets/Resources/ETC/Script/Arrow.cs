@@ -10,6 +10,7 @@ public class Arrow : MonoBehaviourPunCallbacks
     public Player_Control myPlayer;
     public float atk;
     public float shootPower;
+    Vector3 dir_;
 
 
     /*[PunRPC]
@@ -27,7 +28,8 @@ public class Arrow : MonoBehaviourPunCallbacks
         FindMyPlayer();
         atk = myPlayer.atk*(myPlayer.pullPower/20f);
         shootPower = myPlayer.pullPower;
-        rgbd.AddForce(transform.forward * shootPower, ForceMode.Impulse);
+        dir_ = myPlayer.mouseDir_y;
+        rgbd.AddForce(dir_.normalized * shootPower, ForceMode.Impulse);
         Invoke("DestroyRPC", 3f);
 
     }

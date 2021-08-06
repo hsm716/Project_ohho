@@ -1,3 +1,4 @@
+using Photon.Realtime;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -10,6 +11,10 @@ public class Player_Interface : MonoBehaviour
     public Player_Control player_data;
     public Slider expBar;
     public TextMeshProUGUI expPercent;
+
+    public TextMeshProUGUI HP_UI;
+
+    public Slider HPBAR;
 
     public GameObject LevelUpPanel;
     public TextMeshProUGUI Next_Level;
@@ -26,6 +31,9 @@ public class Player_Interface : MonoBehaviour
     // Im so sad, wy
     void Update()
     {
+        HP_UI.text = player_data.curHP +" / " + player_data.maxHP;
+        
+        HPBAR.value = (player_data.curHP / player_data.maxHP);
         expBar.value = (player_data.curEXP / player_data.maxEXP) * 100;
         Next_Level.text = "" + player_data.level;
         expPercent.text = string.Format("{0:0.00}", ((player_data.curEXP / player_data.maxEXP) * 100)) + "%";

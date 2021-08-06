@@ -11,7 +11,8 @@ public class Spell : MonoBehaviourPunCallbacks
     public float atk;
 
     public GameObject boom;
-
+    Vector3 dir_;
+    Vector3 dir;
 
     /*[PunRPC]
     public void Shoot(Vector3 dir)
@@ -27,11 +28,17 @@ public class Spell : MonoBehaviourPunCallbacks
         FindMyPlayer();
         atk = myPlayer.atk;
         rgbd.isKinematic = false;
-        rgbd.AddForce(transform.forward * 10f, ForceMode.Impulse);
+        dir_ = myPlayer.mouseDir_y;
+
+        //rgbd.AddForce( dir_*3.5f/** 10f*/, ForceMode.Impulse);
         boom.GetComponent<SpellExplosion>().atk = atk;
         StartCoroutine("Boom");
         Invoke("DestroyRPC", 1.0f);
 
+    }
+    private void Update()
+    {
+        transform.position = Vector3.Slerp(transform.position, myPlayer.transform.position +dir_, 0.05f);
     }
     void FindMyPlayer()
     {
