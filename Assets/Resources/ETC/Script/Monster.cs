@@ -72,7 +72,7 @@ public class Monster : MonoBehaviourPunCallbacks, IPunObservable
         {
             if (Last_Hiter.GetComponent<QuestData>().questIsActive[0])
             {
-                Last_Hiter.GetComponent<QuestData>().killcount++;
+                Last_Hiter.GetComponent<QuestData>().slimeKillCount++;
                 Last_Hiter.GetComponent<QuestData>().Quest();
             }
             Last_Hiter.GetComponent<Player_Control>().curEXP += 20f;

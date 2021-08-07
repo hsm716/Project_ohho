@@ -35,14 +35,14 @@ public class QuestManager : MonoBehaviourPunCallbacks//, IPunObservable
         return questOk[npcId];
     }
 
-    public void ShowQuest(Dialogue _dialogue)
+    public void ShowQuest(Dialogue _dialogue)   //퀘스트AR UI 표시
     {
         QuestARUI.SetActive(true);
         dialogue = _dialogue;
         questARText.text = dialogue.npcId + "번 구역의 퀘스트를 수락하시겠습니까?";   //각 구역별로 다르게 가능
     }
 
-    public void ShowQuestClear(Dialogue _dialogue)
+    public void ShowQuestClear(Dialogue _dialogue)  //퀘스트 완료 UI 표시
     {
         QuestClearUI.SetActive(true);
         dialogue = _dialogue;
@@ -58,6 +58,7 @@ public class QuestManager : MonoBehaviourPunCallbacks//, IPunObservable
             {
                 p.GetComponent<QuestData>().questIsActive[dialogue.npcId] = true;    //각 구역의 퀘스트를 진행중으로 전환
 
+                p.GetComponent<QuestData>().QuestReset(dialogue.npcId);  //퀘스트 조건 리셋
                 p.GetComponent<QuestData>().ShowListComponent(dialogue.npcId);   //해당 구역의 퀘스트 요소 활성화
                 p.GetComponent<QuestData>().ShowButtonComponent(dialogue.npcId);   //각 구역의 퀘스트 포기버튼 활성화
             }
@@ -65,7 +66,7 @@ public class QuestManager : MonoBehaviourPunCallbacks//, IPunObservable
         QuestARUI.SetActive(false);
     }
 
-    public void GiveupQuest(int npcID)
+    public void GiveupQuest(int npcID)  //퀘스트 포기
     {
         GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
 
@@ -81,7 +82,7 @@ public class QuestManager : MonoBehaviourPunCallbacks//, IPunObservable
         }
     }
 
-    public void RejectQuest()
+    public void RejectQuest()   //퀘스트 거절
     {
         QuestARUI.SetActive(false);
     }
