@@ -26,6 +26,11 @@ public class Player_Interface : MonoBehaviour
     public Sprite[] select_ability_icons;
     string[] select_ability_names = { "HP", "SPEED", "POWER", "SHIELD", "MP" };
 
+
+    public Image[] Inventory_item_img;
+    public TextMeshProUGUI[] Inventory_item_txt;
+    public int[] Inventory_item_num;
+    public string[] Inventory_item_name;
     //리얼 수정좀 잘좀 해주세요;; ㅅㅂ
     // Update is called once per frame
     // Im so sad, wy
