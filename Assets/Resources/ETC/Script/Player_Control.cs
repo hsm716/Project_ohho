@@ -7,6 +7,7 @@ using UnityEngine.UI;
 using System.Xml;
 using Photon.Pun.Demo.Asteroids;
 using Cinemachine;
+using Photon.Pun.UtilityScripts;
 
 public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
 {
@@ -78,6 +79,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     private bool isRunningBack; // 뒤로 움직이고 있는지
     private bool isDeffensing; // 방어중인지 (class.Sword만 가능)
     private bool isSkill;
+    private bool isSkill_R;
     private bool isLevelUp;
     public bool isDodge; // 구르기 중인지
     #endregion
@@ -135,6 +137,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     public GameObject Respawn_Center;
 
     public GameObject interface_player;
+    Player_Interface PI;
 
     #region
     // Soldier 세트 정보
@@ -149,12 +152,11 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     #endregion
 
 
+    public GameObject MotionEffect;
 
 
-    bool[] Inventory_item_is = new bool[4];
-    Image[] Inventory_item_img = new Image[4];
-    Text[] Inventory_item_txt = new Text[4];
-    int[] Inventory_item_num = new int[4];
+    public bool[] Inventory_item_is;
+
 
     private void Awake()
     {
@@ -175,6 +177,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
         if (PV.IsMine)
         {
             interface_player.SetActive(true);
+            PI = interface_player.GetComponent<Player_Interface>();
             level = 1;
             walkSpeed = 4f;
             curSpeed = walkSpeed;
@@ -265,6 +268,12 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
                 shieldAmount = 1000f;
             }
             shieldAmount += Time.deltaTime * 50f;
+
+            if (curHP >= maxHP)
+            {
+                curHP = maxHP;
+            }
+
 
             if (transform.position.y < -100)
             {
@@ -358,20 +367,42 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
             Invoke("PullPower_valueChange",0.1f);
         }
 
-/*        if (Input.GetMouseButtonDown(2))
+        if (Input.GetKeyDown(KeyCode.Alpha1))
         {
-            RaycastHit hit;
-            if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition),out hit)){
-                Set1.transform.localPosition = new Vector3(hit.point.x - Set1.transform.localPosition.x, 0f, hit.point.y - Set1.transform.localPosition.z) + new Vector3(Set1_Init_pos.x, 0, Set1_Init_pos.z);
-                Set2.transform.localPosition = new Vector3(hit.point.x - Set2.transform.localPosition.x, 0f, hit.point.y - Set2.transform.localPosition.z) + new Vector3(Set1_Init_pos.x, 0, Set1_Init_pos.z);
-            }
-
+            Use_Item_num(0);
         }
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            Use_Item_num(1);
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            Use_Item_num(2);
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            Use_Item_num(3);
+        }
+
         if (Input.GetKeyDown(KeyCode.R))
         {
-            Set1.transform.localPosition = new Vector3(Set1_Init_pos.x,0,Set1_Init_pos.z);
-            Set2.transform.localPosition = new Vector3(Set2_Init_pos.x, 0, Set2_Init_pos.z);
-        }*/
+            Skill_R();
+        }
+
+        /*        if (Input.GetMouseButtonDown(2))
+                {
+                    RaycastHit hit;
+                    if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition),out hit)){
+                        Set1.transform.localPosition = new Vector3(hit.point.x - Set1.transform.localPosition.x, 0f, hit.point.y - Set1.transform.localPosition.z) + new Vector3(Set1_Init_pos.x, 0, Set1_Init_pos.z);
+                        Set2.transform.localPosition = new Vector3(hit.point.x - Set2.transform.localPosition.x, 0f, hit.point.y - Set2.transform.localPosition.z) + new Vector3(Set1_Init_pos.x, 0, Set1_Init_pos.z);
+                    }
+
+                }
+                if (Input.GetKeyDown(KeyCode.R))
+                {
+                    Set1.transform.localPosition = new Vector3(Set1_Init_pos.x,0,Set1_Init_pos.z);
+                    Set2.transform.localPosition = new Vector3(Set2_Init_pos.x, 0, Set2_Init_pos.z);
+                }*/
     }
     [PunRPC]
     void ShieldAttack()
@@ -764,6 +795,21 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
         eDown = false;
     }
 
+    void Skill_R()
+    {
+        isSkill_R =true;
+        MotionEffect.SetActive(true);
+        curSpeed = 10f;
+        Invoke("Skill_R_out", 3f);
+    }
+    void Skill_R_out()
+    {
+
+        MotionEffect.SetActive(false);
+        isSkill_R = false;
+        curSpeed = walkSpeed;
+    }
+
 
     void Spell()
     {
@@ -824,7 +870,111 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
             Hit(other.transform.parent.GetComponent<Monster>().atk);
         }
 
+        if (other.CompareTag("Item"))
+        {
+            if (exist_CheckItem(other))
+            {
 
+            }
+            else
+            {
+                not_exist_CheckItem(other);
+            }
+           /* for(int i = 0; i < 4; i++)
+            {
+                if (Inventory_item_is[i] == false)
+                {
+                    Player_Interface PI = interface_player.GetComponent<Player_Interface>();
+                    Inventory_item_is[i] = true;
+                    PI.Inventory_item_img[i].sprite = other.GetComponent<Item>().icon;
+                    PI.Inventory_item_img[i].color = new Color(1f, 1f, 1f, 1f);
+                    PI.Inventory_item_name[i] = ""+other.GetComponent<Item>().type;
+                    PI.Inventory_item_num[i] += other.GetComponent<Item>().value;
+                    PI.Inventory_item_txt[i].text = "x"+PI.Inventory_item_num[i];
+                    
+                    Destroy(other.gameObject);
+                    break;
+                }
+                
+            }*/
+        }
+
+
+    }
+
+    void Use_Item_num(int index)
+    {
+        bool acceptUse = true;
+        if (Inventory_item_is[index] == true)
+        {
+            
+            switch (PI.Inventory_item_name[index]) 
+            {
+                case "hp_potion":
+                    if (curHP >= maxHP)
+                    {
+                        acceptUse = false;
+                        break;
+                    }
+                    curHP += 100f;
+                    break;
+            
+            }
+            if (acceptUse)
+            {
+                PI.Inventory_item_num[index] -= 1;
+                PI.Inventory_item_txt[index].text = "x" + PI.Inventory_item_num[index];
+                if (PI.Inventory_item_num[index] == 0)
+                {
+                    Inventory_item_is[index] = false;
+                    PI.Inventory_item_txt[index].text = "";
+                    PI.Inventory_item_img[index].sprite = null;
+                    PI.Inventory_item_img[index].color = new Color(1f, 1f, 1f, 0f);
+                }
+            }
+        }
+    }
+
+    bool exist_CheckItem(Collider other)
+    {
+        
+        for (int i = 0; i < 4; i++)
+        {
+            if (Inventory_item_is[i] == true)
+            {
+               
+                if ( (""+other.GetComponent<Item>().type)==PI.Inventory_item_name[i])
+                {
+                    PI.Inventory_item_num[i] += other.GetComponent<Item>().value;
+                    PI.Inventory_item_txt[i].text = "x" + PI.Inventory_item_num[i];
+                    Destroy(other.gameObject);
+                    return true;
+                }
+            }
+        }
+        return false;
+
+    }
+    void not_exist_CheckItem(Collider other)
+    {
+       
+        for (int i = 0; i < 4; i++)
+        {
+            if (Inventory_item_is[i] == false)
+            {
+                
+                Inventory_item_is[i] = true;
+                PI.Inventory_item_img[i].sprite = other.GetComponent<Item>().icon;
+                PI.Inventory_item_img[i].color = new Color(1f, 1f, 1f, 1f);
+                PI.Inventory_item_name[i] = "" + other.GetComponent<Item>().type;
+                PI.Inventory_item_num[i] += other.GetComponent<Item>().value;
+                PI.Inventory_item_txt[i].text = "x" + PI.Inventory_item_num[i];
+
+                Destroy(other.gameObject);
+                break;
+            }
+
+        }
     }
     void SetEquip(GameObject item, bool isEquip)
     {
