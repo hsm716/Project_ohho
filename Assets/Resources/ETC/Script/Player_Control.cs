@@ -12,6 +12,8 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
 {
     public static GameObject Instance;
 
+
+
     /*    private Queue<Arrow> arrowQ = new Queue<Arrow>();*/
 
     //public bool[] duringQuestlist = { false };  //index = npcId(sectionID)
@@ -141,10 +143,19 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     public Transform Set2;
     Vector3 Set1_Init_pos;
     Vector3 Set2_Init_pos;
-    #endregion
 
     string[] SoldierType_melee_str = { "Soldier_main_melee", "Soldier_main_melee_B", "Soldier_main_melee_C" };
-    string[] SoldierType_arrow_str = {"Soldier_main_arrow","Soldier_main_arrow_B", "Soldier_main_arrow_C" };
+    string[] SoldierType_arrow_str = { "Soldier_main_arrow", "Soldier_main_arrow_B", "Soldier_main_arrow_C" };
+    #endregion
+
+
+
+
+    bool[] Inventory_item_is = new bool[4];
+    Image[] Inventory_item_img = new Image[4];
+    Text[] Inventory_item_txt = new Text[4];
+    int[] Inventory_item_num = new int[4];
+
     private void Awake()
     {
         
