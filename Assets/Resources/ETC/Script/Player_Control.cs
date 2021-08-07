@@ -818,20 +818,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
 
     void Spell()
     {
-        RaycastHit hitResult;
-        if (Physics.Raycast(characterCamera.ScreenPointToRay(Input.mousePosition), out hitResult))
-        {
-            var direction = new Vector3(hitResult.point.x, transform.position.y, hitResult.point.z) - transform.position;
-            /*if (curArrow != null)
-            {
-                curArrow.transform.SetParent(null);
-                curArrow.transform.position = curArrow.transform.position + direction.normalized;
-
-                curArrow.PV.RPC("Shoot", RpcTarget.AllBuffered, direction.normalized);
-                curArrow = null;
-            }*/
-            PhotonNetwork.Instantiate("Spell", attackArea.transform.position, attackArea.transform.rotation);
-        }
+        PhotonNetwork.Instantiate("Spell", attackArea.transform.position, attackArea.transform.rotation);
     }
 
 
