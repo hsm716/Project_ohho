@@ -174,7 +174,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
             Instance = this.gameObject;
 
 
-            for (int i = 0; i < 10; i++)
+           /* for (int i = 0; i < 10; i++)
             {
 
                 GameObject go = PhotonNetwork.Instantiate(SoldierType_melee_str[SoldierType], transform.position, transform.rotation);
@@ -189,7 +189,9 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
                 Soldier so = go.transform.GetChild(0).GetComponent<Soldier>();
                 so.myNumber = i;
                 so.mySetNumber = 1;
-            }
+            }*/
+
+
             /*            Instance = this;
                         ArrowIntialize(10);*/
             rgbd = GetComponent<Rigidbody>();
