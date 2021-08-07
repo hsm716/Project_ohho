@@ -28,7 +28,7 @@ public class Spell : MonoBehaviourPunCallbacks
         FindMyPlayer();
         atk = myPlayer.atk;
         rgbd.isKinematic = false;
-        dir_ = myPlayer.mouseDir_y;
+        dir_ = myPlayer.mouseDir_y + myPlayer.transform.position;
 
         //rgbd.AddForce( dir_*3.5f/** 10f*/, ForceMode.Impulse);
         boom.GetComponent<SpellExplosion>().atk = atk;
@@ -38,7 +38,7 @@ public class Spell : MonoBehaviourPunCallbacks
     }
     private void Update()
     {
-        transform.position = Vector3.Slerp(transform.position, myPlayer.transform.position +dir_, 0.05f);
+        transform.position = Vector3.Slerp(transform.position,dir_, 0.05f);
     }
     void FindMyPlayer()
     {
