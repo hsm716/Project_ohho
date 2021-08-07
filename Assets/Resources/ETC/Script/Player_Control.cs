@@ -26,6 +26,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     public Image HealthImage;
     public Player_HpBar Hp_Bar;
 
+    
    
 
     public GameObject playerEquipPoint;
@@ -152,8 +153,8 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     #endregion
 
 
-    public GameObject MotionEffect;
-
+    public MotionTrail mt;
+    public GameObject SKMR;
 
     public bool[] Inventory_item_is;
 
@@ -250,7 +251,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
             AnimationUpdate();
             Attack();
             rgbd.velocity = new Vector3(0f, rgbd.velocity.y, 0f);
-
+            animator.SetFloat("RunningAmount", curSpeed / 4f);
             if (mRDown&&!isDodge)
             {
                 pullPower += Time.deltaTime *14f;
@@ -797,15 +798,19 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
 
     void Skill_R()
     {
+        
+        mt.TargetSkinMesh = SKMR;
+        mt.gameObject.SetActive(false);
+        mt.gameObject.SetActive(true);
         isSkill_R =true;
-        MotionEffect.SetActive(true);
+        
         curSpeed = 10f;
         Invoke("Skill_R_out", 3f);
     }
     void Skill_R_out()
     {
 
-        MotionEffect.SetActive(false);
+        mt.TargetSkinMesh = null;
         isSkill_R = false;
         curSpeed = walkSpeed;
     }
