@@ -19,6 +19,9 @@ TagManager:
   - Weapon
   - Monster
   - Monster_Attack
+  - Item
+  - Item_Material
+  - Occupied_Area
   layers:
   - Default
   - TransparentFX

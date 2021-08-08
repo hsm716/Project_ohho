@@ -38,7 +38,7 @@ public class Spell : MonoBehaviourPunCallbacks
     }
     private void Update()
     {
-        transform.position = Vector3.Slerp(transform.position,dir_, 0.05f);
+        transform.position = Vector3.Slerp(transform.position,dir_, 0.008f);
     }
     void FindMyPlayer()
     {
@@ -54,7 +54,17 @@ public class Spell : MonoBehaviourPunCallbacks
     }
     private void OnTriggerEnter(Collider col)
     {
-        if (col.CompareTag("Ground")||(col.CompareTag("Player") && col.GetComponent<Player_Control>().PV.Owner != PV.Owner))
+        if((col.CompareTag("Player") && col.GetComponent<PhotonView>().Owner.NickName != PV.Owner.NickName))
+        {
+            rgbd.isKinematic = true;
+            boom.SetActive(true);
+            boom.transform.parent = null;
+            //PhotonNetwork.Instantiate("Explosion", transform.position+new Vector3(0f,0.3f,0f), Quaternion.Euler(new Vector3(-transform.rotation.x,-transform.rotation.y,-transform.rotation.z)));
+            //col.GetComponent<Player_Control>().Hit(atk);
+
+            Invoke("DestroyRPC", 0f);
+        }
+        if (col.CompareTag("Ground"))
         {
             rgbd.isKinematic = true;
             boom.SetActive(true);

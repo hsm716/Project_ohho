@@ -17,6 +17,10 @@ public class QuestTrigger : MonoBehaviour
             {
                 other.GetComponent<QuestData>().questClearCheck[1] = true;
             }
+            if (other.GetComponent<QuestData>().questIsActive[2])   //두 번째 퀘스트가 활성화 중일 때
+            {
+                other.GetComponent<QuestData>().questClearCheck[2] = true;
+            }
         }
     }
 }

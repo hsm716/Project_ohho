@@ -8,6 +8,7 @@ using System.Xml;
 using Photon.Pun.Demo.Asteroids;
 using Cinemachine;
 using Photon.Pun.UtilityScripts;
+using ExitGames.Client.Photon.StructWrapping;
 
 public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
 {
@@ -138,7 +139,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     public GameObject Respawn_Center;
 
     public GameObject interface_player;
-    Player_Interface PI;
+    public Player_Interface PI;
 
     #region
     // Soldier 세트 정보
@@ -158,6 +159,9 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
 
     public bool[] Inventory_item_is;
 
+
+    public QuestData QD;
+    public float curOccupied_value;
 
     private void Awake()
     {
@@ -818,20 +822,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
 
     void Spell()
     {
-        RaycastHit hitResult;
-        if (Physics.Raycast(characterCamera.ScreenPointToRay(Input.mousePosition), out hitResult))
-        {
-            var direction = new Vector3(hitResult.point.x, transform.position.y, hitResult.point.z) - transform.position;
-            /*if (curArrow != null)
-            {
-                curArrow.transform.SetParent(null);
-                curArrow.transform.position = curArrow.transform.position + direction.normalized;
-
-                curArrow.PV.RPC("Shoot", RpcTarget.AllBuffered, direction.normalized);
-                curArrow = null;
-            }*/
-            PhotonNetwork.Instantiate("Spell", attackArea.transform.position, attackArea.transform.rotation);
-        }
+        PhotonNetwork.Instantiate("Spell", attackArea.transform.position, attackArea.transform.rotation);
     }
 
 
@@ -903,8 +894,25 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
                 
             }*/
         }
+        if (other.CompareTag("Item_Material"))
+        {
+            Item_Material item = other.GetComponent<Item_Material>();
+            string name = "" + item.type;
+            if (PI.item_Material.ContainsKey(name)){
+                PI.item_Material[name] += item.value;
+                Destroy(other.gameObject);
+            }
+        }
 
 
+    }
+    private void OnTriggerStay(Collider other)
+    {
+        if (other.CompareTag("Occupied_Area"))
+        {
+            if(QD.questIsActive[3]==true)
+                curOccupied_value += Time.deltaTime * 5f;
+        }
     }
 
     void Use_Item_num(int index)
@@ -922,6 +930,10 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
                         break;
                     }
                     curHP += 100f;
+                    break;
+
+                default:
+                    acceptUse = false;
                     break;
             
             }
