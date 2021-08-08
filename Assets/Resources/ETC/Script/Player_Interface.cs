@@ -31,9 +31,21 @@ public class Player_Interface : MonoBehaviour
     public TextMeshProUGUI[] Inventory_item_txt;
     public int[] Inventory_item_num;
     public string[] Inventory_item_name;
+
+    public Dictionary<string,int> item_Material;
     //리얼 수정좀 잘좀 해주세요;; ㅅㅂ
     // Update is called once per frame
     // Im so sad, wy
+
+    private void Awake()
+    {
+        string name;
+        item_Material = new Dictionary<string, int>();
+
+        name = "twig";
+        item_Material.Add(name, 0);
+
+    }
     void Update()
     {
         HP_UI.text = player_data.curHP +" / " + player_data.maxHP;
@@ -87,6 +99,7 @@ public class Player_Interface : MonoBehaviour
     {
         //qq
         yield return new WaitForSeconds(1f);
+
         bool[] selected_state = { false, false, false, false, false };
 
         int count = 0;
