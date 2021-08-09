@@ -10,7 +10,7 @@ Material:
   m_Name: Bridge
   m_Shader: {fileID: -6465566751694194690, guid: 3fcad721df0f43e40af5100eab045c34,
     type: 3}
-  m_ShaderKeywords:
+  m_ShaderKeywords: 
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -55,7 +55,7 @@ Material:
     m_Floats:
     - Vector1_47b8f934f0754650bdfd719e7df92beb: -0.67
     - Vector1_c6dca150a22b473eb48cc0257a96aed3: 0.1
-    - _SplitValue: 1.0013404
+    - _SplitValue: -1
     m_Colors:
     - Color_70b8774c8a67405d86f4327b08a7eaf5: {r: 0.2206301, g: 0.6981132, b: 0.66066355,
         a: 0}

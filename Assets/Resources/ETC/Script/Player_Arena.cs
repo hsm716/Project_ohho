@@ -25,8 +25,11 @@ public class Player_Arena : MonoBehaviour
     string[] SoldierType_melee_str = { "Soldier_main_melee", "Soldier_main_melee_B", "Soldier_main_melee_C" };
     string[] SoldierType_arrow_str = { "Soldier_main_arrow", "Soldier_main_arrow_B", "Soldier_main_arrow_C" };
     int SoldierType;
+
+    public GameObject Respawn_Center;
     private void Awake()
     {
+        Respawn_Center = GameObject.Find("Respawn_Arena");
         SoldierType = player_data.SoldierType;
         isActive_SoldierSpot = new int[,] { { 0,0,0,0,0,0,0,0,0,0},
                                              {0,0,0,0,0,0,0,0,0,0},
@@ -87,9 +90,11 @@ public class Player_Arena : MonoBehaviour
     }
     public void StartGame()
     {
-        Soldier_Spawn();
+       
+        player_data.transform.position = Respawn_Center.transform.GetChild((player_data.PV.ViewID / 1000)-1).localPosition;
         player_data.PI.time = 60f;
         player_data.PI.isArena = false;
+        Soldier_Spawn();
         Invoke("active_false", 1f);
     }
     void active_false()
