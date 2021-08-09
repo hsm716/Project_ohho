@@ -239,7 +239,8 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     {
         if (PV.IsMine)
         {
-            InputKey();
+            if (PI.isArena ==false)
+                InputKey();
             AnimationUpdate();
             Attack();
             rgbd.velocity = new Vector3(0f, rgbd.velocity.y, 0f);
@@ -587,11 +588,11 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
             int layerMask = 1 << LayerMask.NameToLayer("Default");
             RaycastHit hitResult;
             /////////////////////
-            ///
+            
             if (Physics.Raycast(ray, out hitResult,200f,layerMask))
             {
                 mouseDir = new Vector3(hitResult.point.x, transform.position.y, hitResult.point.z) - transform.position;
-                animator.transform.forward = mouseDir;
+                animator.transform.forward = Vector3.Slerp(animator.transform.forward,mouseDir,0.5f);
                 mouseDir_y = new Vector3(hitResult.point.x, hitResult.point.y, hitResult.point.z) - transform.position;
                 if (mouseDir.x * horizontalMove <= 0f && mouseDir.z * verticalMove <= 0f)
                 {
@@ -721,7 +722,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     public void Slash()
     {
         attackArea.enabled = true;
-        Invoke("SlashOut", 0.2f);
+        Invoke("SlashOut", 0.1f);
         // yield return new WaitForSeconds(0.1f);
     }
     public void SlashOut()

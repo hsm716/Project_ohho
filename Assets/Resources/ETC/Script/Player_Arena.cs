@@ -31,6 +31,7 @@ public class Player_Arena : MonoBehaviour
     {
         Respawn_Center = GameObject.Find("Respawn_Arena");
         SoldierType = player_data.SoldierType;
+        player_data.transform.position = Respawn_Center.transform.GetChild((player_data.PV.ViewID / 1000) - 1).localPosition;
         isActive_SoldierSpot = new int[,] { { 0,0,0,0,0,0,0,0,0,0},
                                              {0,0,0,0,0,0,0,0,0,0},
                                              {0,0,0,0,0,0,0,0,0,0},
@@ -91,7 +92,7 @@ public class Player_Arena : MonoBehaviour
     public void StartGame()
     {
        
-        player_data.transform.position = Respawn_Center.transform.GetChild((player_data.PV.ViewID / 1000)-1).localPosition;
+        
         player_data.PI.time = 60f;
         player_data.PI.isArena = false;
         Soldier_Spawn();
