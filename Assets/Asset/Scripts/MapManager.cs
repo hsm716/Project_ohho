@@ -9,8 +9,9 @@ public class MapManager : MonoBehaviourPunCallbacks
 
     public Transform Section_Offsets;
     public GameObject[] Sections;
-    public GameObject[] Sections2;
-    public bool[] selected_state;
+    public Transform Bridges;
+    //public GameObject[] Sections2;
+    public int[] Order;
 
     public Material mat;
     public float split = -1;
@@ -19,13 +20,18 @@ public class MapManager : MonoBehaviourPunCallbacks
     {
 
         mat.SetFloat("_SplitValue", split);
-        PV.RPC("Shuffle", RpcTarget.All);
+        if (PhotonNetwork.IsMasterClient)
+            Shuffle();
+
+        StartCoroutine(Call_Section());
+        StartCoroutine(CallBridges());
+        //PV.RPC("Shuffle", RpcTarget.All);
     }
 
-    [PunRPC]
+
     void Shuffle()
     {
-        bool[] selected_state = { false, false, false, false, false, false };
+        bool[] selected_state = new bool[] { false, false, false, false, false, false };
         int count = 0;
         while (count < 6)
         {
@@ -33,7 +39,7 @@ public class MapManager : MonoBehaviourPunCallbacks
             if (selected_state[rand_idx] == false)
             {
                 selected_state[rand_idx] = true;
-                Sections2[rand_idx] = Sections[count];
+                Order[count] = rand_idx;
                 count++;
             }
             else
@@ -41,14 +47,15 @@ public class MapManager : MonoBehaviourPunCallbacks
                 continue;
             }
         }
-        PV.RPC("Shuffle_Result", RpcTarget.All);
+        //Shuffle_Result();
+        PV.RPC("Shuffle_Result", RpcTarget.All, Order);
+
     }
 
     [PunRPC]
-    void Shuffle_Result()
+    void Shuffle_Result(int[] order)
     {
-        Sections = Sections2;
-        StartCoroutine(Call_Section());
+        Order = order;
     }
 
 
@@ -58,16 +65,28 @@ public class MapManager : MonoBehaviourPunCallbacks
         foreach (Transform offset in Section_Offsets)
         {
             yield return new WaitForSeconds(3f);
-            GameObject sections = Instantiate(Sections[j]);
-            sections.transform.GetChild(0).localRotation = Quaternion.Euler(-90, 0, -60 * j);
+            GameObject sections = Instantiate(Sections[Order[j]]);
+            sections.transform.GetChild(0).localRotation = Quaternion.Euler(-90, 0, -60 * Order[j]);
             sections.transform.parent = offset;
             sections.transform.localPosition = new Vector3(0, 0, 0);
             sections.transform.localRotation = Quaternion.identity;
             j++;
         }
-        StartCoroutine(Phase());
+        //StartCoroutine(Phase());
+
     }
 
+    IEnumerator CallBridges()
+    {
+        yield return new WaitForSeconds(3f);
+        foreach (Transform bridge in Bridges)
+        {
+            yield return new WaitForSeconds(1.5f);
+            bridge.gameObject.SetActive(true);
+        }
+    }
+
+    /*
     IEnumerator Phase()
     {
 
@@ -79,4 +98,7 @@ public class MapManager : MonoBehaviourPunCallbacks
         }
 
     }
+    */
+
+
 }
