@@ -9,6 +9,7 @@ public class MapManager : MonoBehaviourPunCallbacks
 
     public Transform Section_Offsets;
     public GameObject[] Sections;
+    public Transform Bridges;
     //public GameObject[] Sections2;
     public int[] Order;
 
@@ -22,6 +23,7 @@ public class MapManager : MonoBehaviourPunCallbacks
             Shuffle();
 
         StartCoroutine(Call_Section());
+        StartCoroutine(CallBridges());
         //PV.RPC("Shuffle", RpcTarget.All);
     }
 
@@ -69,9 +71,21 @@ public class MapManager : MonoBehaviourPunCallbacks
             sections.transform.localRotation = Quaternion.identity;
             j++;
         }
-        StartCoroutine(Phase());
+        //StartCoroutine(Phase());
+
     }
 
+    IEnumerator CallBridges()
+    {
+        yield return new WaitForSeconds(3f);
+        foreach (Transform bridge in Bridges)
+        {
+            yield return new WaitForSeconds(1.5f);
+            bridge.gameObject.SetActive(true);
+        }
+    }
+
+    /*
     IEnumerator Phase()
     {
 
@@ -83,4 +97,7 @@ public class MapManager : MonoBehaviourPunCallbacks
         }
         
     }
+    */
+
+
 }
