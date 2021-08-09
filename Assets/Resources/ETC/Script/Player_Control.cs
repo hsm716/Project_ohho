@@ -34,7 +34,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     public GameObject Head;
     public GameObject GunHead;
 
-    int SoldierType; // 0~6;
+    public int SoldierType; // 0~6;
 
     public ParticleSystem telportEffect;
 
@@ -149,8 +149,10 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     Vector3 Set1_Init_pos;
     Vector3 Set2_Init_pos;
 
-    string[] SoldierType_melee_str = { "Soldier_main_melee", "Soldier_main_melee_B", "Soldier_main_melee_C" };
-    string[] SoldierType_arrow_str = { "Soldier_main_arrow", "Soldier_main_arrow_B", "Soldier_main_arrow_C" };
+
+
+    public int SoldierPoint;
+    public int SoldierPoint_max;
     #endregion
 
 
@@ -165,8 +167,8 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
 
     private void Awake()
     {
-        
-
+        SoldierPoint = 20;
+        SoldierPoint_max = 20;
         NickNameText.text = PV.IsMine ? PhotonNetwork.NickName : PV.Owner.NickName;
         NickNameText.color = PV.IsMine ? Color.green : Color.red;
         maxHP = 2000f;
@@ -193,22 +195,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
             Instance = this.gameObject;
 
 
-           /* for (int i = 0; i < 10; i++)
-            {
 
-                GameObject go = PhotonNetwork.Instantiate(SoldierType_melee_str[SoldierType], transform.position, transform.rotation);
-                Soldier so = go.transform.GetChild(0).GetComponent<Soldier>();
-                so.myNumber = i;
-                so.mySetNumber = 2;
-
-            }
-            for (int i = 0; i < 10; i++)
-            {
-                GameObject go = PhotonNetwork.Instantiate(SoldierType_arrow_str[SoldierType], transform.position, transform.rotation);
-                Soldier so = go.transform.GetChild(0).GetComponent<Soldier>();
-                so.myNumber = i;
-                so.mySetNumber = 1;
-            }*/
 
 
             /*            Instance = this;
@@ -224,6 +211,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
         }
 
     }
+
     private void FixedUpdate()
     {
 

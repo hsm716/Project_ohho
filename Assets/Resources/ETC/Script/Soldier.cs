@@ -78,10 +78,16 @@ public class Soldier : MonoBehaviourPunCallbacks,IPunObservable
             if (p.GetComponent<Player_Control>().PV.Owner.NickName == PV.Owner.NickName)
             {
                 target = p.transform;
-                if(mySetNumber==1)
-                    mySet = target.GetChild(16).GetChild(myNumber);
-                else
+                if(mySetNumber==0)
                     mySet = target.GetChild(15).GetChild(myNumber);
+                else if(mySetNumber==1)
+                    mySet = target.GetChild(16).GetChild(myNumber);
+                else if (mySetNumber == 2)
+                    mySet = target.GetChild(17).GetChild(myNumber);
+                else if (mySetNumber == 3)
+                    mySet = target.GetChild(18).GetChild(myNumber);
+
+
 
                 myPlayer = p.GetComponent<Player_Control>();
                 break;

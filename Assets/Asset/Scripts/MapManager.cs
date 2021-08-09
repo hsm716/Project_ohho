@@ -10,13 +10,14 @@ public class MapManager : MonoBehaviourPunCallbacks
     public Transform Section_Offsets;
     public GameObject[] Sections;
     public GameObject[] Sections2;
-    public bool[] selected_state = { false, false, false, false, false, false };
+    public bool[] selected_state;
 
     public Material mat;
     public float split = -1;
 
     void Start()
     {
+
         mat.SetFloat("_SplitValue", split);
         PV.RPC("Shuffle", RpcTarget.All);
     }
@@ -24,6 +25,7 @@ public class MapManager : MonoBehaviourPunCallbacks
     [PunRPC]
     void Shuffle()
     {
+        bool[] selected_state = { false, false, false, false, false, false };
         int count = 0;
         while (count < 6)
         {
@@ -75,6 +77,6 @@ public class MapManager : MonoBehaviourPunCallbacks
             mat.SetFloat("_SplitValue", split);
             yield return 0;
         }
-        
+
     }
 }

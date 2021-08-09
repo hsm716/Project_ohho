@@ -33,12 +33,19 @@ public class Player_Interface : MonoBehaviour
     public string[] Inventory_item_name;
 
     public Dictionary<string,int> item_Material;
+
+    public TextMeshProUGUI time_txt;
+    public GameObject ArenaCanvas;
+
+    public float time;
     //리얼 수정좀 잘좀 해주세요;; ㅅㅂ
     // Update is called once per frame
     // Im so sad, wy
 
+    public bool isArena = false;
     private void Awake()
     {
+        time = 30f;
         string name;
         item_Material = new Dictionary<string, int>();
 
@@ -48,6 +55,14 @@ public class Player_Interface : MonoBehaviour
     }
     void Update()
     {
+        time_txt.text = string.Format("{0:0.0}",time);
+        if(isArena==false)
+            time -= Time.deltaTime;
+        if (time <= 0f&&isArena==false)
+        {
+            isArena = true;
+            ArenaCanvas.SetActive(true);
+        }
         HP_UI.text = player_data.curHP +" / " + player_data.maxHP;
         
         HPBAR.value = (player_data.curHP / player_data.maxHP);
@@ -56,6 +71,9 @@ public class Player_Interface : MonoBehaviour
         expPercent.text = string.Format("{0:0.00}", ((player_data.curEXP / player_data.maxEXP) * 100)) + "%";
 
     }
+
+
+
     public void Select(int index)
     {
         //qwe
