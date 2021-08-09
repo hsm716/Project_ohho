@@ -256,6 +256,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
             Attack();
             rgbd.velocity = new Vector3(0f, rgbd.velocity.y, 0f);
             animator.SetFloat("RunningAmount", curSpeed / 4f);
+            
             if (mRDown&&!isDodge)
             {
                 pullPower += Time.deltaTime *14f;
@@ -391,7 +392,8 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
 
         if (Input.GetKeyDown(KeyCode.R))
         {
-            Skill_R();
+            PV.RPC("Skill_R", RpcTarget.All);
+            //Skill_R();
         }
 
         /*        if (Input.GetMouseButtonDown(2))
@@ -799,7 +801,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
 
         eDown = false;
     }
-
+    [PunRPC]
     void Skill_R()
     {
         
