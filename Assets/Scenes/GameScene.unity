@@ -2639,6 +2639,7 @@ GameObject:
   m_Component:
   - component: {fileID: 729323949}
   - component: {fileID: 729323948}
+  - component: {fileID: 729323950}
   m_Layer: 0
   m_Name: Map_Manager
   m_TagString: Untagged
@@ -2658,6 +2659,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb9fb150ca5926b469a54a83ad16fc76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  PV: {fileID: 729323950}
   Section_Offsets: {fileID: 495273525}
   Sections:
   - {fileID: 8652531104645571265, guid: 25caf4426304f4d4f9b8f8724f03f796, type: 3}
@@ -2689,6 +2691,28 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &729323950
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 729323947}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 333
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &772374530
 GameObject:
   m_ObjectHideFlags: 0

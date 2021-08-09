@@ -1,9 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
 
-public class MapManager : MonoBehaviour
+public class MapManager : MonoBehaviourPunCallbacks
 {
+    public PhotonView PV;
+
     public Transform Section_Offsets;
     public GameObject[] Sections;
     public GameObject[] Sections2;
@@ -14,9 +17,10 @@ public class MapManager : MonoBehaviour
     void Start()
     {
         mat.SetFloat("_SplitValue", split);
-        Shuffle();
+        PV.RPC("Shuffle", RpcTarget.All);
     }
 
+    [PunRPC]
     void Shuffle()
     {
         bool[] selected_state = { false, false, false, false, false, false };
