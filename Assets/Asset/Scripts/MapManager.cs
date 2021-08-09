@@ -8,10 +8,13 @@ public class MapManager : MonoBehaviour
     public GameObject[] Sections;
     public GameObject[] Sections2;
 
+    public Material mat;
+    public float split = -1;
+
     void Start()
     {
+        mat.SetFloat("_SplitValue", split);
         Shuffle();
-        
     }
 
     void Shuffle()
@@ -33,7 +36,6 @@ public class MapManager : MonoBehaviour
             }
         }
         StartCoroutine(Call_Section());
-
     }
 
 
@@ -50,5 +52,18 @@ public class MapManager : MonoBehaviour
             sections2.transform.localRotation = Quaternion.identity;
             j++;
         }
+        StartCoroutine(Phase());
+    }
+
+    IEnumerator Phase()
+    {
+
+        while (split < 1)
+        {
+            split += Time.deltaTime * 0.25f;
+            mat.SetFloat("_SplitValue", split);
+            yield return 0;
+        }
+        
     }
 }

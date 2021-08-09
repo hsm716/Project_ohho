@@ -4541,7 +4541,7 @@ MonoBehaviour:
     type: 3}
   playerListItemPrefab: {fileID: 3170663613375327481, guid: b734ca116f6cda14fa4e3cd6e2b6a338,
     type: 3}
-  startGameButton: {fileID: 0}
+  startGameButton: {fileID: 1358788369}
   usernameInput: {fileID: 1422808768}
 --- !u!1 &2086036312
 GameObject:
