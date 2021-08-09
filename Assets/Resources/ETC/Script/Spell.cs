@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Spell : MonoBehaviourPunCallbacks
+public class Spell : MonoBehaviourPunCallbacks, IPunObservable
 {
     Rigidbody rgbd;
     public PhotonView PV;
@@ -13,6 +13,11 @@ public class Spell : MonoBehaviourPunCallbacks
     public GameObject boom;
     Vector3 dir_;
     Vector3 dir;
+
+
+
+    Vector3 curPos;
+    Quaternion curRot;
 
     /*[PunRPC]
     public void Shoot(Vector3 dir)
@@ -38,7 +43,19 @@ public class Spell : MonoBehaviourPunCallbacks
     }
     private void Update()
     {
-        transform.position = Vector3.Slerp(transform.position,dir_, 0.008f);
+        if (PV.IsMine)
+        {
+            transform.position = Vector3.Slerp(transform.position, dir_, 0.008f);
+        }
+        else if ((transform.position - curPos).sqrMagnitude >= 100) transform.position = curPos;
+        else
+        {
+            transform.position = Vector3.Lerp(transform.position, curPos, Time.fixedDeltaTime * 20f);
+            transform.rotation = Quaternion.Lerp(transform.rotation, curRot, Time.fixedDeltaTime * 20f);
+        }
+
+
+
     }
     void FindMyPlayer()
     {
@@ -110,5 +127,19 @@ public class Spell : MonoBehaviourPunCallbacks
         Destroy(this.gameObject);
     }
 
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        if (stream.IsWriting)
+        {
+            stream.SendNext(transform.position);
+            stream.SendNext(transform.rotation);
+        }
+        else
+        {
+            curPos = (Vector3)stream.ReceiveNext();
+            curRot = (Quaternion)stream.ReceiveNext();
+
+        }
+    }
 }
 
