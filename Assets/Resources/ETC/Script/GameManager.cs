@@ -24,7 +24,7 @@ public class GameManager : MonoBehaviourPunCallbacks,IPunObservable
     // Start is called before the first frame update
     void Start()
     {
-        time = 60f;
+        time = 300f;
     }
 
     // Update is called once per frame
