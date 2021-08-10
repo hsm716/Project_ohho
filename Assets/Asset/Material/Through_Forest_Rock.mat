@@ -1,0 +1,65 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 6
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Through_Forest_Rock
+  m_Shader: {fileID: -6465566751694194690, guid: d5833d8170cd3e34cbc1ca487385b236,
+    type: 3}
+  m_ShaderKeywords: _EMISSION _METALLICSPECGLOSSMAP _NORMALMAP
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - Texture2D_3aaa6060906e457383ff3ad5809e2d06:
+        m_Texture: {fileID: 2800000, guid: 2edd58f7c433e934db9029c375173b44, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - Texture2D_933df24ac27a484f9b6e59168017b62d:
+        m_Texture: {fileID: 2800000, guid: 2edd58f7c433e934db9029c375173b44, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - Texture2D_b0650479ef3a4d8e95897f48d47256e8:
+        m_Texture: {fileID: 2800000, guid: 2edd58f7c433e934db9029c375173b44, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - Texture2D_b604a5e590b648cb846f3bfebb35331c:
+        m_Texture: {fileID: 2800000, guid: 2edd58f7c433e934db9029c375173b44, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - Texture2D_bbb0f0de226b483e97dfd4fac79cff11:
+        m_Texture: {fileID: 2800000, guid: 2edd58f7c433e934db9029c375173b44, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_Lightmaps:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_LightmapsInd:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_ShadowMasks:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Floats:
+    - Vector1_2ed4051ddd1c4dc7ab4d818f711f3c42: 0.5
+    - Vector1_ae10dd6a890d4bb6bcc68363347ade9a: 1
+    - Vector1_f7916f3f7aef4c0aaaed9bd20c6a242d: 0
+    - _Size: -0.005484947
+    m_Colors:
+    - Color_a5bb6ace4e044cee85204dac7bccd927: {r: 0, g: 0, b: 0, a: 0}
+    - Color_afbdcc2f0d024fe08de994e91925be3b: {r: 0.3584906, g: 0.3584906, b: 0.3584906,
+        a: 0}
+    - _PlayerPosition: {r: 0.5005402, g: 0.5018443, b: 24.07521, a: 0}
+  m_BuildTextureStacks: []

@@ -7,26 +7,40 @@ public class CircleSync : MonoBehaviour
     public static int PosID = Shader.PropertyToID("_PlayerPosition");
     public static int SizeID = Shader.PropertyToID("_Size");
 
-    public Material wallMat;
+    public Material[] wallMat;
     public Camera camera;
     public LayerMask Mask;
     float fade = 0;
     private void Start()
     {
         camera = GameObject.Find("Main Camera").GetComponent<Camera>();
+
+        foreach (var mat in wallMat)
+        {
+            mat.SetVector(PosID, new Vector2(0.5f, 0.5f));
+            mat.SetFloat(SizeID, 0);
+        }
     }
+
+    RaycastHit hit;
 
     void Update()
     {
         var dir = camera.transform.position - transform.position;
         var ray = new Ray(transform.position, dir.normalized);
 
-        if (Physics.Raycast(ray, 3000, Mask))
+        if (Physics.Raycast(ray, out hit, 3000, Mask))
         {
+            //wallMat = hit.transform.GetComponent<MeshRenderer>().material;
+
             if (fade < 1)
             {
                 fade += Time.deltaTime;
-                wallMat.SetFloat(SizeID, fade);
+                foreach (var mat in wallMat)
+                {
+                    mat.SetFloat(SizeID, fade);
+                }
+                
             }
         }
         else
@@ -34,11 +48,18 @@ public class CircleSync : MonoBehaviour
             if (fade > 0)
             {
                 fade -= Time.deltaTime;
-                wallMat.SetFloat(SizeID, fade);
+                foreach (var mat in wallMat)
+                {
+                    mat.SetFloat(SizeID, fade);
+                }
             }
         }
 
         var view = camera.WorldToViewportPoint(transform.position);
-        wallMat.SetVector(PosID, view);
+        foreach (var mat in wallMat)
+        {
+            mat.SetVector(PosID, view);
+        }
+        
     }
 }
