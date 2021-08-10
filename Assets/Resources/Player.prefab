@@ -454,7 +454,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0.00012207031, y: -0.000061035156}
+  m_AnchoredPosition: {x: 0.00012207031, y: 0}
   m_SizeDelta: {x: -658, y: -343.59912}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6578661280592226349
@@ -3553,7 +3553,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: -155, y: 46.352356}
+  m_AnchoredPosition: {x: -155, y: 46.352295}
   m_SizeDelta: {x: 50, y: 50}
   m_Pivot: {x: 1, y: 0}
 --- !u!222 &6597501834902889608
@@ -7017,7 +7017,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1420953994828206440}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 92a7d0b90d1ee174f958386241aaf2b8, type: 3}
   m_Name: 
@@ -22010,7 +22010,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0.00012207031, y: -0.000061035156}
+  m_AnchoredPosition: {x: 0.00012207031, y: 0}
   m_SizeDelta: {x: -658, y: -343.59912}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &770592200552638797
@@ -25119,7 +25119,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: -155, y: 46.352356}
+  m_AnchoredPosition: {x: -155, y: 46.352295}
   m_SizeDelta: {x: 50, y: 50}
   m_Pivot: {x: 1, y: 0}
 --- !u!222 &752840992623650280
@@ -27786,7 +27786,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 370340f70884b434cad8fda24b9b862b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  wallMat: {fileID: 2100000, guid: b959e34facae9894d88928924bf83806, type: 2}
+  wallMat:
+  - {fileID: 2100000, guid: b959e34facae9894d88928924bf83806, type: 2}
+  - {fileID: 2100000, guid: 21ce299d11bcd8546a357a9ca8411c6f, type: 2}
+  - {fileID: 2100000, guid: beea299146700bc489214b7445c2c9f0, type: 2}
+  - {fileID: 2100000, guid: 8391d99446bcfa84ab635f569993594c, type: 2}
+  - {fileID: 2100000, guid: 2c83fb6761ad36c428ae246c6478e426, type: 2}
   camera: {fileID: 0}
   Mask:
     serializedVersion: 2
