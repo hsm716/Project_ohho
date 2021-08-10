@@ -93,8 +93,8 @@ public class Player_Arena : MonoBehaviour
     {
        
         
-        player_data.PI.time = 60f;
-        player_data.PI.isArena = false;
+        player_data.PI.gm.time = 60f;
+        player_data.PI.isActive_Input = true;
         Soldier_Spawn();
         Invoke("active_false", 1f);
     }

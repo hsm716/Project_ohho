@@ -38,14 +38,19 @@ public class Player_Interface : MonoBehaviour
     public GameObject ArenaCanvas;
 
     public float time;
+
+    public GameManager gm;
     //리얼 수정좀 잘좀 해주세요;; ㅅㅂ
     // Update is called once per frame
     // Im so sad, wy
 
     public bool isArena = false;
+    public bool isActive_Input;
     private void Awake()
     {
-        time = 30f;
+        isActive_Input = true;
+        gm = GameObject.Find("GameTime").GetComponent<GameManager>();
+        time = gm.time;
         string name;
         item_Material = new Dictionary<string, int>();
 
@@ -61,6 +66,7 @@ public class Player_Interface : MonoBehaviour
         if (time <= 0f&&isArena==false)
         {
             isArena = true;
+            isActive_Input = false;
             ArenaCanvas.SetActive(true);
         }
         HP_UI.text = player_data.curHP +" / " + player_data.maxHP;

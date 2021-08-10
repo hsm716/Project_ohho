@@ -16,8 +16,8 @@ GameObject:
   - component: {fileID: 7434796406978617235}
   - component: {fileID: 1972099979746626105}
   - component: {fileID: 3448280312010084221}
-  - component: {fileID: 1103859625866475477}
   - component: {fileID: 8891213541123168689}
+  - component: {fileID: 8718145590290265500}
   m_Layer: 0
   m_Name: Arrow
   m_TagString: Player_Arrow
@@ -118,8 +118,8 @@ SphereCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.9987825
-  m_Center: {x: -0.00000044703484, y: 0.13477154, z: 1.761246}
+  m_Radius: 0.6
+  m_Center: {x: 0, y: 0, z: 0.7}
 --- !u!54 &7434796406978617235
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -167,27 +167,14 @@ MonoBehaviour:
   ObservedComponentsFoldoutOpen: 1
   Group: 0
   prefixField: -1
-  Synchronization: 0
+  Synchronization: 3
   OwnershipTransfer: 0
   observableSearch: 0
   ObservedComponents:
-  - {fileID: 0}
+  - {fileID: 8718145590290265500}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!135 &1103859625866475477
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 111768}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 0
-  serializedVersion: 2
-  m_Radius: 0.52086335
-  m_Center: {x: 0, y: 0, z: 1.8}
 --- !u!96 &8891213541123168689
 TrailRenderer:
   serializedVersion: 2
@@ -209,7 +196,6 @@ TrailRenderer:
   m_RendererPriority: 0
   m_Materials:
   - {fileID: 10306, guid: 0000000000000000f000000000000000, type: 0}
-  - {fileID: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -296,3 +282,19 @@ TrailRenderer:
   m_MinVertexDistance: 0.1
   m_Autodestruct: 0
   m_Emitting: 1
+--- !u!114 &8718145590290265500
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 111768}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64179f3720bbfe947b7724caa67b7c1d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SynchronizeVelocity: 1
+  m_SynchronizeAngularVelocity: 0
+  m_TeleportEnabled: 0
+  m_TeleportIfDistanceGreaterThan: 3
