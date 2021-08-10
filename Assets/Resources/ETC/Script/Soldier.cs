@@ -234,19 +234,20 @@ public class Soldier : MonoBehaviourPunCallbacks,IPunObservable
     ///////////////////////////////////
     void Turn()
     {
-        Ray ray = myPlayer.characterCamera.ScreenPointToRay(Input.mousePosition);
+        anim.transform.forward = target.position - transform.position;
+       /* Ray ray = myPlayer.characterCamera.ScreenPointToRay(Input.mousePosition);
         RaycastHit hitResult;
         if (Physics.Raycast(ray, out hitResult))
         {
             mouseDir = new Vector3(hitResult.point.x, transform.position.y, hitResult.point.z) - transform.position;
             anim.transform.forward = mouseDir;
 
-        }
+        }*/
     }
     private void OnTriggerEnter(Collider other)
     {
 
-        if (other.CompareTag("Soldier_Attack") && other.transform.parent.GetComponent<Soldier>().PV.Owner != PV.Owner)
+        if (other.CompareTag("Soldier_Attack") && other.transform.parent.GetComponent<Soldier>().PV.Owner.NickName != PV.Owner.NickName)
         {
             Hit(other.transform.parent.GetComponent<Soldier>().atk);
         }

@@ -90,8 +90,8 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     #region
     // 입력 관련 변수
 
-    float horizontalMove; // 키보드 입력
-    float verticalMove;   // 키보드 입력
+    public float horizontalMove; // 키보드 입력
+    public float verticalMove;   // 키보드 입력
 
     private bool dDown; //LShift 입력
     private bool mLDown;//마우스 왼쪽 입력
@@ -165,6 +165,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     public QuestData QD;
     public float curOccupied_value;
 
+
     private void Awake()
     {
         SoldierPoint = 20;
@@ -214,7 +215,10 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
 
     private void FixedUpdate()
     {
-
+        Respawn();
+        if (!PV.IsMine)
+            return;
+        FreezeVelocity();
         if (curStyle == Style.WeaponStyle.Arrow||curStyle==Style.WeaponStyle.Magic)
         {
             if (isAttackReady == true)
@@ -231,7 +235,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
             Dodge();
             Turn();
         }
-        Respawn();
+        
 
 
     }
@@ -547,6 +551,11 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
         eDown = false;
 
     }
+    void FreezeVelocity()
+    {
+        rgbd.velocity = Vector3.zero;
+        rgbd.angularVelocity = Vector3.zero;
+    }
     // 움직임 동작코드, 210624_황승민
     [PunRPC]
     void Moving()
@@ -585,14 +594,14 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
         {
             Ray ray = characterCamera.ScreenPointToRay(Input.mousePosition);
             // 레이어마스크 /////
-            int layerMask = 1 << LayerMask.NameToLayer("Default");
+            int layerMask = (1 << LayerMask.NameToLayer("Default")) |  (1 << LayerMask.NameToLayer("Wall"));
             RaycastHit hitResult;
             /////////////////////
             
             if (Physics.Raycast(ray, out hitResult,200f,layerMask))
             {
                 mouseDir = new Vector3(hitResult.point.x, transform.position.y, hitResult.point.z) - transform.position;
-                animator.transform.forward = Vector3.Slerp(animator.transform.forward,mouseDir,0.4f);
+                animator.transform.forward = Vector3.Slerp(animator.transform.forward,mouseDir,0.5f);
                 mouseDir_y = new Vector3(hitResult.point.x, hitResult.point.y, hitResult.point.z) - transform.position;
                 if (mouseDir.x * horizontalMove <= 0f && mouseDir.z * verticalMove <= 0f)
                 {
@@ -850,7 +859,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
         }
         if (PV.IsMine && other.CompareTag("Soldier_Attack"))
         {
-            Hit(other.transform.parent.GetComponent<Player_Control>().atk);
+            Hit(other.transform.parent.GetComponent<Soldier>().atk);
         }
         if (other.CompareTag("Monster_Attack"))
         {
@@ -1176,6 +1185,9 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
         level += 1;
         Invoke("LevelUpDelay", 0.2f);
     }
+
+
+
     //수정테스트
     void LevelUpDelay()
     {

@@ -35,9 +35,9 @@ public class Player_Interface : MonoBehaviour
     public Dictionary<string,int> item_Material;
 
     public TextMeshProUGUI time_txt;
-    public GameObject ArenaCanvas;
 
     public float time;
+    public GameObject MC;
 
     public GameManager gm;
     //리얼 수정좀 잘좀 해주세요;; ㅅㅂ
@@ -50,6 +50,8 @@ public class Player_Interface : MonoBehaviour
     {
         isActive_Input = true;
         gm = GameObject.Find("GameTime").GetComponent<GameManager>();
+        MC = GameObject.Find("MainCanvas"); 
+        
         time = gm.time;
         string name;
         item_Material = new Dictionary<string, int>();
@@ -65,9 +67,11 @@ public class Player_Interface : MonoBehaviour
             time -= Time.deltaTime;
         if (time <= 0f&&isArena==false)
         {
+            player_data.horizontalMove = 0f;
+            player_data.verticalMove = 0f;
             isArena = true;
             isActive_Input = false;
-            ArenaCanvas.SetActive(true);
+            MC.transform.GetChild(7).gameObject.SetActive(true);
         }
         HP_UI.text = player_data.curHP +" / " + player_data.maxHP;
         

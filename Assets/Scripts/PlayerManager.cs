@@ -3,12 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using System.IO;
+using Photon.Realtime;
+using UnityEditor;
+using System.Linq;
 
 public class PlayerManager : MonoBehaviour
 {
     PhotonView PV;
     public GameObject MC;
-
+    Player[] players;
     void Awake()
     {
         PV = GetComponent<PhotonView>();
@@ -18,12 +21,12 @@ public class PlayerManager : MonoBehaviour
     {
         RoomManager.Instance.playerCount++;
         MC = GameObject.Find("MainCanvas");
-
+        players = PhotonNetwork.PlayerList;
     }
     bool spawnCheck = true;
     void Update()
     {
-        if(RoomManager.Instance.playerCount >= 1 && spawnCheck)
+        if(RoomManager.Instance.playerCount >= players.Count() && spawnCheck)
         {
             spawnCheck = false;
             if (PV.IsMine)

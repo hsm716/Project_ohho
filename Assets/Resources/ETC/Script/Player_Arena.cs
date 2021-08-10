@@ -10,7 +10,7 @@ using UnityEngine.UI;
 public class Player_Arena : MonoBehaviour
 {
     public Player_Control player_data;
-
+    public PhotonView PV;
     public Image button_melee;
     public Image button_arrow;
 
@@ -27,19 +27,37 @@ public class Player_Arena : MonoBehaviour
     int SoldierType;
 
     public GameObject Respawn_Center;
+
+    public GameManager gm;
+    public Button Ready;
+    public GameObject GameStart;
+
+
+    bool isReady;
     private void Awake()
     {
-        Respawn_Center = GameObject.Find("Respawn_Arena");
+        FindMyPlayer();
         SoldierType = player_data.SoldierType;
-        player_data.transform.position = Respawn_Center.transform.GetChild((player_data.PV.ViewID / 1000) - 1).localPosition;
+        player_data.transform.position = Respawn_Center.transform.GetChild((player_data.PV.ViewID / 1000) - 1).position;
         isActive_SoldierSpot = new int[,] { { 0,0,0,0,0,0,0,0,0,0},
                                              {0,0,0,0,0,0,0,0,0,0},
                                              {0,0,0,0,0,0,0,0,0,0},
                                              {0,0,0,0,0,0,0,0,0,0},
         };
     }
+    void FindMyPlayer()
+    {
+        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+        foreach (GameObject p in players)
+        {
+            if (p.GetComponent<Player_Control>().PV.Owner.NickName == PhotonNetwork.LocalPlayer.NickName)
+            {
+                player_data = p.GetComponent<Player_Control>();
+                break;
+            }
+        }
 
-
+    }
     void Update()
     {
 
@@ -57,6 +75,18 @@ public class Player_Arena : MonoBehaviour
         }
         else
             button_melee.transform.localScale = new Vector3(1f, 1f, 1f);
+
+        if (PhotonNetwork.IsMasterClient)
+        {
+            if(player_data.PI.gm.ReadyCountCur == player_data.PI.gm.ReadyCountMax)
+            {
+                GameStart.SetActive(true);
+            }
+            else
+            {
+                GameStart.SetActive(false);
+            }
+        }
 
     }
     public void Soldier_assign(string index)
@@ -89,15 +119,52 @@ public class Player_Arena : MonoBehaviour
 
 
     }
+    public void ReadyGame()
+    {
+        if (isReady == false)
+        {
+            PV.RPC("ReadyGamePlus_RPC", RpcTarget.All);
+           
+            Ready.image.color = new Color(1f, 1f, 1f);
+            isReady = true;
+        }
+        else
+        {
+            PV.RPC("ReadyGameMinus_RPC", RpcTarget.All);
+           
+            Ready.image.color = new Color(1f, 1f, 0.5f);
+            isReady = false;
+        }
+
+       
+
+    }
+    [PunRPC]
+    void ReadyGamePlus_RPC()
+    {
+        gm.ReadyCountCur += 1;
+    }
+    [PunRPC]
+    void ReadyGameMinus_RPC()
+    {
+        gm.ReadyCountCur -= 1;
+    }
+
     public void StartGame()
     {
-       
         
-        player_data.PI.gm.time = 60f;
+        
+        PV.RPC("StartGame_RPC",RpcTarget.All);
+    }
+    [PunRPC]
+    void StartGame_RPC()
+    {
         player_data.PI.isActive_Input = true;
+        gm.time = 60f;
         Soldier_Spawn();
         Invoke("active_false", 1f);
     }
+    
     void active_false()
     {
         this.gameObject.SetActive(false);
