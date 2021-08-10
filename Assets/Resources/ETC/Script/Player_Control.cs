@@ -239,7 +239,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     {
         if (PV.IsMine)
         {
-            if (PI.isArena ==false)
+            if (PI.isActive_Input ==true)
                 InputKey();
             AnimationUpdate();
             Attack();
@@ -592,7 +592,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
             if (Physics.Raycast(ray, out hitResult,200f,layerMask))
             {
                 mouseDir = new Vector3(hitResult.point.x, transform.position.y, hitResult.point.z) - transform.position;
-                animator.transform.forward = Vector3.Slerp(animator.transform.forward,mouseDir,0.5f);
+                animator.transform.forward = Vector3.Slerp(animator.transform.forward,mouseDir,0.4f);
                 mouseDir_y = new Vector3(hitResult.point.x, hitResult.point.y, hitResult.point.z) - transform.position;
                 if (mouseDir.x * horizontalMove <= 0f && mouseDir.z * verticalMove <= 0f)
                 {
