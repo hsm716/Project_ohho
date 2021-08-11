@@ -135,7 +135,7 @@ public class Monster : MonoBehaviourPunCallbacks, IPunObservable
     void Targeting()
     {
         float targetRadius = 3f;
-        float targetRange = 3f;
+        float targetRange = 5f;
 
         RaycastHit[] rayHits =
             Physics.SphereCastAll(transform.position, targetRadius, Vector3.up, targetRange, LayerMask.GetMask("Enemy"));
@@ -192,7 +192,7 @@ public class Monster : MonoBehaviourPunCallbacks, IPunObservable
                     anim.transform.forward = Vector3.Slerp(anim.transform.forward, target.position - transform.position,0.5f);
                     agent.isStopped = true;
                     anim.SetTrigger("doAttack");
-                    Invoke("AttackEnd", 3.5f);
+                    Invoke("AttackEnd", 2.7f);
                 }
             }
         }
