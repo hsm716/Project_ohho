@@ -52,7 +52,7 @@ public class Player_Interface : MonoBehaviour
         gm = GameObject.Find("GameTime").GetComponent<GameManager>();
         MC = GameObject.Find("MainCanvas"); 
         
-        time = gm.time;
+        time = gm.arena_time;
         string name;
         item_Material = new Dictionary<string, int>();
 
@@ -62,7 +62,7 @@ public class Player_Interface : MonoBehaviour
     }
     void Update()
     {
-        time_txt.text = string.Format("{0:0.0}",time);
+        time_txt.text = string.Format("{0:00}",(int)(time/60)) + " : " + string.Format("{0:00}", (time % 60));
         if(isArena==false)
             time -= Time.deltaTime;
         if (time <= 0f&&isArena==false)
