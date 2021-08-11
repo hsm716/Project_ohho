@@ -14,17 +14,34 @@ public class Monster_HpBar : MonoBehaviourPunCallbacks
     public PhotonView PV;
 
     //   private Player_Control playerLogic;
-    Vector3 offset = new Vector3(0f, 1f, 0f);
+    Vector3 offset;
 
+    bool isOnceInvoke;
     private void Awake()
     {
+        
         monster_data = monster.GetComponent<Monster>();
+        if (monster_data.monsterType == Monster.Type.slime)
+        {
+            offset = new Vector3(0f, 1f, 0f);
+        }
+        if (monster_data.monsterType == Monster.Type.demon)
+        {
+            offset = new Vector3(0f, 5f, 0f);
+        }
+
+        
         GetHpBoost();
 
     }
 
     void Update()
     {
+        if (isOnceInvoke == false)
+        {
+            isOnceInvoke = true;
+            GetHpBoost();
+        }
 
         /*   if (Input.GetKeyDown(KeyCode.Escape))
                PV.RPC("DestroyRPC", RpcTarget.AllBuffered);*/

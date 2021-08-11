@@ -10,7 +10,7 @@ using UnityEngine.AI;
 
 public class Monster : MonoBehaviourPunCallbacks, IPunObservable
 {
-    public enum Type { slime};
+    public enum Type { slime,demon};
     public Type monsterType;
 
 
@@ -48,16 +48,29 @@ public class Monster : MonoBehaviourPunCallbacks, IPunObservable
 
     public AudioSource sound_source;
     public AudioClip sound_hit;
-    void Start()
+    void Awake()
     {
         anim = GetComponent<Animator>();
         rgbd = GetComponent<Rigidbody>();
         agent = GetComponent<NavMeshAgent>();
         Init_Pos = transform.position;
+        agent.isStopped = true;
 
-        curHP = 1000f;
-        maxHP = 1000f;
-        atk = 10f;
+        if (monsterType == Type.demon)
+        {
+            curHP = 10000f;
+            maxHP = 10000f;
+            atk = 500f;
+        }
+
+        if (monsterType == Type.slime)
+        {
+            curHP = 1000f;
+            maxHP = 1000f;
+            atk = 10f;
+        }
+
+        
         isAttack = false;
         isChase = false;
         isDead = false;
@@ -75,7 +88,7 @@ public class Monster : MonoBehaviourPunCallbacks, IPunObservable
                 Last_Hiter.GetComponent<QuestData>().slimeKillCount++;
                 //Last_Hiter.GetComponent<QuestData>().Quest();
             }
-            Last_Hiter.GetComponent<Player_Control>().curEXP += 20f;
+            Last_Hiter.GetComponent<Player_Control>().curEXP += 100f;
             myCol.enabled = false;
             isDead = true;
             anim.SetTrigger("doDead");
@@ -150,6 +163,20 @@ public class Monster : MonoBehaviourPunCallbacks, IPunObservable
                     agent.isStopped = true;
                     anim.SetTrigger("doAttack");
                     Invoke("AttackEnd", 1.2f);
+                }
+            }
+        }
+        if (monsterType == Type.demon)
+        {
+            if (Vector3.Distance(transform.position, target.position) <= 3f && !isAttack)
+            {
+                if (target.CompareTag("Player"))
+                {
+                    isAttack = true;
+                    anim.transform.forward = target.position - transform.position;
+                    agent.isStopped = true;
+                    anim.SetTrigger("doAttack");
+                    Invoke("AttackEnd", 3f);
                 }
             }
         }
