@@ -166,6 +166,17 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     public float curOccupied_value;
 
 
+
+    // Step Up Stairs
+    public GameObject stepRayUpper;
+    public GameObject stepRayLower;
+
+    public float stepHeight = 0.3f;
+    public float stepSmooth = 0.1f;
+
+
+
+
     private void Awake()
     {
         SoldierPoint = 20;
@@ -196,6 +207,9 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
             Instance = this.gameObject;
 
 
+            stepRayUpper.transform.localPosition = new Vector3(stepRayUpper.transform.localPosition.x, stepHeight, stepRayUpper.transform.localPosition.z);
+
+
 
 
 
@@ -212,12 +226,45 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
         }
 
     }
+    void stepClimb()
+    {
+        RaycastHit hitLower;
+        if (Physics.Raycast(stepRayLower.transform.position,transform.TransformDirection(Vector3.forward),out hitLower, 0.1f))
+        {
+            RaycastHit hitUpper;
+            if(!Physics.Raycast(stepRayUpper.transform.position,transform.TransformDirection(Vector3.forward),out hitUpper, 0.2f))
+            {
+                rgbd.position -= new Vector3(0f, -stepSmooth, 0f);
+            }
+        }
 
+        RaycastHit hitLower45;
+        if (Physics.Raycast(stepRayLower.transform.position, transform.TransformDirection(1.5f,0,1), out hitLower45, 0.1f))
+        {
+            RaycastHit hitUpper45;
+            if (!Physics.Raycast(stepRayUpper.transform.position, transform.TransformDirection(1.5f,0,1), out hitUpper45, 0.2f))
+            {
+                rgbd.position -= new Vector3(0f, -stepSmooth, 0f);
+            }
+        }
+
+        RaycastHit hitLowerMinus45;
+        if (Physics.Raycast(stepRayLower.transform.position, transform.TransformDirection(-1.5f,0,1), out hitLowerMinus45, 0.1f))
+        {
+            RaycastHit hitUpperMinus45;
+            if (!Physics.Raycast(stepRayUpper.transform.position, transform.TransformDirection(-1.5f,0,1), out hitUpperMinus45, 0.2f))
+            {
+                rgbd.position -= new Vector3(0f, -stepSmooth, 0f);
+            }
+        }
+
+    }
     private void FixedUpdate()
     {
         Respawn();
         if (!PV.IsMine)
             return;
+        stepClimb();
         FreezeVelocity();
         if (curStyle == Style.WeaponStyle.Arrow||curStyle==Style.WeaponStyle.Magic)
         {
@@ -247,7 +294,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
                 InputKey();
             AnimationUpdate();
             Attack();
-            rgbd.velocity = new Vector3(0f, rgbd.velocity.y, 0f);
+            
             animator.SetFloat("RunningAmount", curSpeed / 4f);
             
             if (mRDown&&!isDodge)
@@ -553,7 +600,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     }
     void FreezeVelocity()
     {
-        rgbd.velocity = Vector3.zero;
+        rgbd.velocity = new Vector3(0f, rgbd.velocity.y, 0f);
         rgbd.angularVelocity = Vector3.zero;
     }
     // 움직임 동작코드, 210624_황승민
@@ -731,7 +778,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     public void Slash()
     {
         attackArea.enabled = true;
-        Invoke("SlashOut", 0.1f);
+        Invoke("SlashOut", 0.05f);
         // yield return new WaitForSeconds(0.1f);
     }
     public void SlashOut()

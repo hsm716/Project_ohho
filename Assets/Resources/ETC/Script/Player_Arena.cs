@@ -160,7 +160,7 @@ public class Player_Arena : MonoBehaviour
     void StartGame_RPC()
     {
         player_data.PI.isActive_Input = true;
-        gm.time = 60f;
+        gm.arena_time = 60f;
         Soldier_Spawn();
         Invoke("active_false", 1f);
     }

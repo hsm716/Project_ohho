@@ -9,19 +9,20 @@ public class GameManager : MonoBehaviourPunCallbacks,IPunObservable
 {
     public PhotonView PV;
 
-    public float time;
+    public float game_time;
+    public float arena_time;
     public int ReadyCountCur;
     public int ReadyCountMax;
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
         if (stream.IsWriting)
         {
-            stream.SendNext(time);
+            stream.SendNext(arena_time);
             stream.SendNext(ReadyCountCur);
         }
         else
         {
-            time = (float)stream.ReceiveNext();
+            arena_time = (float)stream.ReceiveNext();
             ReadyCountCur = (int)stream.ReceiveNext();
         }
     }
@@ -29,7 +30,8 @@ public class GameManager : MonoBehaviourPunCallbacks,IPunObservable
     // Start is called before the first frame update
     void Start()
     {
-        time = 5f;
+        game_time = 0f;
+        arena_time = 10f;
         Player[] players = PhotonNetwork.PlayerList;
         ReadyCountMax = players.Count();
     }
@@ -37,6 +39,7 @@ public class GameManager : MonoBehaviourPunCallbacks,IPunObservable
     // Update is called once per frame
     void Update()
     {
-        time -= Time.deltaTime;
+        game_time += Time.deltaTime;
+        arena_time -= Time.deltaTime;
     }
 }
