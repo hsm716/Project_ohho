@@ -30,6 +30,8 @@ public class QuestData : MonoBehaviourPunCallbacks//, IPunObservable
     public int slimeKillCount = 0;
     private int slimeMaxCount = 5;
 
+    public bool DemonKill = false;
+
     public int twigCurCount = 0;
     private int twigMaxCount = 5;
 
@@ -79,7 +81,7 @@ public class QuestData : MonoBehaviourPunCallbacks//, IPunObservable
     }*/
     public void Quest()
     {
-        if(questIsActive[0] == true)    //첫 번째(섹션1)의 퀘스트를 받았을 때
+        if(questIsActive[0] == true)    //포레스트
         {
             if (slimeKillCount >= slimeMaxCount) //슬라임 5마리 처치
             {
@@ -87,20 +89,23 @@ public class QuestData : MonoBehaviourPunCallbacks//, IPunObservable
 
             }
         }
-        if (questIsActive[1] == true)
-        {
-
-        }
-        if (questIsActive[2] == true)
+        if (questIsActive[1] == true)   //사막
         {
             if (twigCurCount >= twigMaxCount) // 나뭇가지 5개 주워오기
             {
-                questClearCheck[2] = true;
+                questClearCheck[1] = true;
 
+            }
+        }
+        if (questIsActive[2] == true)   //헬
+        {
+            if (DemonKill == true)
+            {
+                questClearCheck[2] = true;
             }
         
         }
-        if (questIsActive[3] == true)
+        if (questIsActive[3] == true)   //포지
         {
             //OccupiedValue_cur += Time.deltaTime*5f;
             if (OccupiedValue_cur >= OccupiedValue_max) // 나뭇가지 5개 주워오기
@@ -108,6 +113,14 @@ public class QuestData : MonoBehaviourPunCallbacks//, IPunObservable
                 questClearCheck[3] = true;
 
             }
+        }
+        if (questIsActive[4] == true)   //설원
+        {
+
+        }
+        if (questIsActive[5] == true)   //신전
+        {
+
         }
     }
 
