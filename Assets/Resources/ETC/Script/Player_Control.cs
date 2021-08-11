@@ -642,7 +642,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
         {
             Ray ray = characterCamera.ScreenPointToRay(Input.mousePosition);
             // 레이어마스크 /////
-            int layerMask = (1 << LayerMask.NameToLayer("Default")) |  (1 << LayerMask.NameToLayer("Wall"));
+            int layerMask = (1 << LayerMask.NameToLayer("Environment")) |  (1 << LayerMask.NameToLayer("Wall"));
             RaycastHit hitResult;
             /////////////////////
             
