@@ -31,7 +31,7 @@ public class GameManager : MonoBehaviourPunCallbacks,IPunObservable
     void Start()
     {
         game_time = 0f;
-        arena_time = 10f;
+        arena_time = 300f;
         Player[] players = PhotonNetwork.PlayerList;
         ReadyCountMax = players.Count();
     }

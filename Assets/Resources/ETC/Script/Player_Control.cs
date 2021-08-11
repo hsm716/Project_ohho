@@ -641,11 +641,11 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
         {
             Ray ray = characterCamera.ScreenPointToRay(Input.mousePosition);
             // 레이어마스크 /////
-            int layerMask = (1 << LayerMask.NameToLayer("Default")) |  (1 << LayerMask.NameToLayer("Wall"));
+            //int layerMask = (1 << LayerMask.NameToLayer("Default")) |  (1 << LayerMask.NameToLayer("Wall"));
             RaycastHit hitResult;
             /////////////////////
             
-            if (Physics.Raycast(ray, out hitResult,200f,layerMask))
+            if (Physics.Raycast(ray, out hitResult,200f/*,layerMask*/))
             {
                 mouseDir = new Vector3(hitResult.point.x, transform.position.y, hitResult.point.z) - transform.position;
                 animator.transform.forward = Vector3.Slerp(animator.transform.forward,mouseDir,0.5f);

@@ -75,7 +75,7 @@ public class Player_Interface : MonoBehaviour
             isActive_Input = false;
             MC.transform.GetChild(7).gameObject.SetActive(true);
         }
-        if(time <= 0f && isArena == true)
+        if(time <= 0f && isArena_in == true)
         {
 
         }
