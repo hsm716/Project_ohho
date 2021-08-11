@@ -46,6 +46,8 @@ public class Player_Interface : MonoBehaviour
 
     public bool isArena = false;
     public bool isActive_Input;
+
+    public bool isArena_in = false;
     private void Awake()
     {
         isActive_Input = true;
@@ -62,9 +64,9 @@ public class Player_Interface : MonoBehaviour
     }
     void Update()
     {
+        time = gm.arena_time;
         time_txt.text = string.Format("{0:00}",(int)(time/60)) + " : " + string.Format("{0:00}", (time % 60));
-        if(isArena==false)
-            time -= Time.deltaTime;
+
         if (time <= 0f&&isArena==false)
         {
             player_data.horizontalMove = 0f;
@@ -72,6 +74,10 @@ public class Player_Interface : MonoBehaviour
             isArena = true;
             isActive_Input = false;
             MC.transform.GetChild(7).gameObject.SetActive(true);
+        }
+        if(time <= 0f && isArena == true)
+        {
+
         }
         HP_UI.text = player_data.curHP +" / " + player_data.maxHP;
         
