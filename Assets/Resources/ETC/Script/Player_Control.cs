@@ -9,6 +9,7 @@ using Photon.Pun.Demo.Asteroids;
 using Cinemachine;
 using Photon.Pun.UtilityScripts;
 using ExitGames.Client.Photon.StructWrapping;
+using UnityEditor;
 
 public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
 {
@@ -601,7 +602,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     void FreezeVelocity()
     {
         rgbd.velocity = new Vector3(0f, rgbd.velocity.y, 0f);
-        rgbd.angularVelocity = Vector3.zero;
+        //rgbd.angularVelocity = Vector3.zero;
     }
     // 움직임 동작코드, 210624_황승민
     [PunRPC]
@@ -641,12 +642,14 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
         {
             Ray ray = characterCamera.ScreenPointToRay(Input.mousePosition);
             // 레이어마스크 /////
-            //int layerMask = (1 << LayerMask.NameToLayer("Default")) |  (1 << LayerMask.NameToLayer("Wall"));
+            int layerMask = (1 << LayerMask.NameToLayer("Default")) |  (1 << LayerMask.NameToLayer("Wall"));
             RaycastHit hitResult;
             /////////////////////
             
-            if (Physics.Raycast(ray, out hitResult,200f/*,layerMask*/))
+            if (Physics.Raycast(ray, out hitResult,200f,layerMask))
             {
+                Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.forward) * hitResult.distance, Color.yellow);
+                Debug.Log(hitResult.transform.gameObject.name);
                 mouseDir = new Vector3(hitResult.point.x, transform.position.y, hitResult.point.z) - transform.position;
                 animator.transform.forward = Vector3.Slerp(animator.transform.forward,mouseDir,0.5f);
                 mouseDir_y = new Vector3(hitResult.point.x, hitResult.point.y, hitResult.point.z) - transform.position;
@@ -879,7 +882,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     private void OnCollisionEnter(Collision col)
     {
     }
-    private void OnCollisionStay(Collision col)
+/*    private void OnCollisionStay(Collision col)
     {
         foreach(ContactPoint p in col.contacts)
         {
@@ -892,7 +895,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
         }
 
 
-    }
+    }*/
     private void OnCollisionExit(Collision col)
     {
     }

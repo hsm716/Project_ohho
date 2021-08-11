@@ -69,15 +69,11 @@ public class Player_Interface : MonoBehaviour
 
         if (time <= 0f&&isArena==false)
         {
-            player_data.horizontalMove = 0f;
-            player_data.verticalMove = 0f;
-            isArena = true;
-            isActive_Input = false;
-            MC.transform.GetChild(7).gameObject.SetActive(true);
+            ArenaIn();
         }
         if(time <= 0f && isArena_in == true)
         {
-
+            ArenaOut();
         }
         HP_UI.text = player_data.curHP +" / " + player_data.maxHP;
         
@@ -87,7 +83,21 @@ public class Player_Interface : MonoBehaviour
         expPercent.text = string.Format("{0:0.00}", ((player_data.curEXP / player_data.maxEXP) * 100)) + "%";
 
     }
+    void ArenaIn()
+    {
+        player_data.horizontalMove = 0f;
+        player_data.verticalMove = 0f;
 
+        MC.transform.GetChild(7).gameObject.SetActive(true);
+    }
+    void ArenaOut()
+    {
+        isArena_in = false;
+        gm.arena_time = 300f;
+        isArena = false;
+
+        transform.position = player_data.Respawn_Center.transform.GetChild((int)(player_data.PV.ViewID / 1000)).transform.position;
+    }
 
 
     public void Select(int index)
