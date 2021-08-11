@@ -17145,6 +17145,7 @@ MonoBehaviour:
   gm: {fileID: 0}
   isArena: 0
   isActive_Input: 0
+  isArena_in: 0
 --- !u!1 &4371111085661611220
 GameObject:
   m_ObjectHideFlags: 0
@@ -28205,6 +28206,7 @@ MonoBehaviour:
   - {fileID: 2100000, guid: 090a967dda0319f459c7ee68d5ae7124, type: 2}
   - {fileID: 2100000, guid: f801e80b9108a5d4eaaaf8346e431f12, type: 2}
   - {fileID: 2100000, guid: 37d5cb1adeece024eb954421781b95eb, type: 2}
+  - {fileID: 2100000, guid: 047856dfda710bf4c86f0ea924b13de0, type: 2}
   camera: {fileID: 0}
   Mask:
     serializedVersion: 2
