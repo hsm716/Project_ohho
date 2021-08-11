@@ -648,8 +648,8 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
             
             if (Physics.Raycast(ray, out hitResult,200f,layerMask))
             {
-                Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.forward) * hitResult.distance, Color.yellow);
-                Debug.Log(hitResult.transform.gameObject.name);
+                //Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.forward) * hitResult.distance, Color.yellow);
+                //Debug.Log(hitResult.transform.gameObject.name);
                 mouseDir = new Vector3(hitResult.point.x, transform.position.y, hitResult.point.z) - transform.position;
                 animator.transform.forward = Vector3.Slerp(animator.transform.forward,mouseDir,0.5f);
                 mouseDir_y = new Vector3(hitResult.point.x, hitResult.point.y, hitResult.point.z) - transform.position;
