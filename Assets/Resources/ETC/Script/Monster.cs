@@ -81,14 +81,27 @@ public class Monster : MonoBehaviourPunCallbacks, IPunObservable
         curHP -= atk_;
         sound_source.PlayOneShot(sound_hit);
         isChase = true;
+        agent.isStopped = false;
         if (curHP <= 0 && !isDead)
         {
-            if (Last_Hiter.GetComponent<QuestData>().questIsActive[0])
+            if (monsterType == Type.slime)
             {
-                Last_Hiter.GetComponent<QuestData>().slimeKillCount++;
-                //Last_Hiter.GetComponent<QuestData>().Quest();
+                if (Last_Hiter.GetComponent<QuestData>().questIsActive[0])
+                {
+                    Last_Hiter.GetComponent<QuestData>().slimeKillCount++;
+                    Last_Hiter.GetComponent<Player_Control>().curEXP += 20f;
+                    //Last_Hiter.GetComponent<QuestData>().Quest();
+                }
             }
-            Last_Hiter.GetComponent<Player_Control>().curEXP += 100f;
+            else if(monsterType == Type.demon)
+            {
+                if (Last_Hiter.GetComponent<QuestData>().questIsActive[2])
+                {
+                    Last_Hiter.GetComponent<QuestData>().DemonKill=true;
+                    Last_Hiter.GetComponent<Player_Control>().curEXP += 100f;
+                }
+            }
+            
             myCol.enabled = false;
             isDead = true;
             anim.SetTrigger("doDead");
@@ -152,6 +165,7 @@ public class Monster : MonoBehaviourPunCallbacks, IPunObservable
     [PunRPC]
     void Attack()
     {
+        
         if (monsterType == Type.slime)
         {
             if (Vector3.Distance(transform.position, target.position) <= 1.5f && !isAttack)
@@ -159,6 +173,7 @@ public class Monster : MonoBehaviourPunCallbacks, IPunObservable
                 if (target.CompareTag("Player"))
                 {
                     isAttack = true;
+                    isChase = false;
                     anim.transform.forward = target.position - transform.position;
                     agent.isStopped = true;
                     anim.SetTrigger("doAttack");
@@ -168,15 +183,16 @@ public class Monster : MonoBehaviourPunCallbacks, IPunObservable
         }
         if (monsterType == Type.demon)
         {
-            if (Vector3.Distance(transform.position, target.position) <= 3f && !isAttack)
+            if (Vector3.Distance(transform.position, target.position) <= 2.5f && !isAttack)
             {
                 if (target.CompareTag("Player"))
                 {
                     isAttack = true;
-                    anim.transform.forward = target.position - transform.position;
+                    isChase = false;
+                    anim.transform.forward = Vector3.Slerp(anim.transform.forward, target.position - transform.position,0.5f);
                     agent.isStopped = true;
                     anim.SetTrigger("doAttack");
-                    Invoke("AttackEnd", 3f);
+                    Invoke("AttackEnd", 3.5f);
                 }
             }
         }
@@ -195,6 +211,7 @@ public class Monster : MonoBehaviourPunCallbacks, IPunObservable
     }
     public void AttackEnd()
     {
+        isChase = true;
         isAttack = false;
         agent.isStopped = false;
     }
@@ -248,10 +265,6 @@ public class Monster : MonoBehaviourPunCallbacks, IPunObservable
                 transform.position = Vector3.Lerp(transform.position, curPos, Time.fixedDeltaTime * 20f);
                 transform.rotation = Quaternion.Lerp(transform.rotation, curRot, Time.fixedDeltaTime * 20f);
             }
-
-            
-
-
         }
         else
         {
@@ -281,6 +294,7 @@ public class Monster : MonoBehaviourPunCallbacks, IPunObservable
             stream.SendNext(transform.rotation);
             stream.SendNext(curHP);
             stream.SendNext(isChase);
+            stream.SendNext(isAttack);
             //stream.SendNext(mySet);
         }
         else
@@ -289,6 +303,7 @@ public class Monster : MonoBehaviourPunCallbacks, IPunObservable
             curRot = (Quaternion)stream.ReceiveNext();
             curHP = (float)stream.ReceiveNext();
             isChase = (bool)stream.ReceiveNext();
+            isAttack = (bool)stream.ReceiveNext();
             //mySet = (Transform)stream.ReceiveNext();
         }
     }

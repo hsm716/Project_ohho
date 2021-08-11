@@ -290,12 +290,11 @@ public class Soldier : MonoBehaviourPunCallbacks,IPunObservable
             else if ((transform.position - curPos).sqrMagnitude >= 100) transform.position = curPos;
             else
             {
-                transform.position = Vector3.Lerp(transform.position, curPos, Time.fixedDeltaTime * 20f);
-                transform.rotation = Quaternion.Lerp(transform.rotation, curRot, Time.fixedDeltaTime * 20f);
+                transform.position = Vector3.Lerp(transform.position, curPos, Time.deltaTime*20f);
+                transform.rotation = Quaternion.Lerp(transform.rotation, curRot, Time.deltaTime*20f);
             }
 
-            if (!PV.IsMine)
-                return;
+           
 
 
 
