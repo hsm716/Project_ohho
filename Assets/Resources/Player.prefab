@@ -28179,6 +28179,7 @@ MonoBehaviour:
   - {fileID: 1330110185415811080}
   - {fileID: 1648125967715233689}
   slimeKillCount: 0
+  DemonKill: 0
   twigCurCount: 0
   OccupiedValue_cur: 0
   OccupiedValue_max: 100
@@ -28207,6 +28208,7 @@ MonoBehaviour:
   - {fileID: 2100000, guid: f801e80b9108a5d4eaaaf8346e431f12, type: 2}
   - {fileID: 2100000, guid: 37d5cb1adeece024eb954421781b95eb, type: 2}
   - {fileID: 2100000, guid: 047856dfda710bf4c86f0ea924b13de0, type: 2}
+  - {fileID: 2100000, guid: 73a61a86d60700040aae929a84d61870, type: 2}
   camera: {fileID: 0}
   Mask:
     serializedVersion: 2
