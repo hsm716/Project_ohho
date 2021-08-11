@@ -334,7 +334,7 @@ GameObject:
   - component: {fileID: 4346000824186634408}
   - component: {fileID: 6779707900254308727}
   - component: {fileID: 6129133490932960823}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: HellSectionVolume
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -395,7 +395,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4011037847942029222}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: HellSectionVolume
   m_TagString: Untagged
   m_Icon: {fileID: 0}

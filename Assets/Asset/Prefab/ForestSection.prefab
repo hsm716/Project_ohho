@@ -27920,7 +27920,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5532837817207280363}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: ForestSectionVolume
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -35027,7 +35027,7 @@ GameObject:
   - component: {fileID: 5532837817487656667}
   - component: {fileID: 5532837817487656661}
   - component: {fileID: 5532837817487656666}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: ForestSectionVolume
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -65747,6 +65747,6 @@ MonoBehaviour:
   OwnershipTransfer: 0
   observableSearch: 2
   ObservedComponents: []
-  sceneViewId: 0
+  sceneViewId: 1
   InstantiationId: 0
   isRuntimeInstantiated: 0

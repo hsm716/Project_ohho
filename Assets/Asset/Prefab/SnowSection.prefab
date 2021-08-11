@@ -107,7 +107,7 @@ GameObject:
   - component: {fileID: 7313508668900355306}
   - component: {fileID: 8459643913418451027}
   - component: {fileID: 7069788156611191434}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: SnowSectionVolume
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -447,7 +447,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1026695564952889957}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: SnowSectionVolume
   m_TagString: Untagged
   m_Icon: {fileID: 0}
