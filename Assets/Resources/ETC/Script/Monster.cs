@@ -194,7 +194,7 @@ public class Monster : MonoBehaviourPunCallbacks, IPunObservable
                 {
                     isAttack = true;
                     agent.isStopped = true;
-                    anim.transform.forward = Vector3.Slerp(anim.transform.forward, target.position - transform.position,0.5f);
+                    anim.transform.forward = Vector3.Slerp(anim.transform.forward, target.position - transform.position,0.7f);
                     anim.SetTrigger("doAttack");
                     Invoke("AttackEnd", 2.5f);
                 }
@@ -252,10 +252,11 @@ public class Monster : MonoBehaviourPunCallbacks, IPunObservable
                 }*/
                 if (isChase)
                 {
-                    
-                    ChaseObject(target.position);
-                    Attack();
 
+                    
+                    //PV.RPC("ChaseObject", RpcTarget.Others,target.position);
+                    ChaseObject(target.position);
+                    PV.RPC("Attack", RpcTarget.All);
                 }
                 else
                 {
@@ -299,7 +300,6 @@ public class Monster : MonoBehaviourPunCallbacks, IPunObservable
             stream.SendNext(curHP);
             stream.SendNext(maxHP);
             stream.SendNext(isChase);
-            stream.SendNext(isAttack);
             //stream.SendNext(mySet);
         }
         else
@@ -309,7 +309,6 @@ public class Monster : MonoBehaviourPunCallbacks, IPunObservable
             curHP = (float)stream.ReceiveNext();
             maxHP = (float)stream.ReceiveNext();
             isChase = (bool)stream.ReceiveNext();
-            isAttack = (bool)stream.ReceiveNext();
             //mySet = (Transform)stream.ReceiveNext();
         }
     }

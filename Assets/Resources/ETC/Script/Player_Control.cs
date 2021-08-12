@@ -646,7 +646,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
             RaycastHit hitResult;
             /////////////////////
             
-            if (Physics.Raycast(ray, out hitResult,200f,layerMask))
+            if (Physics.Raycast(ray, out hitResult,100f,layerMask))
             {
                 //Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.forward) * hitResult.distance, Color.yellow);
                 //Debug.Log(hitResult.transform.gameObject.name);

@@ -8,8 +8,11 @@ public class MonsterSpawner : MonoBehaviour
     public PhotonView PV;
     void Start()
     {
-        if(PV.IsMine)
+        if (PV.IsMine)
+        {
             StartCoroutine(Spawn());
+            StartCoroutine(Spawn_demon());
+        }
     }
 
     // Update is called once per frame
@@ -23,6 +26,14 @@ public class MonsterSpawner : MonoBehaviour
         {
             PhotonNetwork.Instantiate("Monster_Slime",new Vector3( Random.Range(transform.position.x, transform.position.x + 5f),transform.position.y, Random.Range(transform.position.x, transform.position.z + 5f)), transform.rotation);
             yield return new WaitForSeconds(10f);
+        }
+    }
+    IEnumerator Spawn_demon()
+    {
+        while (true)
+        {
+            PhotonNetwork.Instantiate("Monster_Demon_", new Vector3(Random.Range(transform.position.x, transform.position.x + 5f), transform.position.y, Random.Range(transform.position.x, transform.position.z + 5f)), transform.rotation);
+            yield return new WaitForSeconds(500f);
         }
     }
 }

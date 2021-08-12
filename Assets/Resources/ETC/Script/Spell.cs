@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Spell : MonoBehaviourPunCallbacks, IPunObservable
+public class Spell : MonoBehaviourPunCallbacks
 {
     Rigidbody rgbd;
     public PhotonView PV;
@@ -13,7 +13,7 @@ public class Spell : MonoBehaviourPunCallbacks, IPunObservable
     public GameObject boom;
     Vector3 dir_;
     Vector3 dir;
-
+    public float distance;
 
 
     Vector3 curPos;
@@ -33,17 +33,22 @@ public class Spell : MonoBehaviourPunCallbacks, IPunObservable
         FindMyPlayer();
         atk = myPlayer.atk;
         rgbd.isKinematic = false;
-        dir_ = myPlayer.mouseDir_y + myPlayer.transform.position;
-
-        //rgbd.AddForce( dir_*3.5f/** 10f*/, ForceMode.Impulse);
+        dir_ = myPlayer.mouseDir_y;
+        distance = Vector3.Distance(transform.position, dir_ + transform.position);
+        rgbd.AddForce( dir_.normalized*9f/** 10f*/, ForceMode.Impulse);
         boom.GetComponent<SpellExplosion>().atk = atk;
         StartCoroutine("Boom");
+        Invoke("RgbdOnRPC", 0.4f);
         Invoke("DestroyRPC", 1.0f);
 
     }
-    private void Update()
+    void RgbdOnRPC()
     {
-        if (PV.IsMine)
+        rgbd.useGravity = true;
+    }
+/*    private void Update()
+    {
+      *//*  if (PV.IsMine)
         {
             transform.position = Vector3.Slerp(transform.position, dir_, 0.008f);
         }
@@ -53,10 +58,10 @@ public class Spell : MonoBehaviourPunCallbacks, IPunObservable
             transform.position = Vector3.Lerp(transform.position, curPos, Time.fixedDeltaTime * 20f);
             transform.rotation = Quaternion.Lerp(transform.rotation, curRot, Time.fixedDeltaTime * 20f);
         }
+*//*
 
 
-
-    }
+    }*/
     void FindMyPlayer()
     {
         GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
@@ -127,7 +132,7 @@ public class Spell : MonoBehaviourPunCallbacks, IPunObservable
         Destroy(this.gameObject);
     }
 
-    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+/*    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
         if (stream.IsWriting)
         {
@@ -140,6 +145,6 @@ public class Spell : MonoBehaviourPunCallbacks, IPunObservable
             curRot = (Quaternion)stream.ReceiveNext();
 
         }
-    }
+    }*/
 }
 
