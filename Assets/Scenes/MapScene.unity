@@ -15495,6 +15495,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: TempleSection
       objectReference: {fileID: 0}
+    - target: {fileID: 6518177188952908471, guid: eed9e61091d79e24da411be9a60db34d,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: a6a1d8e9dc09ad944891e3fae690e69d, type: 2}
     - target: {fileID: 7078990258325579220, guid: eed9e61091d79e24da411be9a60db34d,
         type: 3}
       propertyPath: m_RootOrder

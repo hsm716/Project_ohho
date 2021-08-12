@@ -66,7 +66,7 @@ public class MapManager : MonoBehaviourPunCallbacks
         {
             yield return new WaitForSeconds(3f);
             GameObject sections = Instantiate(Sections[Order[j]]);
-            sections.transform.GetChild(0).localRotation = Quaternion.Euler(-90, 0, -60 * Order[j]);
+            sections.transform.GetChild(0).localRotation = Quaternion.Euler(-90, 0, -60 * j);
             sections.transform.parent = offset;
             sections.transform.localPosition = new Vector3(0, 0, 0);
             sections.transform.localRotation = Quaternion.identity;
