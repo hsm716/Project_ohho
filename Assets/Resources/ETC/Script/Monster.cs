@@ -53,6 +53,7 @@ public class Monster : MonoBehaviourPunCallbacks, IPunObservable
         anim = GetComponent<Animator>();
         rgbd = GetComponent<Rigidbody>();
         agent = GetComponent<NavMeshAgent>();
+
         Init_Pos = transform.position;
         agent.isStopped = true;
 
@@ -84,24 +85,29 @@ public class Monster : MonoBehaviourPunCallbacks, IPunObservable
         agent.isStopped = false;
         if (curHP <= 0 && !isDead)
         {
+            float expAmount=0f;
             if (monsterType == Type.slime)
             {
+                expAmount = 20f;
                 if (Last_Hiter.GetComponent<QuestData>().questIsActive[0])
                 {
+                    
                     Last_Hiter.GetComponent<QuestData>().slimeKillCount++;
-                    Last_Hiter.GetComponent<Player_Control>().curEXP += 20f;
+                    
                     //Last_Hiter.GetComponent<QuestData>().Quest();
                 }
             }
             else if(monsterType == Type.demon)
             {
+                expAmount = 100f;
                 if (Last_Hiter.GetComponent<QuestData>().questIsActive[2])
                 {
+                    
                     Last_Hiter.GetComponent<QuestData>().DemonKill=true;
-                    Last_Hiter.GetComponent<Player_Control>().curEXP += 100f;
+                    
                 }
             }
-            
+            Last_Hiter.GetComponent<Player_Control>().curEXP += expAmount;
             myCol.enabled = false;
             isDead = true;
             anim.SetTrigger("doDead");
@@ -173,9 +179,8 @@ public class Monster : MonoBehaviourPunCallbacks, IPunObservable
                 if (target.CompareTag("Player"))
                 {
                     isAttack = true;
-                    isChase = false;
-                    anim.transform.forward = target.position - transform.position;
                     agent.isStopped = true;
+                    anim.transform.forward = target.position - transform.position;
                     anim.SetTrigger("doAttack");
                     Invoke("AttackEnd", 1.2f);
                 }
@@ -188,11 +193,10 @@ public class Monster : MonoBehaviourPunCallbacks, IPunObservable
                 if (target.CompareTag("Player"))
                 {
                     isAttack = true;
-                    isChase = false;
-                    anim.transform.forward = Vector3.Slerp(anim.transform.forward, target.position - transform.position,0.5f);
                     agent.isStopped = true;
+                    anim.transform.forward = Vector3.Slerp(anim.transform.forward, target.position - transform.position,0.7f);
                     anim.SetTrigger("doAttack");
-                    Invoke("AttackEnd", 2.7f);
+                    Invoke("AttackEnd", 2.5f);
                 }
             }
         }
@@ -248,10 +252,11 @@ public class Monster : MonoBehaviourPunCallbacks, IPunObservable
                 }*/
                 if (isChase)
                 {
-                    
-                    ChaseObject(target.position);
-                    Attack();
 
+                    
+                    //PV.RPC("ChaseObject", RpcTarget.Others,target.position);
+                    ChaseObject(target.position);
+                    PV.RPC("Attack", RpcTarget.All);
                 }
                 else
                 {
@@ -293,8 +298,8 @@ public class Monster : MonoBehaviourPunCallbacks, IPunObservable
             stream.SendNext(transform.position);
             stream.SendNext(transform.rotation);
             stream.SendNext(curHP);
+            stream.SendNext(maxHP);
             stream.SendNext(isChase);
-            stream.SendNext(isAttack);
             //stream.SendNext(mySet);
         }
         else
@@ -302,8 +307,8 @@ public class Monster : MonoBehaviourPunCallbacks, IPunObservable
             curPos = (Vector3)stream.ReceiveNext();
             curRot = (Quaternion)stream.ReceiveNext();
             curHP = (float)stream.ReceiveNext();
+            maxHP = (float)stream.ReceiveNext();
             isChase = (bool)stream.ReceiveNext();
-            isAttack = (bool)stream.ReceiveNext();
             //mySet = (Transform)stream.ReceiveNext();
         }
     }

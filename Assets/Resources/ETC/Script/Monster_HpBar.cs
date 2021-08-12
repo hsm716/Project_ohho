@@ -30,8 +30,8 @@ public class Monster_HpBar : MonoBehaviourPunCallbacks
             offset = new Vector3(0f, 5f, 0f);
         }
 
-        
-        GetHpBoost();
+
+        PV.RPC("GetHpBoost",RpcTarget.AllBuffered);
 
     }
 
@@ -40,7 +40,7 @@ public class Monster_HpBar : MonoBehaviourPunCallbacks
         if (isOnceInvoke == false)
         {
             isOnceInvoke = true;
-            GetHpBoost();
+            PV.RPC("GetHpBoost", RpcTarget.AllBuffered);
         }
 
         /*   if (Input.GetKeyDown(KeyCode.Escape))
@@ -52,6 +52,7 @@ public class Monster_HpBar : MonoBehaviourPunCallbacks
 
 
     }
+    [PunRPC]
     public void GetHpBoost()
     {
         float scaleX = (1000f / 200f) / (monster_data.maxHP / 200f);

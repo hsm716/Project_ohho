@@ -85,7 +85,7 @@ TrailRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10306, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 3632881d102df0f47864d899fa15a49d, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -106,7 +106,7 @@ TrailRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Time: 0.1
+  m_Time: 0.05
   m_Parameters:
     serializedVersion: 3
     widthMultiplier: 1
@@ -115,24 +115,24 @@ TrailRenderer:
       m_Curve:
       - serializedVersion: 3
         time: 0
-        value: 0.078947365
-        inSlope: 1.1286551
-        outSlope: 1.1286551
+        value: 0.34285718
+        inSlope: 0
+        outSlope: 0
         tangentMode: 0
         weightedMode: 0
-        inWeight: 0.33333334
-        outWeight: 0.18652849
+        inWeight: 0
+        outWeight: 0
       - serializedVersion: 3
-        time: 0.22865847
-        value: 0.29748493
-        inSlope: 0.10328185
-        outSlope: 0.10328185
+        time: 0.47922236
+        value: 0.16588995
+        inSlope: -1.0882466
+        outSlope: -1.0882466
         tangentMode: 0
         weightedMode: 0
         inWeight: 0.33333334
         outWeight: 0.33333334
       - serializedVersion: 3
-        time: 1
+        time: 0.777771
         value: 0
         inSlope: 0
         outSlope: 0
@@ -177,8 +177,8 @@ TrailRenderer:
     alignment: 0
     textureMode: 0
     shadowBias: 0.5
-    generateLightingData: 0
-  m_MinVertexDistance: 0.2
+    generateLightingData: 1
+  m_MinVertexDistance: 0.01
   m_Autodestruct: 0
   m_Emitting: 1
 --- !u!114 &5343873190552075709
@@ -197,6 +197,7 @@ MonoBehaviour:
   myPlayer: {fileID: 0}
   atk: 0
   boom: {fileID: 3298907995747871940}
+  distance: 0
 --- !u!114 &349140914206041084
 MonoBehaviour:
   m_ObjectHideFlags: 0
