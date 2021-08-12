@@ -12,6 +12,7 @@ public class MonsterSpawner : MonoBehaviour
         {
             StartCoroutine(Spawn());
             StartCoroutine(Spawn_demon());
+            StartCoroutine(Spawn_golem());
         }
     }
 
@@ -33,7 +34,18 @@ public class MonsterSpawner : MonoBehaviour
         while (true)
         {
             PhotonNetwork.Instantiate("Monster_Demon_", new Vector3(Random.Range(transform.position.x, transform.position.x + 5f), transform.position.y, Random.Range(transform.position.x, transform.position.z + 5f)), transform.rotation);
+            
+
             yield return new WaitForSeconds(500f);
         }
+    }
+    IEnumerator Spawn_golem()
+    {
+        while (true)
+        {
+            PhotonNetwork.Instantiate("Monster_Golem", new Vector3(Random.Range(transform.position.x, transform.position.x + 5f), transform.position.y, Random.Range(transform.position.x, transform.position.z + 5f)), transform.rotation);
+            yield return new WaitForSeconds(10f);
+        }
+        
     }
 }

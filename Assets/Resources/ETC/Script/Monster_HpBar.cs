@@ -9,6 +9,7 @@ public class Monster_HpBar : MonoBehaviourPunCallbacks
     public Transform monster;
     Monster monster_data;
     public Slider hpBar;
+    public Slider subBar;
     public GameObject HpLineFolder;
     public Image hpColor;
     public PhotonView PV;
@@ -29,7 +30,10 @@ public class Monster_HpBar : MonoBehaviourPunCallbacks
         {
             offset = new Vector3(0f, 5f, 0f);
         }
-
+        if (monster_data.monsterType == Monster.Type.golem)
+        {
+            offset = new Vector3(0f, 3f, 0f);
+        }
 
         PV.RPC("GetHpBoost",RpcTarget.AllBuffered);
 
@@ -47,6 +51,7 @@ public class Monster_HpBar : MonoBehaviourPunCallbacks
                PV.RPC("DestroyRPC", RpcTarget.AllBuffered);*/
         transform.position = monster.position + offset;
         hpBar.value = monster_data.curHP / monster_data.maxHP;
+        subBar.value = monster_data.curSkillAmount / monster_data.maxSkillAmount;
 
 
 

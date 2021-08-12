@@ -48,6 +48,11 @@ public class Player_Interface : MonoBehaviour
     public bool isActive_Input;
 
     public bool isArena_in = false;
+
+
+    public Image RedBuff_image;
+    public Image BlueBuff_image;
+    public Image GreenBuff_image;
     private void Awake()
     {
         isActive_Input = true;
@@ -81,6 +86,10 @@ public class Player_Interface : MonoBehaviour
         expBar.value = (player_data.curEXP / player_data.maxEXP) * 100;
         Next_Level.text = "" + player_data.level;
         expPercent.text = string.Format("{0:0.00}", ((player_data.curEXP / player_data.maxEXP) * 100)) + "%";
+
+        RedBuff_image.fillAmount = player_data.redBuff_time / 100f;
+        BlueBuff_image.fillAmount = player_data.blueBuff_time / 100f;
+        GreenBuff_image.fillAmount = player_data.greenBuff_time / 100f;
 
     }
     void ArenaIn()
