@@ -4269,17 +4269,25 @@ MonoBehaviour:
   ShowParameterInspector: 1
   m_SynchronizeParameters:
   - Type: 4
-    SynchronizeType: 0
+    SynchronizeType: 2
     Name: isRunning
   - Type: 9
-    SynchronizeType: 0
+    SynchronizeType: 1
     Name: doDead
   - Type: 9
-    SynchronizeType: 0
+    SynchronizeType: 1
     Name: doAttack
+  - Type: 9
+    SynchronizeType: 1
+    Name: doHit
+  - Type: 9
+    SynchronizeType: 1
+    Name: doSkill
   m_SynchronizeLayers:
-  - SynchronizeType: 0
+  - SynchronizeType: 1
     LayerIndex: 0
+  - SynchronizeType: 1
+    LayerIndex: 1
 --- !u!82 &6072916125889683160
 AudioSource:
   m_ObjectHideFlags: 0
