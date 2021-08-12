@@ -10,14 +10,16 @@ using UnityEngine.AI;
 
 public class Monster : MonoBehaviourPunCallbacks, IPunObservable
 {
-    public enum Type { slime,demon};
+    public enum Type { slime,demon,golem};
     public Type monsterType;
-
+    public int golem_Index; // 0 : red , 1 : blue, 2 : green
+    public Material[] skinMat;
+    public SkinnedMeshRenderer SKMR;
 
     public PhotonView PV;
-    public Soldier_HpBar SHP_bar;
 
     public CapsuleCollider myCol;
+    public CapsuleCollider skillCol;
     public BoxCollider meleeArea;
 
     public AudioSource sound_melee_attack;
@@ -42,9 +44,14 @@ public class Monster : MonoBehaviourPunCallbacks, IPunObservable
     public bool isChase;
     public bool isStop;
     public bool isDead;
+    public bool isSkill;
 
     public float curHP;
     public float maxHP;
+
+    public float curSkillAmount;
+    public float maxSkillAmount;
+
 
     public AudioSource sound_source;
     public AudioClip sound_hit;
@@ -53,7 +60,9 @@ public class Monster : MonoBehaviourPunCallbacks, IPunObservable
         anim = GetComponent<Animator>();
         rgbd = GetComponent<Rigidbody>();
         agent = GetComponent<NavMeshAgent>();
+        //StartCoroutine("StepShake");
 
+        golem_Index = Random.Range(0, 3);
         Init_Pos = transform.position;
         agent.isStopped = true;
 
@@ -61,6 +70,8 @@ public class Monster : MonoBehaviourPunCallbacks, IPunObservable
         {
             curHP = 10000f;
             maxHP = 10000f;
+            curSkillAmount = 0f;
+            maxSkillAmount = 100f;
             atk = 500f;
         }
 
@@ -70,19 +81,35 @@ public class Monster : MonoBehaviourPunCallbacks, IPunObservable
             maxHP = 1000f;
             atk = 10f;
         }
+        if (monsterType == Type.golem)
+        {
+            curHP = 5000f;
+            maxHP = 5000f;
+            atk = 100f;
 
-        
+            SKMR.material = skinMat[golem_Index];
+            
+            curSkillAmount = 0f;
+            maxSkillAmount = 100f;
+        }
+
+
         isAttack = false;
         isChase = false;
         isDead = false;
         target = null;
     }
+    [PunRPC]
     public void Hit(float atk_)
     {
+        anim.SetTrigger("doHit");
         curHP -= atk_;
         sound_source.PlayOneShot(sound_hit);
-        isChase = true;
-        agent.isStopped = false;
+        if (!isAttack)
+        {
+            isChase = true;
+            agent.isStopped = false;
+        }
         if (curHP <= 0 && !isDead)
         {
             float expAmount=0f;
@@ -107,20 +134,41 @@ public class Monster : MonoBehaviourPunCallbacks, IPunObservable
                     
                 }
             }
+            else if (monsterType == Type.golem)
+            {
+                expAmount = 75f;
+                switch (golem_Index)
+                {
+                    case 0:
+                        Last_Hiter.GetComponent<Player_Control>().redBuff_time = 100f;
+                        break;
+                    case 1:
+
+                        Last_Hiter.GetComponent<Player_Control>().blueBuff_time = 100f;
+                        break;
+                    case 2:
+
+                        Last_Hiter.GetComponent<Player_Control>().greenBuff_time = 100f;
+                        break;
+                }
+                
+
+            }
             Last_Hiter.GetComponent<Player_Control>().curEXP += expAmount;
             myCol.enabled = false;
             isDead = true;
             anim.SetTrigger("doDead");
         }
     }
-
+    
     private void FixedUpdate()
     {
         if (!PV.IsMine)
             return;
+        FreezeVelocity();
         if (!isDead)
         {
-            FreezeVelocity();
+            
             //Targeting();
             if (agent.isStopped == true)
             {
@@ -194,9 +242,23 @@ public class Monster : MonoBehaviourPunCallbacks, IPunObservable
                 {
                     isAttack = true;
                     agent.isStopped = true;
-                    anim.transform.forward = Vector3.Slerp(anim.transform.forward, target.position - transform.position,0.7f);
+                    anim.transform.forward = target.position - transform.position;
                     anim.SetTrigger("doAttack");
                     Invoke("AttackEnd", 2.5f);
+                }
+            }
+        }
+        if (monsterType == Type.golem)
+        {
+            if (Vector3.Distance(transform.position, target.position) <= 2.5f && !isAttack)
+            {
+                if (target.CompareTag("Player"))
+                {
+                    isAttack = true;
+                    agent.isStopped = true;
+                    anim.transform.forward = target.position - transform.position;
+                    anim.SetTrigger("doAttack");
+                    Invoke("AttackEnd", 1.5f);
                 }
             }
         }
@@ -235,11 +297,83 @@ public class Monster : MonoBehaviourPunCallbacks, IPunObservable
 
 
     }
+    void Skill1()
+    {
+        isSkill = true;
+        if(monsterType == Type.golem)
+        {
+            agent.speed = 30f;
+        }
+        else if(monsterType ==Type.demon)
+            agent.speed = 50f;
+        
+    }
+    public void FallLandNow()
+    {
+        if (monsterType == Type.demon)
+        {
+            Camera_Move.Instance.ShakeCamera(5f, 0.75f);
+        }
+        else if(monsterType == Type.golem)
+        {
+            Camera_Move.Instance.ShakeCamera(3f, 0.6f);
+        }
+        agent.velocity = Vector3.zero;
+        skillCol.enabled = true;
+        agent.isStopped = true;
+        Invoke("skillEnable_false", 0.4f);
+    }
+    void skillEnable_false()
+    {
+        skillCol.enabled = false;
+
+    }
+    public void SkillOut()
+    {
+        agent.isStopped = false;
+        if (monsterType == Type.golem)
+        {
+            agent.speed = 3f;
+        }
+        else if (monsterType == Type.demon)
+        {
+            agent.speed = 2f;
+        }
+        isSkill = false;
+    }
     // Update is called once per frame
     void Update()
     {
         if (!isDead)
         {
+            if (monsterType == Type.demon)
+            {
+                curSkillAmount += Time.deltaTime*5f;
+                if (curSkillAmount>=maxSkillAmount && !isSkill && !isAttack && target)
+                {
+                    curSkillAmount = 0f;
+                    
+                    Skill1();
+                    Invoke("SkillOut", 3f);
+                    anim.SetTrigger("doSkill");
+                    
+
+                }
+            }
+            else if (monsterType == Type.golem)
+            {
+                curSkillAmount += Time.deltaTime * 8f;
+                if (curSkillAmount >= maxSkillAmount && !isSkill && !isAttack && target)
+                {
+                    curSkillAmount = 0f;
+
+                    Skill1();
+                    Invoke("SkillOut", 2.5f);
+                    anim.SetTrigger("doSkill");
+
+
+                }
+            }
 
             if (PV.IsMine)
             {
@@ -256,7 +390,8 @@ public class Monster : MonoBehaviourPunCallbacks, IPunObservable
                     
                     //PV.RPC("ChaseObject", RpcTarget.Others,target.position);
                     ChaseObject(target.position);
-                    Attack();
+                    if(!isSkill && !isAttack)
+                        Attack();
                 }
                 else
                 {
@@ -278,6 +413,15 @@ public class Monster : MonoBehaviourPunCallbacks, IPunObservable
 
 
     }
+/*    IEnumerator StepShake()
+    {
+        while (true)
+        {
+            if (!isSkill && !isAttack && agent.isStopped==false)
+                Camera_Move.Instance.ShakeCamera(3f, 0.05f);
+            yield return new WaitForSeconds(0.7f);
+        }
+    }*/
     public void Dead()
     {
         PV.RPC("DestroyRPC", RpcTarget.AllBuffered);
@@ -287,6 +431,8 @@ public class Monster : MonoBehaviourPunCallbacks, IPunObservable
     {
         agent.SetDestination(pos);
     }
+
+   
 
     [PunRPC]
     void DestroyRPC() => Destroy(gameObject);
@@ -300,6 +446,8 @@ public class Monster : MonoBehaviourPunCallbacks, IPunObservable
             stream.SendNext(curHP);
             stream.SendNext(maxHP);
             stream.SendNext(isChase);
+            stream.SendNext(curSkillAmount);
+            stream.SendNext(maxSkillAmount);
             //stream.SendNext(mySet);
         }
         else
@@ -308,7 +456,10 @@ public class Monster : MonoBehaviourPunCallbacks, IPunObservable
             curRot = (Quaternion)stream.ReceiveNext();
             curHP = (float)stream.ReceiveNext();
             maxHP = (float)stream.ReceiveNext();
+
             isChase = (bool)stream.ReceiveNext();
+            curSkillAmount = (float)stream.ReceiveNext();
+            maxSkillAmount = (float)stream.ReceiveNext();
             //mySet = (Transform)stream.ReceiveNext();
         }
     }

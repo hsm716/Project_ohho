@@ -1,9 +1,11 @@
-﻿using System.Collections;
+﻿using Cinemachine;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class Camera_Move : MonoBehaviour
 {
+    public static Camera_Move Instance { get; private set; }
 
     public GameObject player;
     [SerializeField]
@@ -32,9 +34,40 @@ public class Camera_Move : MonoBehaviour
     bool b = false;
     bool a = false;
 
+    private CinemachineVirtualCamera CVC;
+    private float shakeTimer;
+
+    private void Awake()
+    {
+        Instance = this;
+        CVC = GetComponent<CinemachineVirtualCamera>();
+    }
+    public void ShakeCamera(float intensity,float time)
+    {
+        CinemachineBasicMultiChannelPerlin cinemachineBasicMultiChannelPerlin =
+            CVC.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
+
+        cinemachineBasicMultiChannelPerlin.m_AmplitudeGain = intensity;
+        shakeTimer = time;
+    }
+    private void Update()
+    {
+        if (shakeTimer > 0)
+        {
+            shakeTimer -= Time.deltaTime;
+            if (shakeTimer <= 0f)
+            {
+                CinemachineBasicMultiChannelPerlin cinemachineBasicMultiChannelPerlin =
+        CVC.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
+
+                cinemachineBasicMultiChannelPerlin.m_AmplitudeGain = 0;
+            }
+        }
+    }
     private void Start()
     {
-        animator = gameObject.GetComponent<Animator>();
+
+        //animator = gameObject.GetComponent<Animator>();
     }
 
     Vector3 currentVelocity;
@@ -68,14 +101,14 @@ public class Camera_Move : MonoBehaviour
         //transform.position = cameraPosition;
     }
 
-    private void FixedUpdate()
+    /*private void FixedUpdate()
     {
-        cameraPosition.x = player.transform.position.x + offsetX;
+*//*        cameraPosition.x = player.transform.position.x + offsetX;
         cameraPosition.y = player.transform.position.y + offsetY;
         cameraPosition.z = player.transform.position.z + offsetZ;
 
-        transform.position = Vector3.SmoothDamp(transform.position, cameraPosition, ref currentVelocity, Time.fixedDeltaTime);
-    }
+        transform.position = Vector3.SmoothDamp(transform.position, cameraPosition, ref currentVelocity, Time.fixedDeltaTime);*//*
+    }*/
     /*
     IEnumerator Wait()
     {

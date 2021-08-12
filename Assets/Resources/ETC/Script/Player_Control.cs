@@ -176,7 +176,13 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     public float stepSmooth = 0.1f;
 
 
+    public GameObject redBuff;
+    public GameObject blueBuff;
+    public GameObject greenBuff;
 
+    public float redBuff_time;
+    public float blueBuff_time;
+    public float greenBuff_time;
 
     private void Awake()
     {
@@ -295,7 +301,31 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
                 InputKey();
             AnimationUpdate();
             Attack();
-            
+
+            if (redBuff_time <= 0f)
+                redBuff.SetActive(false);
+            else
+            {
+                redBuff.SetActive(true);
+                redBuff_time -= Time.deltaTime;
+            }
+
+            if (blueBuff_time <= 0f)
+                blueBuff.SetActive(false);
+            else
+            {
+                blueBuff.SetActive(true);
+                blueBuff_time -= Time.deltaTime;
+            }
+
+            if (greenBuff_time <= 0f)
+                greenBuff.SetActive(false);
+            else
+            {
+                greenBuff.SetActive(true);
+                greenBuff_time -= Time.deltaTime;
+            }
+
             animator.SetFloat("RunningAmount", curSpeed / 4f);
             
             if (mRDown&&!isDodge)
@@ -913,7 +943,19 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
         }
         if (other.CompareTag("Monster_Attack"))
         {
-            Hit(other.transform.parent.GetComponent<Monster>().atk);
+            Monster hitObj = other.transform.parent.GetComponent<Monster>();
+            if (hitObj.isSkill)
+            {
+                if (hitObj.monsterType == Monster.Type.demon || hitObj.monsterType == Monster.Type.golem)
+                {
+                    Hit(hitObj.atk * 2f);
+                }
+            }
+            else
+            {
+                
+                Hit(hitObj.atk);
+            }
         }
 
         if (other.CompareTag("Item"))
@@ -1257,6 +1299,9 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
             stream.SendNext(curStyle);
             stream.SendNext(shieldAmount);
             stream.SendNext(level);
+            stream.SendNext(redBuff_time);
+            stream.SendNext(blueBuff_time);
+            stream.SendNext(greenBuff_time);
         }
         else
         {
@@ -1269,6 +1314,9 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
             curStyle = (Style.WeaponStyle)stream.ReceiveNext();
             shieldAmount = (float)stream.ReceiveNext();
             level = (int)stream.ReceiveNext();
+            redBuff_time = (float)stream.ReceiveNext();
+            blueBuff_time = (float)stream.ReceiveNext();
+            greenBuff_time = (float)stream.ReceiveNext();
         }
     }
 }

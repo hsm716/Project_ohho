@@ -550,6 +550,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   monster: {fileID: 1571135606747084619}
   hpBar: {fileID: 7147230348204943483}
+  subBar: {fileID: 0}
   HpLineFolder: {fileID: 5910045596623230912}
   hpColor: {fileID: 7950659628144319873}
   PV: {fileID: 5380389665269400865}
@@ -1185,9 +1186,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   monsterType: 0
+  golem_Index: 0
+  skinMat: []
+  SKMR: {fileID: 0}
   PV: {fileID: 2985847482042990181}
-  SHP_bar: {fileID: 0}
   myCol: {fileID: 8741503345221602546}
+  skillCol: {fileID: 0}
   meleeArea: {fileID: 7013713625259979557}
   sound_melee_attack: {fileID: 0}
   Last_Hiter: {fileID: 0}
@@ -1196,8 +1200,11 @@ MonoBehaviour:
   isChase: 0
   isStop: 0
   isDead: 0
+  isSkill: 0
   curHP: 0
   maxHP: 0
+  curSkillAmount: 0
+  maxSkillAmount: 0
   sound_source: {fileID: 5061323987198559601}
   sound_hit: {fileID: 8300000, guid: 0c339317cde75f74da607b404bf128cc, type: 3}
 --- !u!114 &7644243768528807344
