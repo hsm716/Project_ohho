@@ -256,7 +256,7 @@ public class Monster : MonoBehaviourPunCallbacks, IPunObservable
                     
                     //PV.RPC("ChaseObject", RpcTarget.Others,target.position);
                     ChaseObject(target.position);
-                    PV.RPC("Attack", RpcTarget.All);
+                    Attack();
                 }
                 else
                 {
