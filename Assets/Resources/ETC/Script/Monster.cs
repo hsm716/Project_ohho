@@ -448,6 +448,7 @@ public class Monster : MonoBehaviourPunCallbacks, IPunObservable
             stream.SendNext(isChase);
             stream.SendNext(curSkillAmount);
             stream.SendNext(maxSkillAmount);
+            stream.SendNext(golem_Index);
             //stream.SendNext(mySet);
         }
         else
@@ -460,6 +461,7 @@ public class Monster : MonoBehaviourPunCallbacks, IPunObservable
             isChase = (bool)stream.ReceiveNext();
             curSkillAmount = (float)stream.ReceiveNext();
             maxSkillAmount = (float)stream.ReceiveNext();
+            golem_Index = (int)stream.ReceiveNext();
             //mySet = (Transform)stream.ReceiveNext();
         }
     }
