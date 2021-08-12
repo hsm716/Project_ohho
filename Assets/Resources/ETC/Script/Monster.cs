@@ -62,7 +62,7 @@ public class Monster : MonoBehaviourPunCallbacks, IPunObservable
         agent = GetComponent<NavMeshAgent>();
         //StartCoroutine("StepShake");
 
-        golem_Index = Random.Range(0, 3);
+        //golem_Index = Random.Range(0, 3);
         Init_Pos = transform.position;
         agent.isStopped = true;
 
@@ -87,8 +87,8 @@ public class Monster : MonoBehaviourPunCallbacks, IPunObservable
             maxHP = 5000f;
             atk = 100f;
 
+
             SKMR.material = skinMat[golem_Index];
-            
             curSkillAmount = 0f;
             maxSkillAmount = 100f;
         }
@@ -99,6 +99,16 @@ public class Monster : MonoBehaviourPunCallbacks, IPunObservable
         isDead = false;
         target = null;
     }
+    private void Start()
+    {
+        if (monsterType == Type.golem)
+        {
+            SKMR.material = skinMat[golem_Index];
+        }
+
+    }
+
+
     [PunRPC]
     public void Hit(float atk_)
     {

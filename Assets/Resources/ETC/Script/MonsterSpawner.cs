@@ -43,7 +43,8 @@ public class MonsterSpawner : MonoBehaviour
     {
         while (true)
         {
-            PhotonNetwork.Instantiate("Monster_Golem", new Vector3(Random.Range(transform.position.x, transform.position.x + 5f), transform.position.y, Random.Range(transform.position.x, transform.position.z + 5f)), transform.rotation);
+            GameObject golem =  PhotonNetwork.Instantiate("Monster_Golem", new Vector3(Random.Range(transform.position.x, transform.position.x + 5f), transform.position.y, Random.Range(transform.position.x, transform.position.z + 5f)), transform.rotation);
+            golem.transform.GetChild(0).GetComponent<Monster>().golem_Index = Random.Range(0, 3);
             yield return new WaitForSeconds(10f);
         }
         

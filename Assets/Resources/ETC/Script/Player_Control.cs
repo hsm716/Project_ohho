@@ -293,6 +293,33 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
 
 
     }
+    [PunRPC]
+    void BuffOnOff_RPC()
+    {
+        if (redBuff_time <= 0f)
+            redBuff.SetActive(false);
+        else
+        {
+            redBuff.SetActive(true);
+            redBuff_time -= Time.deltaTime;
+        }
+
+        if (blueBuff_time <= 0f)
+            blueBuff.SetActive(false);
+        else
+        {
+            blueBuff.SetActive(true);
+            blueBuff_time -= Time.deltaTime;
+        }
+
+        if (greenBuff_time <= 0f)
+            greenBuff.SetActive(false);
+        else
+        {
+            greenBuff.SetActive(true);
+            greenBuff_time -= Time.deltaTime;
+        }
+    }
     void Update()
     {
         if (PV.IsMine)
@@ -302,29 +329,8 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
             AnimationUpdate();
             Attack();
 
-            if (redBuff_time <= 0f)
-                redBuff.SetActive(false);
-            else
-            {
-                redBuff.SetActive(true);
-                redBuff_time -= Time.deltaTime;
-            }
+            PV.RPC("BuffOnOff_RPC", RpcTarget.All);
 
-            if (blueBuff_time <= 0f)
-                blueBuff.SetActive(false);
-            else
-            {
-                blueBuff.SetActive(true);
-                blueBuff_time -= Time.deltaTime;
-            }
-
-            if (greenBuff_time <= 0f)
-                greenBuff.SetActive(false);
-            else
-            {
-                greenBuff.SetActive(true);
-                greenBuff_time -= Time.deltaTime;
-            }
 
             animator.SetFloat("RunningAmount", curSpeed / 4f);
             
