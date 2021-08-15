@@ -173,8 +173,8 @@ Material:
     - _WaveFoamStrength: 1
     m_Colors:
     - _DepthFogDensity: {r: 0.3, g: 0.3, b: 0.3, a: 1}
-    - _Diffuse: {r: 0, g: 0.06970649, b: 0.1792453, a: 1}
-    - _DiffuseGrazing: {r: 0, g: 0.038845766, b: 0.3301887, a: 1}
+    - _Diffuse: {r: 0.011764705, g: 0.2531886, b: 0.36862746, a: 1}
+    - _DiffuseGrazing: {r: 0, g: 0.26380548, b: 0.32941177, a: 1}
     - _DiffuseShadow: {r: 0.07075472, g: 0.1315858, b: 0.2830189, a: 1}
     - _FoamBubbleColor: {r: 0.6383055, g: 0.8301887, b: 0.8243741, a: 1}
     - _FoamWhiteColor: {r: 1, g: 0.99634784, b: 0.97199994, a: 0.6862745}

@@ -28,13 +28,13 @@ public class MapManager : MonoBehaviourPunCallbacks
         //PV.RPC("Shuffle", RpcTarget.All);
     }
 
-
     void Shuffle()
     {
         bool[] selected_state = new bool[] { false, false, false, false, false, false };
         int count = 0;
         while (count < 6)
         {
+
             int rand_idx = Random.Range(0, 6);
             if (selected_state[rand_idx] == false)
             {
@@ -47,8 +47,18 @@ public class MapManager : MonoBehaviourPunCallbacks
                 continue;
             }
         }
+
+        if(Order[0] == 4 || Order[1] == 4 || Order[5] == 4)
+        {
+            PV.RPC("Shuffle_Result", RpcTarget.All, Order);
+        }
+        else
+        {
+            Shuffle();
+        }
+
         //Shuffle_Result();
-        PV.RPC("Shuffle_Result", RpcTarget.All, Order);
+
 
     }
 
