@@ -8,7 +8,7 @@ public class MonsterSpawner : MonoBehaviour
     public PhotonView PV;
     void Start()
     {
-        if (PV.IsMine)
+        if (PhotonNetwork.IsMasterClient)
         {
             StartCoroutine(Spawn());
             StartCoroutine(Spawn_demon());
@@ -25,7 +25,7 @@ public class MonsterSpawner : MonoBehaviour
     {
         while (true)
         {
-            PhotonNetwork.Instantiate("Monster_Slime",new Vector3( Random.Range(transform.position.x, transform.position.x + 5f),transform.position.y, Random.Range(transform.position.x, transform.position.z + 5f)), transform.rotation);
+            PhotonNetwork.Instantiate("Monster_Slime",new Vector3( Random.Range(transform.position.x, transform.position.x + 1f),transform.position.y, Random.Range(transform.position.x, transform.position.z + 1f)), transform.rotation);
             yield return new WaitForSeconds(10f);
         }
     }
@@ -33,7 +33,7 @@ public class MonsterSpawner : MonoBehaviour
     {
         while (true)
         {
-            PhotonNetwork.Instantiate("Monster_Demon_", new Vector3(Random.Range(transform.position.x, transform.position.x + 5f), transform.position.y, Random.Range(transform.position.x, transform.position.z + 5f)), transform.rotation);
+            PhotonNetwork.Instantiate("Monster_Demon_", new Vector3(Random.Range(transform.position.x, transform.position.x + 1f), transform.position.y, Random.Range(transform.position.x, transform.position.z + 1f)), transform.rotation);
             
 
             yield return new WaitForSeconds(500f);

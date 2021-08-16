@@ -9825,6 +9825,13 @@ MonoBehaviour:
   - {fileID: 7748259551964134085, guid: 9582807959e760a46b78c6b6a0257612, type: 3}
   - {fileID: 6502979887674284017, guid: 99252a764aecd3346944e56a4c754649, type: 3}
   - {fileID: 2724437628945095241, guid: eed9e61091d79e24da411be9a60db34d, type: 3}
+  navMeshSurfaces:
+  - {fileID: 3888573598275756400, guid: a2e038a16c5e6ec41b29882d0fc6f670, type: 3}
+  - {fileID: 265212244474383545, guid: 25caf4426304f4d4f9b8f8724f03f796, type: 3}
+  - {fileID: -6819997197502756191, guid: 96ac13ee1205f7541802504b7b9edf44, type: 3}
+  - {fileID: 7427810282607065787, guid: 9582807959e760a46b78c6b6a0257612, type: 3}
+  - {fileID: -3281582313167018692, guid: 99252a764aecd3346944e56a4c754649, type: 3}
+  - {fileID: -1817144835454991226, guid: eed9e61091d79e24da411be9a60db34d, type: 3}
   Bridges: {fileID: 2083679131}
   Order: 000000000000000000000000000000000000000000000000
   mat: {fileID: 2100000, guid: 202efe049f8b34a4cadf2794556dc1fc, type: 2}
@@ -23882,7 +23889,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1943578323
 MonoBehaviour:
   m_ObjectHideFlags: 0
