@@ -13,6 +13,8 @@ public class Soldier_HpBar : MonoBehaviourPunCallbacks
     public Image hpColor;
     public PhotonView PV;
 
+    public GameObject[] stateIcon;
+
     //   private Player_Control playerLogic;
     Vector3 offset = new Vector3(0f, 2.3f, 0f);
 
@@ -37,6 +39,23 @@ public class Soldier_HpBar : MonoBehaviourPunCallbacks
                PV.RPC("DestroyRPC", RpcTarget.AllBuffered);*/
         transform.position = soldier.position + offset;
         hpBar.value = soldier_data.curHP / soldier_data.maxHP;
+
+        if (soldier_data.isChase)
+        {
+            stateIcon[0].SetActive(true);
+        }
+        else
+        {
+            stateIcon[0].SetActive(false);
+        }
+        if (soldier_data.isStop)
+        {
+            stateIcon[1].SetActive(true);
+        }
+        else
+        {
+            stateIcon[1].SetActive(false);
+        }
 
 
 

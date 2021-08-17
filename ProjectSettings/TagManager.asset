@@ -22,6 +22,7 @@ TagManager:
   - Item
   - Item_Material
   - Occupied_Area
+  - MonsterSpawner
   layers:
   - Default
   - TransparentFX

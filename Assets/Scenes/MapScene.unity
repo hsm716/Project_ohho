@@ -161,7 +161,7 @@ MonoBehaviour:
   - {fileID: 538919626221646077, guid: 96ac13ee1205f7541802504b7b9edf44, type: 3}
   - {fileID: 5586871337158090729, guid: 95a539da0615ee14cbdb2e80b4e8a876, type: 3}
   - {fileID: 5586871337158090729, guid: 31c59b9d6c1e95e4abc8e99a96d71ef0, type: 3}
-  Section_Mesh: []
+  Section_Mesh: {fileID: 0}
   Bridges: {fileID: 1063482623}
   Order: 
   mat: {fileID: 0}
@@ -1178,31 +1178,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 473272176}
     m_Modifications:
-    - target: {fileID: 3814449673971977941, guid: a2e038a16c5e6ec41b29882d0fc6f670,
-        type: 3}
-      propertyPath: sceneViewId
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3888573598275756400, guid: a2e038a16c5e6ec41b29882d0fc6f670,
-        type: 3}
-      propertyPath: m_NavMeshData
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 3888573598275756400, guid: a2e038a16c5e6ec41b29882d0fc6f670,
-        type: 3}
-      propertyPath: m_UseGeometry
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3888573598275756400, guid: a2e038a16c5e6ec41b29882d0fc6f670,
-        type: 3}
-      propertyPath: m_CollectObjects
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3888573598275756400, guid: a2e038a16c5e6ec41b29882d0fc6f670,
-        type: 3}
-      propertyPath: m_LayerMask.m_Bits
-      value: 759
-      objectReference: {fileID: 0}
     - target: {fileID: 5532837818401931038, guid: a2e038a16c5e6ec41b29882d0fc6f670,
         type: 3}
       propertyPath: m_RootOrder
@@ -2583,8 +2558,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5c6ed005722bd3c41a53710d8073bec3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  navMesh_parent: {fileID: 473272175}
   navMeshSurface:
-  - {fileID: 1736615874}
+  - {fileID: 0}
 --- !u!4 &210083563
 Transform:
   m_ObjectHideFlags: 0
@@ -14606,18 +14582,6 @@ Transform:
   m_Father: {fileID: 1564423066}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 240, z: 0}
---- !u!114 &1736615874 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 3888573598275756400, guid: a2e038a16c5e6ec41b29882d0fc6f670,
-    type: 3}
-  m_PrefabInstance: {fileID: 45387439}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7a5ac11cc976e418e8d13136b07e1f52, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1748335306
 GameObject:
   m_ObjectHideFlags: 0

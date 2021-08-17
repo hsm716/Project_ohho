@@ -28,8 +28,9 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     public Image HealthImage;
     public Player_HpBar Hp_Bar;
 
-    
-   
+    public ParticleSystem Hp_Recovery1;
+    public ParticleSystem Hp_Recovery2;
+
 
     public GameObject playerEquipPoint;
     public GameObject Head;
@@ -454,15 +455,15 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
         {
             Use_Item_num(0);
         }
-        if (Input.GetKeyDown(KeyCode.Alpha1))
+        if (Input.GetKeyDown(KeyCode.Alpha2))
         {
             Use_Item_num(1);
         }
-        if (Input.GetKeyDown(KeyCode.Alpha1))
+        if (Input.GetKeyDown(KeyCode.Alpha3))
         {
             Use_Item_num(2);
         }
-        if (Input.GetKeyDown(KeyCode.Alpha1))
+        if (Input.GetKeyDown(KeyCode.Alpha4))
         {
             Use_Item_num(3);
         }
@@ -1027,7 +1028,9 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
                         acceptUse = false;
                         break;
                     }
-                    curHP += 100f;
+                    Hp_Recovery1.Play();
+                    Hp_Recovery2.Play();
+                    curHP += 200f;
                     break;
 
                 default:
