@@ -28,6 +28,7 @@ public class Monster : MonoBehaviourPunCallbacks, IPunObservable
     public AudioSource sound_golem_PunchAttack;
 
 
+    public GameObject FloatingText_prefab;
 
 
 
@@ -126,6 +127,11 @@ public class Monster : MonoBehaviourPunCallbacks, IPunObservable
         anim.SetTrigger("doHit");
         hitSword.Play();
         curHP -= atk_;
+        if (PV.IsMine)
+        {
+            GameObject ft = PhotonNetwork.Instantiate("Damage_Text", transform.position, Quaternion.Euler(new Vector3(45f, 0f, 0f)));
+            ft.GetComponent<TextMesh>().text = "" + (int)atk_;
+        }
         sound_source.PlayOneShot(sound_hit);
         if (!isAttack&&!isSkill)
         {
@@ -145,6 +151,16 @@ public class Monster : MonoBehaviourPunCallbacks, IPunObservable
                     Last_Hiter.GetComponent<QuestData>().slimeKillCount++;
                     
                     //Last_Hiter.GetComponent<QuestData>().Quest();
+                }
+                GameObject[] Spawners = GameObject.FindGameObjectsWithTag("MonsterSpawner");
+                foreach (var spawner in Spawners)
+                {
+                    MonsterSpawner spawnPool = spawner.GetComponent<MonsterSpawner>();
+                    if (spawnPool.poolNum == myPoolNum)
+                    {
+                        spawnPool.SlimePool.Dequeue();
+                        break;
+                    }
                 }
             }
             else if(monsterType == Type.demon)
@@ -181,16 +197,7 @@ public class Monster : MonoBehaviourPunCallbacks, IPunObservable
             myCol.enabled = false;
             isDead = true;
             anim.SetTrigger("doDead");
-            GameObject[] Spawners = GameObject.FindGameObjectsWithTag("MonsterSpawner");
-            foreach(var spawner in Spawners)
-            {
-                MonsterSpawner spawnPool = spawner.GetComponent<MonsterSpawner>();
-                if ( spawnPool.poolNum == myPoolNum)
-                {
-                    spawnPool.SlimePool.Dequeue();
-                    break;
-                }
-            }
+
              
         }
     }

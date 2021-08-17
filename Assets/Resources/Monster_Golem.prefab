@@ -4172,6 +4172,8 @@ MonoBehaviour:
   meleeArea: {fileID: 4976950712129427065}
   sound_melee_attack: {fileID: 0}
   sound_golem_PunchAttack: {fileID: 0}
+  FloatingText_prefab: {fileID: 1284247143642617820, guid: 1b9b073102bd40f4492d4508958191bc,
+    type: 3}
   Last_Hiter: {fileID: 0}
   atk: 0
   isAttack: 0

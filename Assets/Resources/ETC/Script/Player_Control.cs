@@ -31,6 +31,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     public ParticleSystem Hp_Recovery1;
     public ParticleSystem Hp_Recovery2;
 
+    public GameObject FloatingText;
 
     public GameObject playerEquipPoint;
     public GameObject Head;
@@ -190,7 +191,8 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
         SoldierPoint = 20;
         SoldierPoint_max = 20;
         NickNameText.text = PV.IsMine ? PhotonNetwork.NickName : PV.Owner.NickName;
-        NickNameText.color = PV.IsMine ? Color.green : Color.red;
+        HealthImage.color = PV.IsMine ? Color.green : Color.red;
+        //NickNameText.color = PV.IsMine ? Color.green : Color.red;
         maxHP = 2000f;
         curHP = 2000f;
         curEXP = 0f;
@@ -721,9 +723,11 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
         transform.position = new Vector3(0f, 15f, 0f);
         isRespawn = false;
     }
+    [PunRPC]
     public void Hit(float atk_)
     {
-
+        GameObject ft = PhotonNetwork.Instantiate("Damage_Text", transform.position, Quaternion.Euler(new Vector3(45f, 0f, 0f)));
+        ft.GetComponent<TextMesh>().text = "" + (int)atk_;
         if (isDeffensing)
         {
             if (shieldAmount > 0)
@@ -1030,6 +1034,10 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
                     }
                     Hp_Recovery1.Play();
                     Hp_Recovery2.Play();
+                    GameObject ft = PhotonNetwork.Instantiate("Damage_Text", transform.position, Quaternion.Euler(new Vector3(45f, 0f, 0f)));
+                    ft.GetComponent<TextMesh>().text = "" + 200;
+                    ft.GetComponent<TextMesh>().color = Color.green;
+
                     curHP += 200f;
                     break;
 

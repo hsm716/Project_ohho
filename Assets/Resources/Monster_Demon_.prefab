@@ -1469,6 +1469,9 @@ MonoBehaviour:
   skillCol: {fileID: 3539528428032543820}
   meleeArea: {fileID: 7092596746704331720}
   sound_melee_attack: {fileID: 0}
+  sound_golem_PunchAttack: {fileID: 0}
+  FloatingText_prefab: {fileID: 1284247143642617820, guid: 1b9b073102bd40f4492d4508958191bc,
+    type: 3}
   Last_Hiter: {fileID: 0}
   atk: 0
   isAttack: 0
@@ -1484,6 +1487,7 @@ MonoBehaviour:
   hitSword: {fileID: 8476393298951219716}
   sound_source: {fileID: 354389158491495231}
   sound_hit: {fileID: 8300000, guid: 0c339317cde75f74da607b404bf128cc, type: 3}
+  sound_golem_PunchAttack_clip: {fileID: 0}
 --- !u!114 &7091300514427539301
 MonoBehaviour:
   m_ObjectHideFlags: 0
