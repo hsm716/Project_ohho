@@ -5,11 +5,17 @@ using UnityEngine.AI;
 
 public class NavMeshBakerTest : MonoBehaviour
 {
-    public NavMeshSurface navMeshSurface;
+    public GameObject navMesh_parent;
+    public NavMeshSurface[] navMeshSurface;
     // Start is called before the first frame update
     void Start()
     {
-        navMeshSurface.BuildNavMesh();
+        Invoke("StartMesh", 27f);
+    }
+
+    void StartMesh()
+    {
+        navMesh_parent.transform.GetChild(0).GetComponent<NavMeshSurface>().BuildNavMesh();
     }
 
 

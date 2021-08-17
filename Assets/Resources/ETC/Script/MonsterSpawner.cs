@@ -11,8 +11,8 @@ public class MonsterSpawner : MonoBehaviour
         if (PhotonNetwork.IsMasterClient)
         {
             StartCoroutine(Spawn());
-            StartCoroutine(Spawn_demon());
-            StartCoroutine(Spawn_golem());
+            //StartCoroutine(Spawn_demon());
+            //StartCoroutine(Spawn_golem());
         }
     }
 
@@ -25,15 +25,15 @@ public class MonsterSpawner : MonoBehaviour
     {
         while (true)
         {
-            PhotonNetwork.Instantiate("Monster_Slime",new Vector3( Random.Range(transform.position.x, transform.position.x + 1f),transform.position.y, Random.Range(transform.position.x, transform.position.z + 1f)), transform.rotation);
-            yield return new WaitForSeconds(10f);
+            PhotonNetwork.Instantiate("Monster_Slime",new Vector3( Random.Range(transform.position.x, transform.position.x + 0.2f),transform.position.y, Random.Range(transform.position.z, transform.position.z + 0.2f)), Quaternion.identity);
+            yield return new WaitForSeconds(5f);
         }
     }
     IEnumerator Spawn_demon()
     {
         while (true)
         {
-            PhotonNetwork.Instantiate("Monster_Demon_", new Vector3(Random.Range(transform.position.x, transform.position.x + 1f), transform.position.y, Random.Range(transform.position.x, transform.position.z + 1f)), transform.rotation);
+            PhotonNetwork.Instantiate("Monster_Demon_", new Vector3(Random.Range(transform.position.x, transform.localPosition.x + 0.2f), transform.position.y, Random.Range(transform.position.z, transform.localPosition.z + 0.2f)), Quaternion.identity);
             
 
             yield return new WaitForSeconds(500f);
@@ -43,7 +43,7 @@ public class MonsterSpawner : MonoBehaviour
     {
         while (true)
         {
-            GameObject golem =  PhotonNetwork.Instantiate("Monster_Golem", new Vector3(Random.Range(transform.position.x, transform.position.x + 5f), transform.position.y, Random.Range(transform.position.x, transform.position.z + 5f)), transform.rotation);
+            GameObject golem =  PhotonNetwork.Instantiate("Monster_Golem", new Vector3(Random.Range(transform.position.x, transform.position.x + 0.2f), transform.position.y, Random.Range(transform.position.z, transform.position.z + 0.2f)), Quaternion.identity);
             golem.transform.GetChild(0).GetComponent<Monster>().golem_Index = Random.Range(0, 3);
             yield return new WaitForSeconds(10f);
         }

@@ -11,7 +11,8 @@ public class MapManager : MonoBehaviourPunCallbacks
 
     public Transform Section_Offsets;
     public GameObject[] Sections;
-    public NavMeshSurface[] navMeshSurfaces;
+
+    public GameObject Section_Mesh;
     public Transform Bridges;
     //public GameObject[] Sections2;
     public int[] Order;
@@ -28,19 +29,16 @@ public class MapManager : MonoBehaviourPunCallbacks
 
         StartCoroutine(Call_Section());
         StartCoroutine(CallBridges());
-        StartCoroutine(NavMeshBaker());
+        //StartCoroutine(NavMeshBaker());
         //PV.RPC("Shuffle", RpcTarget.All);
     }
-    IEnumerator NavMeshBaker()
+/*    IEnumerator NavMeshBaker()
     {
-        yield return new WaitForSeconds(25f);
+        yield return new WaitForSeconds(26f);
 
-        for(int i = 0; i < navMeshSurfaces.Length; i++)
-        {
-            navMeshSurfaces[i].BuildNavMesh();
-        }
-       
-    }
+        Section_Mesh.transform.GetChild(0).GetComponent<NavMeshSurface>().BuildNavMesh();
+
+    }*/
     void Shuffle()
     {
         bool[] selected_state = new bool[] { false, false, false, false, false, false };
