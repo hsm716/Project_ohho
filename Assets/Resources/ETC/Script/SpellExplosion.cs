@@ -31,7 +31,7 @@ public class SpellExplosion : MonoBehaviourPunCallbacks
         {
            
             //PhotonNetwork.Instantiate("Explosion", transform.position+new Vector3(0f,0.3f,0f), Quaternion.Euler(new Vector3(-transform.rotation.x,-transform.rotation.y,-transform.rotation.z)));
-            col.GetComponent<Player_Control>().Hit(atk);
+            col.GetComponent<Player_Control>().Hit(atk,2);
 
           
         }
@@ -39,7 +39,7 @@ public class SpellExplosion : MonoBehaviourPunCallbacks
         {
 
             //PhotonNetwork.Instantiate("Explosion", transform.position+new Vector3(0f,0.3f,0f), Quaternion.Euler(new Vector3(-transform.rotation.x,-transform.rotation.y,-transform.rotation.z)));
-            col.GetComponent<Soldier>().Hit(atk);
+            col.GetComponent<Soldier>().Hit(atk,2);
 
 
         }
@@ -48,7 +48,7 @@ public class SpellExplosion : MonoBehaviourPunCallbacks
 
             //PhotonNetwork.Instantiate("Explosion", transform.position+new Vector3(0f,0.3f,0f), Quaternion.Euler(new Vector3(-transform.rotation.x,-transform.rotation.y,-transform.rotation.z)));
             col.GetComponent<Monster>().Last_Hiter = myPlayer;
-            col.GetComponent<Monster>().Hit(atk);
+            col.GetComponent<Monster>().Hit(atk,2);
             
             //PV.RPC("Set_LastHiter", RpcTarget.All, col);
 

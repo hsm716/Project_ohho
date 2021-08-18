@@ -4188,7 +4188,8 @@ MonoBehaviour:
   shockWave: {fileID: 0}
   hitSword: {fileID: 5045236406173674394}
   sound_source: {fileID: 6072916125889683160}
-  sound_hit: {fileID: 8300000, guid: 0c339317cde75f74da607b404bf128cc, type: 3}
+  sound_slash_hit: {fileID: 8300000, guid: 0c339317cde75f74da607b404bf128cc, type: 3}
+  sound_arrow_hit: {fileID: 8300000, guid: 55e20f59b5cc3f94d9a63c4cdc02d0e9, type: 3}
   sound_golem_PunchAttack_clip: {fileID: 8300000, guid: 7c7e97111c84d5a40800accda2073841,
     type: 3}
 --- !u!114 &6072916125889683159

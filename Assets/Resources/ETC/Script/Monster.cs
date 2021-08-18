@@ -65,7 +65,8 @@ public class Monster : MonoBehaviourPunCallbacks, IPunObservable
     public ParticleSystem hitSword;
 
     public AudioSource sound_source;
-    public AudioClip sound_hit;
+    public AudioClip sound_slash_hit;
+    public AudioClip sound_arrow_hit;
     public AudioClip sound_golem_PunchAttack_clip;
     void Awake()
     {
@@ -122,17 +123,26 @@ public class Monster : MonoBehaviourPunCallbacks, IPunObservable
 
 
     [PunRPC]
-    public void Hit(float atk_)
+    public void Hit(float atk_,int type)
     {
         anim.SetTrigger("doHit");
         hitSword.Play();
+
         curHP -= atk_;
         if (PV.IsMine)
         {
             GameObject ft = PhotonNetwork.Instantiate("Damage_Text", transform.position, Quaternion.Euler(new Vector3(45f, 0f, 0f)));
             ft.GetComponent<TextMesh>().text = "" + (int)atk_;
         }
-        sound_source.PlayOneShot(sound_hit);
+        if (type == 0)
+        {
+            sound_source.PlayOneShot(sound_slash_hit);
+        }
+        else if(type==1)
+        {
+            sound_source.PlayOneShot(sound_arrow_hit);
+        }
+            
         if (!isAttack&&!isSkill)
         {
             isChase = true;
@@ -152,16 +162,7 @@ public class Monster : MonoBehaviourPunCallbacks, IPunObservable
                     
                     //Last_Hiter.GetComponent<QuestData>().Quest();
                 }
-                GameObject[] Spawners = GameObject.FindGameObjectsWithTag("MonsterSpawner");
-                foreach (var spawner in Spawners)
-                {
-                    MonsterSpawner spawnPool = spawner.GetComponent<MonsterSpawner>();
-                    if (spawnPool.poolNum == myPoolNum)
-                    {
-                        spawnPool.SlimePool.Dequeue();
-                        break;
-                    }
-                }
+
             }
             else if(monsterType == Type.demon)
             {
@@ -335,7 +336,7 @@ public class Monster : MonoBehaviourPunCallbacks, IPunObservable
         if (other.CompareTag("Player_Sword"))
         {
             Last_Hiter = other.transform.parent.GetComponent<Player_Control>();
-            Hit(other.transform.parent.GetComponent<Player_Control>().atk);
+            Hit(other.transform.parent.GetComponent<Player_Control>().atk,0);
         }
 
 

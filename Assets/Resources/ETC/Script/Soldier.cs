@@ -43,7 +43,9 @@ public class Soldier : MonoBehaviourPunCallbacks,IPunObservable
     public float atk;
 
     Vector3 mouseDir;
-
+    public AudioSource sound_source;
+    public AudioClip sound_slash_hit;
+    public AudioClip sound_arrow_hit;
 
     public bool isAttack;
     public bool isFollow;
@@ -94,10 +96,17 @@ public class Soldier : MonoBehaviourPunCallbacks,IPunObservable
             }
         }
     }
-    public void Hit(float atk_)
+    public void Hit(float atk_,int type)
     {
         curHP -= atk_;
-
+        if(type == 0)
+        {
+            sound_source.PlayOneShot(sound_slash_hit);
+        }
+        else if (type == 1)
+        {
+            sound_source.PlayOneShot(sound_arrow_hit);
+        }
         if (curHP <= 0 && !isDead)
         {
             myCol.enabled = false;
@@ -249,11 +258,11 @@ public class Soldier : MonoBehaviourPunCallbacks,IPunObservable
 
         if (other.CompareTag("Soldier_Attack") && other.transform.parent.GetComponent<Soldier>().PV.Owner.NickName != PV.Owner.NickName)
         {
-            Hit(other.transform.parent.GetComponent<Soldier>().atk);
+            Hit(other.transform.parent.GetComponent<Soldier>().atk,0);
         }
         if(other.CompareTag("Player_Sword") && other.transform.parent.GetComponent<Player_Control>().PV.Owner != PV.Owner)
         {
-            Hit(other.transform.parent.GetComponent<Player_Control>().atk);
+            Hit(other.transform.parent.GetComponent<Player_Control>().atk,0);
         }
 
 
