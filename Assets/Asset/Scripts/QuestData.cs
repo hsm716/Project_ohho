@@ -29,6 +29,8 @@ public class QuestData : MonoBehaviourPunCallbacks//, IPunObservable
 
     public int slimeKillCount = 0;
     private int slimeMaxCount = 5;
+    public int forestSpirit_CurCount = 0;
+    private int forestSpirit_MaxCount = 5;
 
     public bool DemonKill = false;
 
@@ -49,12 +51,15 @@ public class QuestData : MonoBehaviourPunCallbacks//, IPunObservable
         if (OccupiedValue_cur >= OccupiedValue_max)
             OccupiedValue_cur = OccupiedValue_max;
 
+        forestSpirit_CurCount = myPlayer.PI.item_Material["forest_spirit"];
         twigCurCount = myPlayer.PI.item_Material["twig"];
         OccupiedValue_cur = myPlayer.curOccupied_value;
         Quest();
 
-        slimeSlider.value = 100 * slimeKillCount / slimeMaxCount;
-        Slime.text = slimeKillCount + " / " + slimeMaxCount;
+        /*        slimeSlider.value = 100 * slimeKillCount / slimeMaxCount;
+                Slime.text = slimeKillCount + " / " + slimeMaxCount;*/
+        slimeSlider.value = 100 * forestSpirit_CurCount / forestSpirit_MaxCount;
+        Slime.text = forestSpirit_CurCount + " / " + forestSpirit_MaxCount;
 
         twigSlider.value = (twigCurCount / (float)twigMaxCount);
         twig.text = twigCurCount + " / " + twigMaxCount;
@@ -83,7 +88,12 @@ public class QuestData : MonoBehaviourPunCallbacks//, IPunObservable
     {
         if(questIsActive[0] == true)    //포레스트
         {
-            if (slimeKillCount >= slimeMaxCount) //슬라임 5마리 처치
+            /*if (slimeKillCount >= slimeMaxCount) //슬라임 5마리 처치
+            {
+                questClearCheck[0] = true;
+
+            }*/
+            if ( forestSpirit_CurCount >= forestSpirit_MaxCount) //슬라임 5마리 처치
             {
                 questClearCheck[0] = true;
 

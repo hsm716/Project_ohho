@@ -474,8 +474,12 @@ public class Monster : MonoBehaviourPunCallbacks, IPunObservable
         {
             PhotonNetwork.Instantiate("Item_potion", transform.position, transform.rotation);
         }
-        
-        PV.RPC("DestroyRPC", RpcTarget.AllBuffered);
+        else if (40 < DropPercent && DropPercent < 50)
+        {
+            PhotonNetwork.Instantiate("Item_Forest_Spirit", transform.position, transform.rotation);
+        }
+
+            PV.RPC("DestroyRPC", RpcTarget.AllBuffered);
     }
     void Dead_RPC()
     {

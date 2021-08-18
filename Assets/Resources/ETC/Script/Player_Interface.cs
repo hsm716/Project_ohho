@@ -65,6 +65,8 @@ public class Player_Interface : MonoBehaviour
 
         name = "twig";
         item_Material.Add(name, 0);
+        name = "forest_spirit";
+        item_Material.Add(name, 0);
 
     }
     void Update()
