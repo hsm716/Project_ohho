@@ -143,7 +143,11 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     public GameObject CM;
     public Camera characterCamera;
 
+    public GameObject MM;
+    public Camera minimapCamera;
+
     public CinemachineVirtualCamera CVC;
+    public CinemachineVirtualCamera CVC_mini;
 
     public GameObject Respawn_Center;
 
@@ -239,6 +243,9 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
             CVC =CM.GetComponent<CinemachineVirtualCamera>();
             CVC.Follow = this.transform;
             characterCamera = CM.GetComponent<Camera>();
+
+            MM = GameObject.Find("Minimap Camera");
+            MM.GetComponent<CameraMove>().Target = this.gameObject;
             //var CM_cm = CM.GetComponent<Camera_Move>();
             //CM_cm.player = this.gameObject;
         }

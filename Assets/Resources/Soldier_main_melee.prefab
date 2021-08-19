@@ -3542,6 +3542,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PV: {fileID: 2418964201409419934}
+  deleteCount: 1
 --- !u!1001 &4143742288986846446
 PrefabInstance:
   m_ObjectHideFlags: 0
