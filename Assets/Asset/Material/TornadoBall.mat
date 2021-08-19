@@ -1,0 +1,50 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 6
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: TornadoBall
+  m_Shader: {fileID: -6465566751694194690, guid: def4700c14bdc9f48a4034c4c97402f7,
+    type: 3}
+  m_ShaderKeywords: 
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - unity_Lightmaps:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_LightmapsInd:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_ShadowMasks:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Floats:
+    - Vector1_1ab1f91031dc4ce89abd2fcb4734f9db: 5
+    - Vector1_321c52fcccd84ba8bc961e37bda8aeac: 0.1
+    - Vector1_8cab9291fac346478aed786a35153538: 1.94
+    - Vector1_8caf1a6f370641e1a8e86560ab26b345: 0.7
+    - Vector1_96c421c77fac46dd9c1ed125b7b6b0a8: 0.2
+    - Vector1_995f5e83c0114df08d05b59aff2e4acc: 0.78
+    - Vector1_9c13a55c5cb54b68b7e57069111a7258: 0.78
+    - Vector1_ece152b97b0c4721bde63ba5c80f5cc3: 50
+    - _Dissolve: 0
+    m_Colors:
+    - Color_9ed2718d39b04d80b81f37013f4b0a25: {r: 4.894118, g: 6.807843, b: 8, a: 1}
+    - Vector2_90721968e4454250907261181ec8196a: {r: 0, g: 0, b: 0, a: 0}
+    - Vector2_92d798ab67b94607a4ac7c87ac070e65: {r: 0.5, g: 0.5, b: 0, a: 0}
+    - Vector2_f3b6a12039e24044919081acb234603f: {r: -1, g: 1, b: 0, a: 0}
+  m_BuildTextureStacks: []

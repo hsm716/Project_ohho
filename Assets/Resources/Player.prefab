@@ -54211,6 +54211,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Katana_LODA
       objectReference: {fileID: 0}
+    - target: {fileID: 7871620156277924879, guid: fb473d11c9d1d7e4aa3e661042470295,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fb473d11c9d1d7e4aa3e661042470295, type: 3}
 --- !u!4 &8231843415921277940 stripped
