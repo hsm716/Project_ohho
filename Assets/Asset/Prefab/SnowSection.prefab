@@ -19764,6 +19764,7 @@ Transform:
   - {fileID: 112731758}
   - {fileID: 223234228}
   - {fileID: 1006282178}
+  - {fileID: 4442562818373161358}
   m_Father: {fileID: 1523750999}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: -8.434, y: -0.92, z: 0}
@@ -43909,6 +43910,7 @@ Transform:
   - {fileID: 5166530164518451830}
   - {fileID: 7962831561200794197}
   - {fileID: 1757184211}
+  - {fileID: 7188205769970103442}
   m_Father: {fileID: 1523750999}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: -8.437, y: -6.665, z: 0}
@@ -78666,6 +78668,7 @@ Transform:
   - {fileID: 2068352820}
   - {fileID: 1167101249}
   - {fileID: 1075103512}
+  - {fileID: 7156260262583326832}
   m_Father: {fileID: 1523750999}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: -6.619, y: -0.92, z: 0}
@@ -78721,6 +78724,12 @@ MonoBehaviour:
   SnowBall: {fileID: 6768202211288701319, guid: 978c856e5e212cf4fb79ea09bf14ada9,
     type: 3}
   SnowBallSpawnPoint: {fileID: 1960314803}
+  WindZone:
+  - {fileID: 5969028100656586282}
+  - {fileID: 4174088876499518932}
+  - {fileID: 255880460079387531}
+  - {fileID: 9158402743972257129}
+  - {fileID: 6953274895272759525}
   WindMagicCircle:
   - {fileID: 1895726696}
   - {fileID: 345369491}
@@ -93202,6 +93211,7 @@ Transform:
   - {fileID: 1438173505}
   - {fileID: 675216518}
   - {fileID: 716654272}
+  - {fileID: 3415079928663648131}
   m_Father: {fileID: 1523750999}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: -8.434, y: -0.92, z: 0}
@@ -103340,6 +103350,7 @@ Transform:
   - {fileID: 248870844}
   - {fileID: 1092082440}
   - {fileID: 974072228}
+  - {fileID: 7502207599000771210}
   m_Father: {fileID: 1523750999}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: -9.493, y: -0.92, z: 0}
@@ -117868,6 +117879,65 @@ ParticleSystemRenderer:
   m_Mesh2: {fileID: 0}
   m_Mesh3: {fileID: 0}
   m_MaskInteraction: 0
+--- !u!1 &255880460079387531
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7156260262583326832}
+  - component: {fileID: 8965726901243961232}
+  - component: {fileID: 6907205293783140173}
+  m_Layer: 0
+  m_Name: windZone (2)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!4 &7156260262583326832
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 255880460079387531}
+  m_LocalRotation: {x: 0.057433296, y: 0, z: 0, w: 0.99834937}
+  m_LocalPosition: {x: -0, y: -1.29, z: 2.91}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1514443687}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 6.585, y: 0, z: 0}
+--- !u!65 &8965726901243961232
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 255880460079387531}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 5, y: 7.5, z: 7.5}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &6907205293783140173
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 255880460079387531}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56d072a24d698c243a3b77dacaf1efe1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  WindPower: 300
+  a: 0
 --- !u!1 &540726543674014297
 GameObject:
   m_ObjectHideFlags: 0
@@ -122874,6 +122944,65 @@ ParticleSystemRenderer:
   m_Mesh2: {fileID: 0}
   m_Mesh3: {fileID: 0}
   m_MaskInteraction: 0
+--- !u!1 &4174088876499518932
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7502207599000771210}
+  - component: {fileID: 5381492488000179459}
+  - component: {fileID: 5558333870633992464}
+  m_Layer: 0
+  m_Name: windZone (1)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!4 &7502207599000771210
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4174088876499518932}
+  m_LocalRotation: {x: 0.08232989, y: 0, z: 0, w: 0.9966052}
+  m_LocalPosition: {x: -0.2, y: -1.18, z: 2.42}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 2035509057}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 9.445, y: 0, z: 0}
+--- !u!65 &5381492488000179459
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4174088876499518932}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 5, y: 7.5, z: 7.5}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &5558333870633992464
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4174088876499518932}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56d072a24d698c243a3b77dacaf1efe1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  WindPower: 300
+  a: 0
 --- !u!1 &5166530164518451829
 GameObject:
   m_ObjectHideFlags: 0
@@ -123071,6 +123200,65 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 6629243965542679245, guid: a72d6d8485fa72746b91b847631ea8f7, type: 3}
+--- !u!1 &5969028100656586282
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7188205769970103442}
+  - component: {fileID: 4626695298234110078}
+  - component: {fileID: 2990709748936236205}
+  m_Layer: 0
+  m_Name: windZone
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!4 &7188205769970103442
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5969028100656586282}
+  m_LocalRotation: {x: 0.073560275, y: -0, z: -0, w: 0.9972908}
+  m_LocalPosition: {x: -0, y: -1.4, z: 2.92}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 539260907}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: -6.665, z: 0}
+--- !u!65 &4626695298234110078
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5969028100656586282}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 5, y: 7.5, z: 7.5}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &2990709748936236205
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5969028100656586282}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56d072a24d698c243a3b77dacaf1efe1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  WindPower: 300
+  a: 0
 --- !u!1 &6502979887674284017
 GameObject:
   m_ObjectHideFlags: 0
@@ -123226,6 +123414,65 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!1 &6953274895272759525
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3415079928663648131}
+  - component: {fileID: 8974591909686413382}
+  - component: {fileID: 6156731595777082326}
+  m_Layer: 0
+  m_Name: windZone (4)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!4 &3415079928663648131
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6953274895272759525}
+  m_LocalRotation: {x: 0.07315987, y: 0, z: 0, w: 0.99732023}
+  m_LocalPosition: {x: -0, y: -1.22, z: 2.41}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1621754767}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 8.391, y: 0, z: 0}
+--- !u!65 &8974591909686413382
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6953274895272759525}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 5, y: 7.5, z: 7.5}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &6156731595777082326
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6953274895272759525}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56d072a24d698c243a3b77dacaf1efe1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  WindPower: 300
+  a: 0
 --- !u!1 &7968252108641732469
 GameObject:
   m_ObjectHideFlags: 0
@@ -123353,6 +123600,65 @@ Transform:
   m_Father: {fileID: 6502979887674284018}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
+--- !u!1 &9158402743972257129
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4442562818373161358}
+  - component: {fileID: 5702955031011323258}
+  - component: {fileID: 2156525941575747385}
+  m_Layer: 0
+  m_Name: windZone (3)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!4 &4442562818373161358
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9158402743972257129}
+  m_LocalRotation: {x: 0.07315987, y: 0, z: 0, w: 0.99732023}
+  m_LocalPosition: {x: 0, y: -1.13, z: 2.65}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 323601242}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 8.391, y: 0, z: 0}
+--- !u!65 &5702955031011323258
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9158402743972257129}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 5, y: 7.5, z: 7.5}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &2156525941575747385
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9158402743972257129}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56d072a24d698c243a3b77dacaf1efe1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  WindPower: 300
+  a: 0
 --- !u!1001 &51766232
 PrefabInstance:
   m_ObjectHideFlags: 0

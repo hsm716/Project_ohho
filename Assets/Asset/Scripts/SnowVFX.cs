@@ -7,6 +7,8 @@ public class SnowVFX : MonoBehaviour
     public GameObject SnowBall;
     public Transform SnowBallSpawnPoint;
 
+    public GameObject[] WindZone;   //콜라이더로 검사하는 바람 구역
+
     public GameObject[] WindMagicCircle;    //바람 마법진
     public ParticleSystem[] windmagic;    //바람 마법
     public ParticleSystem[] CircleCrash;    //마법진 파괴
@@ -85,17 +87,18 @@ public class SnowVFX : MonoBehaviour
         yield return new WaitForSeconds(5f);
 
         float term = 0;
-        while (term <= 1)
+        while (term <= 1)   //마법진 생성
         {
             magicCircle[num].SetFloat("_RemovedSegment", term);
             term += Time.deltaTime * 0.1f;
             yield return 0;
         }
 
-        windmagic[num].Play();
+        windmagic[num].Play();  //바람 마법
+        WindZone[num].SetActive(true);
 
         term = 0;
-        while (term <= 1)
+        while (term <= 1)   //바람 구 생성
         {
             windball[num].SetFloat("_Dissolve", 0.5f + term * 0.2f);  //0.5 ~ 0.7
             term += Time.deltaTime * 0.3f;
@@ -103,7 +106,7 @@ public class SnowVFX : MonoBehaviour
         }
         yield return new WaitForSeconds(2f);
 
-        while (term > 0.4f)
+        while (term > 0.4f) //바람 구 제거
         {
             windball[num].SetFloat("_Dissolve", term * 0.7f);
             term -= Time.deltaTime * 0.3f;
