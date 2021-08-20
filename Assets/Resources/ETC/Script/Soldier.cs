@@ -81,13 +81,13 @@ public class Soldier : MonoBehaviourPunCallbacks,IPunObservable
             {
                 target = p.transform;
                 if(mySetNumber==0)
-                    mySet = target.GetChild(15).GetChild(myNumber);
+                    mySet = target.GetChild(6).GetChild(myNumber);
                 else if(mySetNumber==1)
-                    mySet = target.GetChild(16).GetChild(myNumber);
+                    mySet = target.GetChild(7).GetChild(myNumber);
                 else if (mySetNumber == 2)
-                    mySet = target.GetChild(17).GetChild(myNumber);
+                    mySet = target.GetChild(8).GetChild(myNumber);
                 else if (mySetNumber == 3)
-                    mySet = target.GetChild(18).GetChild(myNumber);
+                    mySet = target.GetChild(9).GetChild(myNumber);
 
 
 
@@ -153,7 +153,7 @@ public class Soldier : MonoBehaviourPunCallbacks,IPunObservable
             float min_dist = Mathf.Infinity;
             for (int i = 0; i < rayHits.Length; i++) 
             {
-                if(rayHits[i].collider.GetComponent<PhotonView>().Owner != PV.Owner && (rayHits[i].collider.CompareTag("Soldier") || rayHits[i].collider.CompareTag("Player")) )
+                if( rayHits[i].collider.GetComponent<PhotonView>().Owner != PV.Owner && (rayHits[i].collider.CompareTag("Soldier") || rayHits[i].collider.CompareTag("Player")) )
                 {
                     count++;
                     float playerToEnemy = Vector3.Magnitude(transform.position - rayHits[i].transform.position);

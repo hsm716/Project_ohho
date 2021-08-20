@@ -223,10 +223,11 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
 
     public Material[] Skins;
 
-    int[] preset = RoomManager.Instance.customPreset;
+    int[] preset; 
 
     private void Awake()
     {
+        preset = RoomManager.Instance.customPreset;
         SoldierPoint = 20;
         SoldierPoint_max = 20;
         NickNameText.text = PV.IsMine ? PhotonNetwork.NickName : PV.Owner.NickName;
