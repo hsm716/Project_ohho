@@ -7,6 +7,8 @@ using UnityEngine.UI;
 
 public class Player_Interface : MonoBehaviour
 {
+
+    public Player_Arena PA;
     //수정 테스트
     public Player_Control player_data;
     public Slider expBar;
@@ -56,11 +58,14 @@ public class Player_Interface : MonoBehaviour
     public Image RedBuff_image;
     public Image BlueBuff_image;
     public Image GreenBuff_image;
+    public GameObject Respawn_Arena;
     private void Awake()
     {
         isActive_Input = true;
         gm = GameObject.Find("GameTime").GetComponent<GameManager>();
-        MC = GameObject.Find("MainCanvas"); 
+        MC = GameObject.Find("MainCanvas");
+        
+        
         
         time = gm.arena_time;
         string name;
@@ -72,6 +77,10 @@ public class Player_Interface : MonoBehaviour
         item_Material.Add(name, 0);
 
 
+    }
+    private void Start()
+    {
+        Respawn_Arena = GameObject.Find("Respawn_Arena");
     }
     void Update()
     {
@@ -100,7 +109,9 @@ public class Player_Interface : MonoBehaviour
     }
     void ArenaIn()
     {
-       
+        player_data.horizontalMove = 0f;
+        player_data.verticalMove = 0f;
+
         GameManager.Instance.isActive = false;
         isActive_Input = false;
         GameObject arenaCanvas = MC.transform.GetChild(7).gameObject;
@@ -110,19 +121,23 @@ public class Player_Interface : MonoBehaviour
     void ArenaOut()
     {
         isActive_Input = true;
-        gm.arena_time = 300f;
+        gm.arena_time = 10f;
         isArena = false;
+        isArena_in = false;
 
-        GameObject[] soldiers = GameObject.FindGameObjectsWithTag("Soldier");
-
-        foreach(var s in soldiers)
+        if (player_data.PV.IsMine)
         {
-            Destroy(s);
+            GameObject[] soldiers = GameObject.FindGameObjectsWithTag("Soldier");
+            foreach (var s in soldiers)
+            {
+                Destroy(s);
+            }
         }
-        
 
 
+        player_data.rgbd.isKinematic = true;
         player_data.transform.position = player_data.Respawn_Center.transform.GetChild((int)(player_data.PV.ViewID / 1000)).transform.position;
+        player_data.rgbd.isKinematic = false;
     }
 
 

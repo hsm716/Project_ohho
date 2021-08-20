@@ -9,6 +9,7 @@ using UnityEngine.UI;
 
 public class Player_Arena : MonoBehaviour
 {
+   
     public Player_Control player_data;
     public PhotonView PV;
     public Image button_melee;
@@ -123,6 +124,8 @@ public class Player_Arena : MonoBehaviour
     {
         if (isReady == false)
         {
+            player_data.rgbd.isKinematic = true;
+            player_data.transform.position = Respawn_Center.transform.GetChild((player_data.PV.ViewID / 1000) - 1).position;
             PV.RPC("ReadyGamePlus_RPC", RpcTarget.All);
            
             Ready.image.color = new Color(1f, 1f, 1f);
@@ -130,6 +133,8 @@ public class Player_Arena : MonoBehaviour
         }
         else
         {
+            player_data.rgbd.isKinematic = true;
+            player_data.transform.position = Respawn_Center.transform.GetChild((player_data.PV.ViewID / 1000) - 1).position;
             PV.RPC("ReadyGameMinus_RPC", RpcTarget.All);
            
             Ready.image.color = new Color(1f, 1f, 0.5f);
@@ -152,8 +157,8 @@ public class Player_Arena : MonoBehaviour
 
     public void StartGame()
     {
-        
-        
+
+        player_data.rgbd.isKinematic = false;
         PV.RPC("StartGame_RPC",RpcTarget.All);
     }
     [PunRPC]
@@ -171,7 +176,29 @@ public class Player_Arena : MonoBehaviour
     
     void active_false()
     {
-        this.transform.GetChild(0).gameObject.SetActive(false);
+        player_data.PI.MC.transform.GetChild(7).transform.GetChild(0).gameObject.SetActive(false);
+        player_data.PI.MC.transform.GetChild(7).transform.GetChild(1).gameObject.SetActive(true);
+
+        for(int i = 0; i < 4; i++)
+        {
+            for(int j = 0; j < 10; j++)
+            {
+                isActive_SoldierSpot[i, j] = 0;
+            }
+        }
+        player_data.SoldierPoint = 20;
+        isSelect_arrow = false;
+        isSelect_melee = false;
+        isReady = false;
+
+        for (int i = 0; i < 4; i++)
+        {
+            for (int j = 0; j < 10; j++)
+            {
+                SoldierSpot[i].transform.GetChild(j).GetComponent<Image>().sprite = Soldier_type_sp[0];
+            }
+        }
+        //this.transform.GetChild(0).gameObject.SetActive(false);
     }
 
     public void Select_melee()
