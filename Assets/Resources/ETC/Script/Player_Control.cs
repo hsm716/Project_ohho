@@ -87,6 +87,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     private bool isSkill_R;
     private bool isLevelUp;
     public bool isDodge; // 구르기 중인지
+    public bool isDeath;
     #endregion
 
     // 입력 관련 변수
@@ -196,15 +197,27 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     public GameObject blueBuff;
     public GameObject greenBuff;
 
-    public float redBuff_time;
-    public float blueBuff_time;
-    public float greenBuff_time;
+    public float redBuff_time; // 공격
+    public float blueBuff_time; // 방어
+    public float greenBuff_time; // 이속
 
+    float addAtk;
+    public bool isRedBuff_benefit;
+    public bool isBlueBuff_benefit;
+    public bool isGreenBuff_benefit;
+
+
+    public string username;
+    public int kill_point;
+    public int death_point;
+
+    public Player_Control Last_Hiter;
     private void Awake()
     {
         SoldierPoint = 20;
         SoldierPoint_max = 20;
         NickNameText.text = PV.IsMine ? PhotonNetwork.NickName : PV.Owner.NickName;
+        username = PV.IsMine ? PhotonNetwork.NickName : PV.Owner.NickName;
         HealthImage.color = PV.IsMine ? Color.green : Color.red;
         //NickNameText.color = PV.IsMine ? Color.green : Color.red;
         maxHP = 2000f;
@@ -289,54 +302,90 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     }
     private void FixedUpdate()
     {
-        Respawn();
         if (!PV.IsMine)
             return;
-        stepClimb();
         FreezeVelocity();
-        if (curStyle == Style.WeaponStyle.Arrow||curStyle==Style.WeaponStyle.Magic)
+        if (isDeath == false)
         {
-            if (isAttackReady == true)
+            stepClimb();
+            if (curStyle == Style.WeaponStyle.Arrow || curStyle == Style.WeaponStyle.Magic)
+            {
+                if (isAttackReady == true)
+                {
+                    Moving();
+                    if (curStyle != Style.WeaponStyle.Magic)
+                        Dodge();
+                    Turn();
+                }
+            }
+            else
             {
                 Moving();
-                if (curStyle != Style.WeaponStyle.Magic)
-                    Dodge();
+                Dodge();
                 Turn();
             }
-        }
-        else
-        {
-            Moving();
-            Dodge();
-            Turn();
-        }
-        
 
+        }
 
     }
     [PunRPC]
     void BuffOnOff_RPC()
     {
         if (redBuff_time <= 0f)
-            redBuff.SetActive(false);
+        {
+            if (redBuff.activeSelf == true)
+            {
+                redBuff.SetActive(false);
+                atk = atk - 150f;
+            }
+            isRedBuff_benefit = false;
+            
+        }
         else
         {
+            if (isRedBuff_benefit)
+            {
+                isRedBuff_benefit = false;
+                atk = atk + 150f;
+            }
+            
             redBuff.SetActive(true);
+            
             redBuff_time -= Time.deltaTime;
         }
 
         if (blueBuff_time <= 0f)
+        {
             blueBuff.SetActive(false);
+            isBlueBuff_benefit = false;
+        }
         else
         {
+            if (isBlueBuff_benefit)
+            {
+                isBlueBuff_benefit = false;
+            }
             blueBuff.SetActive(true);
             blueBuff_time -= Time.deltaTime;
         }
 
         if (greenBuff_time <= 0f)
-            greenBuff.SetActive(false);
+        {
+            if (greenBuff.activeSelf == true)
+            {
+                greenBuff.SetActive(false);
+                curSpeed = walkSpeed;
+            }
+           
+            isGreenBuff_benefit = false;
+        }
         else
         {
+            if (isGreenBuff_benefit)
+            {
+                isGreenBuff_benefit = false;
+                curSpeed = walkSpeed + 3f;
+            }
             greenBuff.SetActive(true);
             greenBuff_time -= Time.deltaTime;
         }
@@ -345,54 +394,60 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     {
         if (PV.IsMine)
         {
-            if (PI.isActive_Input ==true && GameManager.Instance.isActive)
-                InputKey();
-
-            if(tabDown)
-                PI.GameBoard_Tab.SetActive(true);
-            else
-                PI.GameBoard_Tab.SetActive(false);
-
-            AnimationUpdate();
-            Attack();
-
-            PV.RPC("BuffOnOff_RPC", RpcTarget.All);
-            animator.SetFloat("RunningAmount", curSpeed / 4f);
-            
-            if (mRDown&&!isDodge)
+            if (isDeath == false)
             {
-                pullPower += Time.deltaTime *14f;
-                if (pullPower >= 40f)
+                if (PI.isActive_Input == true && GameManager.Instance.isActive)
+                    InputKey();
+
+                if (tabDown)
+                    PI.GameBoard_Tab.SetActive(true);
+                else
+                    PI.GameBoard_Tab.SetActive(false);
+
+                AnimationUpdate();
+                Attack();
+
+                PV.RPC("BuffOnOff_RPC", RpcTarget.All);
+                animator.SetFloat("RunningAmount", curSpeed / 4f);
+
+                if (mRDown && !isDodge)
                 {
-                    pullPower = 40f;
+                    pullPower += Time.deltaTime * 14f;
+                    if (pullPower >= 40f)
+                    {
+                        pullPower = 40f;
+                    }
                 }
-            }
-            if (shieldAmount <= 0f)
-            {
-                shieldAmount = 0f;
-            }
-            if (shieldAmount >= 1000f)
-            {
-                shieldAmount = 1000f;
-            }
-            shieldAmount += Time.deltaTime * 50f;
+                if (shieldAmount <= 0f)
+                {
+                    shieldAmount = 0f;
+                }
+                if (shieldAmount >= 1000f)
+                {
+                    shieldAmount = 1000f;
+                }
+                shieldAmount += Time.deltaTime * 50f;
 
-            if (curHP >= maxHP)
-            {
-                curHP = maxHP;
+                if (curHP >= maxHP)
+                {
+                    curHP = maxHP;
+                }
+
+
+                if (transform.position.y < -100)
+                {
+                    isRespawn = true;
+                }
+
+                if (curEXP >= maxEXP && !isLevelUp)
+                {
+                    float dif = maxEXP - curEXP;
+                    
+                    LevelUp();
+                    curEXP += dif;
+                }
+
             }
-
-
-            if (transform.position.y < -100)
-            {
-                isRespawn = true;
-            }
-
-            if(curEXP >= maxEXP && !isLevelUp)
-            {
-                LevelUp();
-            }
-
 
 
         }
@@ -609,11 +664,17 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     [PunRPC]
     void Dodge()
     {
-        if (!isDodge && dDown &&!isAttack &&!isDeffensing)
+        if (!isDodge && dDown &&!isAttack &&!isDeffensing&&!isSkill_R)
         {
             dodgeVec = movement;
+           
+            if (greenBuff_time > 0f)
+                curSpeed = walkSpeed + 3f + 3f;
+            else
+                curSpeed = walkSpeed + 3f;
 
-            curSpeed = 7;
+
+
             if (isRunningBack)
             {
                 animator.SetTrigger("doDodge_back");
@@ -689,7 +750,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
 
         if (isDeffensing)
         {
-            curSpeed = 3f;
+            curSpeed = walkSpeed - 1f;
         }
         movement = movement.normalized * curSpeed * Time.deltaTime;
         rgbd.transform.position += movement;
@@ -742,10 +803,31 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     // 리스폰 동작코드, 210624_황승민
     void Respawn()
     {
-        if (!isRespawn)
-            return;
-        transform.position = new Vector3(0f, 15f, 0f);
-        isRespawn = false;
+        curHP = maxHP;
+        transform.position = Respawn_Center.transform.GetChild((int)(PV.ViewID / 1000)).transform.position;
+        GameObject.Find("MainCanvas").transform.Find("RespawnPanel").gameObject.SetActive(false);
+        myCollider.enabled = true;
+        rgbd.isKinematic = false;
+        PV.RPC("InitAnim",RpcTarget.All);
+        isDeath = false;
+        
+    }
+    [PunRPC]
+    void InitAnim()
+    {
+        animator.Rebind();
+        if (curStyle == Style.WeaponStyle.Sword)
+        {
+            animator.Play("Idle_Sword");
+        }
+        else if (curStyle == Style.WeaponStyle.Arrow)
+        {
+            animator.Play("Idle_Arrow");
+        }
+        else if (curStyle == Style.WeaponStyle.Magic)
+        {
+            animator.Play("Idle_Magic");
+        }
     }
     [PunRPC]
     public void Hit(float atk_,int type)
@@ -779,11 +861,24 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
         else
             curHP -= atk_;
 
-        if (curHP <= 0)
+        if (curHP <= 0 && isDeath==false)
         {
+            isDeath = true;
+            PV.RPC("raiseKillPoint", RpcTarget.All);
+            animator.SetTrigger("doDeath");
+            myCollider.enabled = false;
+            rgbd.isKinematic = true;
+            death_point += 1;
             GameObject.Find("MainCanvas").transform.Find("RespawnPanel").gameObject.SetActive(true);
-            PV.RPC("DestroyRPC", RpcTarget.AllBuffered);
+            Invoke("Respawn", 5f);
+            //PV.RPC("DestroyRPC", RpcTarget.AllBuffered);
         }
+    }
+    [PunRPC]
+    void raiseKillPoint()
+    {
+        Last_Hiter.kill_point += 1;
+        Last_Hiter.curEXP += 50f * level;
     }
 
 
@@ -933,15 +1028,23 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
         mt.gameObject.SetActive(true);
         isSkill_R =true;
         
-        curSpeed = 10f;
+
+        curSpeed = walkSpeed +5f;
         Invoke("Skill_R_out", 3f);
     }
     void Skill_R_out()
     {
-
+        if (greenBuff_time > 0f)
+        {
+            curSpeed = walkSpeed+3;
+        }
+        else
+        {
+            curSpeed = walkSpeed;
+        }
         mt.TargetSkinMesh = null;
         isSkill_R = false;
-        curSpeed = walkSpeed;
+        
     }
 
 
@@ -978,9 +1081,11 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     private void OnTriggerEnter(Collider other)
     {
 
-        if (PV.IsMine && other.CompareTag("Player_Sword"))
+        if (other.CompareTag("Player_Sword"))
         {
-            Hit(other.transform.parent.GetComponent<Player_Control>().atk,0);
+            if(PV.IsMine)
+                Hit(other.transform.parent.GetComponent<Player_Control>().atk,0);
+            Last_Hiter = other.transform.parent.GetComponent<Player_Control>();
         }
         if (PV.IsMine && other.CompareTag("Soldier_Attack"))
         {
@@ -1357,6 +1462,8 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
             stream.SendNext(redBuff_time);
             stream.SendNext(blueBuff_time);
             stream.SendNext(greenBuff_time);
+            stream.SendNext(kill_point);
+            stream.SendNext(death_point);
         }
         else
         {
@@ -1372,6 +1479,8 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
             redBuff_time = (float)stream.ReceiveNext();
             blueBuff_time = (float)stream.ReceiveNext();
             greenBuff_time = (float)stream.ReceiveNext();
+            kill_point = (int)stream.ReceiveNext();
+            death_point = (int)stream.ReceiveNext();
         }
     }
 }

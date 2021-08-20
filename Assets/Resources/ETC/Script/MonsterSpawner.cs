@@ -17,7 +17,7 @@ public class MonsterSpawner : MonoBehaviour
             maxCount_Slime = 10;
             StartCoroutine(Spawn());
             //StartCoroutine(Spawn_demon());
-            //StartCoroutine(Spawn_golem());
+            StartCoroutine(Spawn_golem());
         }
     }
 
