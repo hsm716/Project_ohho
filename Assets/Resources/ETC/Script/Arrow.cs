@@ -50,9 +50,13 @@ public class Arrow : MonoBehaviourPunCallbacks
     {
 
 
-        if (!PV.IsMine && col.CompareTag("Player") && col.GetComponent<PhotonView>().IsMine)
+        if (col.CompareTag("Player"))
         {
-            col.GetComponent<Player_Control>().Hit(atk,1);
+            if(!PV.IsMine && col.GetComponent<PhotonView>().IsMine){
+                col.GetComponent<Player_Control>().Hit(atk, 1);
+            }
+            col.GetComponent<Player_Control>().Last_Hiter = myPlayer;
+
             Debug.Log(col.gameObject.name+"를 맞춤 "+"데미지 : " + atk);
             PV.RPC("DestroyRPC", RpcTarget.AllBuffered);
         }

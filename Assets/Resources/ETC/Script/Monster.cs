@@ -181,16 +181,21 @@ public class Monster : MonoBehaviourPunCallbacks, IPunObservable
                 expAmount = 75f;
                 switch (golem_Index)
                 {
+                    
                     case 0:
-                        Last_Hiter.GetComponent<Player_Control>().redBuff_time = 100f;
+                        Player_Control LH = Last_Hiter.GetComponent<Player_Control>();
+                        LH.redBuff_time = 100f;
+                        LH.isRedBuff_benefit = true;
                         break;
                     case 1:
-
-                        Last_Hiter.GetComponent<Player_Control>().blueBuff_time = 100f;
+                        Player_Control LH1 = Last_Hiter.GetComponent<Player_Control>();
+                        LH1.blueBuff_time = 100f;
+                        LH1.isBlueBuff_benefit = true;
                         break;
                     case 2:
-
-                        Last_Hiter.GetComponent<Player_Control>().greenBuff_time = 100f;
+                        Player_Control LH2 = Last_Hiter.GetComponent<Player_Control>();
+                        LH2.greenBuff_time = 100f;
+                        LH2.isGreenBuff_benefit = true;
                         break;
                 }
                 
