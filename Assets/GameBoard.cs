@@ -24,8 +24,9 @@ public class GameBoard : MonoBehaviour
 
     public TextMeshProUGUI[] userName_txt;
 
-    //public Image[,] occupied_Check_img;
-    //public Sprite check_sp;
+    public GameObject[] occupied_Check_list;
+    public Sprite non_check_sp;
+    public Sprite yes_check_sp;
 
 
 
