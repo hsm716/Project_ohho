@@ -74,6 +74,7 @@ MonoBehaviour:
   - BuffOnOff_RPC
   - Use_Item_num
   - RecoverHP
+  - StartMesh
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1
