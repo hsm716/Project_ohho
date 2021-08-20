@@ -154,6 +154,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     public GameObject interface_player;
     public Player_Interface PI;
 
+    public GameObject minimap;
 
     // Soldier 세트 정보
     #region
@@ -217,6 +218,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
 
         if (PV.IsMine)
         {
+            minimap.SetActive(true);
             interface_player.SetActive(true);
             PI = interface_player.GetComponent<Player_Interface>();
             level = 1;
