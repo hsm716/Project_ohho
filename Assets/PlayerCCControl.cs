@@ -295,7 +295,7 @@ public class PlayerCCControl : MonoBehaviourPunCallbacks,IPunObservable
         if (!PV.IsMine&&other.gameObject.CompareTag("Attack_spot") &&other.gameObject.transform.parent.GetComponent<PhotonView>().IsMine)
         {
             PV.RPC("head_jump", RpcTarget.All);
-            other.gameObject.transform.parent.GetComponent<Player_Control>().Hit(other.gameObject.transform.parent.GetComponent<Player_Control>().atk);
+            //other.gameObject.transform.parent.GetComponent<Player_Control>().Hit(other.gameObject.transform.parent.GetComponent<Player_Control>().atk);
         }
 
     }

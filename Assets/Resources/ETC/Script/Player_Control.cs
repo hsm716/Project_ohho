@@ -28,8 +28,10 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     public Image HealthImage;
     public Player_HpBar Hp_Bar;
 
-    
-   
+    public ParticleSystem Hp_Recovery1;
+    public ParticleSystem Hp_Recovery2;
+
+    public GameObject FloatingText;
 
     public GameObject playerEquipPoint;
     public GameObject Head;
@@ -73,8 +75,8 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     public Vector3 mouseDir_y;
     public Vector3 dir_;
 
-    #region
     // 상태관련 변수
+    #region
     private bool isRespawn = false; // 리스폰
     private bool isAttack = false; // 공격중인지
     public bool isAttackReady = false; // 공격가능한 상태인지
@@ -87,9 +89,9 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     public bool isDodge; // 구르기 중인지
     #endregion
 
-
-    #region
     // 입력 관련 변수
+    #region
+
 
     public float horizontalMove; // 키보드 입력
     public float verticalMove;   // 키보드 입력
@@ -101,9 +103,9 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
 
     #endregion
 
-
+    //------------ 직업 클래스별 내용들--------------//
     #region
-    //------------ 클래스별 내용들--------------//
+
     // Class.Arrow 관련 내용들..
     public GameObject shootPoint; // Class.Arrow의 화살이 나가는 지점
     public float pullPower; // 활 당기는 힘
@@ -121,13 +123,19 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
 
     #endregion
 
-    #region
     //사운드소스
+    #region
     public AudioSource sound_Slash1;
     public AudioSource sound_Slash2;
     public AudioSource sound_Shoot1;
 
     public AudioSource sound_Teleport;
+
+    public AudioSource sound_source;
+    public AudioClip sound_slash_hit;
+    public AudioClip sound_arrow_hit;
+
+
     #endregion
     [PunRPC]
     void DestroyRPC() => Destroy(gameObject);
@@ -135,15 +143,21 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     public GameObject CM;
     public Camera characterCamera;
 
+    public GameObject MM;
+    public Camera minimapCamera;
+
     public CinemachineVirtualCamera CVC;
+    public CinemachineVirtualCamera CVC_mini;
 
     public GameObject Respawn_Center;
 
     public GameObject interface_player;
     public Player_Interface PI;
 
-    #region
+
     // Soldier 세트 정보
+    #region
+
     public GameObject SoldierAllSet;
     public Transform Set1;
     public Transform Set2;
@@ -189,7 +203,8 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
         SoldierPoint = 20;
         SoldierPoint_max = 20;
         NickNameText.text = PV.IsMine ? PhotonNetwork.NickName : PV.Owner.NickName;
-        NickNameText.color = PV.IsMine ? Color.green : Color.red;
+        HealthImage.color = PV.IsMine ? Color.green : Color.red;
+        //NickNameText.color = PV.IsMine ? Color.green : Color.red;
         maxHP = 2000f;
         curHP = 2000f;
         curEXP = 0f;
@@ -228,6 +243,9 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
             CVC =CM.GetComponent<CinemachineVirtualCamera>();
             CVC.Follow = this.transform;
             characterCamera = CM.GetComponent<Camera>();
+
+            MM = GameObject.Find("Minimap Camera");
+            MM.GetComponent<CameraMove>().Target = this.gameObject;
             //var CM_cm = CM.GetComponent<Camera_Move>();
             //CM_cm.player = this.gameObject;
         }
@@ -454,15 +472,15 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
         {
             Use_Item_num(0);
         }
-        if (Input.GetKeyDown(KeyCode.Alpha1))
+        if (Input.GetKeyDown(KeyCode.Alpha2))
         {
             Use_Item_num(1);
         }
-        if (Input.GetKeyDown(KeyCode.Alpha1))
+        if (Input.GetKeyDown(KeyCode.Alpha3))
         {
             Use_Item_num(2);
         }
-        if (Input.GetKeyDown(KeyCode.Alpha1))
+        if (Input.GetKeyDown(KeyCode.Alpha4))
         {
             Use_Item_num(3);
         }
@@ -720,9 +738,21 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
         transform.position = new Vector3(0f, 15f, 0f);
         isRespawn = false;
     }
-    public void Hit(float atk_)
+    [PunRPC]
+    public void Hit(float atk_,int type)
     {
 
+        if (type == 0)
+        {
+            sound_source.PlayOneShot(sound_slash_hit);
+        }
+        else if (type == 1)
+        {
+            sound_source.PlayOneShot(sound_arrow_hit);
+        }
+
+        GameObject ft = PhotonNetwork.Instantiate("Damage_Text", transform.position, Quaternion.Euler(new Vector3(45f, 0f, 0f)));
+        ft.GetComponent<TextMesh>().text = "" + (int)atk_;
         if (isDeffensing)
         {
             if (shieldAmount > 0)
@@ -878,10 +908,10 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
 
     void Skill_arrow_E()
     {
-        PhotonNetwork.Instantiate("Arrow", shootPoint.transform.position+new Vector3(-0.2f,0,0), shootPoint.transform.rotation * Quaternion.Euler(new Vector3(0f,-10f,0f)));
-        PhotonNetwork.Instantiate("Arrow", shootPoint.transform.position+new Vector3(-0.1f,0,0), shootPoint.transform.rotation * Quaternion.Euler(new Vector3(0f, -5f, 0f)));
-        PhotonNetwork.Instantiate("Arrow", shootPoint.transform.position+new Vector3(0.1f,0,0), shootPoint.transform.rotation * Quaternion.Euler(new Vector3(0f, 5f, 0f)));
-        PhotonNetwork.Instantiate("Arrow", shootPoint.transform.position+new Vector3(0.2f,0,0), shootPoint.transform.rotation * Quaternion.Euler(new Vector3(0f, 10f, 0f)));
+        PhotonNetwork.Instantiate("Arrow", shootPoint.transform.position+new Vector3(-0.4f,0,0), shootPoint.transform.rotation * Quaternion.Euler(new Vector3(0f,-10f,0f)));
+        PhotonNetwork.Instantiate("Arrow", shootPoint.transform.position+new Vector3(-0.2f,0,0), shootPoint.transform.rotation * Quaternion.Euler(new Vector3(0f, -5f, 0f)));
+        PhotonNetwork.Instantiate("Arrow", shootPoint.transform.position+new Vector3(0.2f,0,0), shootPoint.transform.rotation * Quaternion.Euler(new Vector3(0f, 5f, 0f)));
+        PhotonNetwork.Instantiate("Arrow", shootPoint.transform.position+new Vector3(0.4f,0,0), shootPoint.transform.rotation * Quaternion.Euler(new Vector3(0f, 10f, 0f)));
 
         eDown = false;
     }
@@ -941,11 +971,11 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
 
         if (PV.IsMine && other.CompareTag("Player_Sword"))
         {
-            Hit(other.transform.parent.GetComponent<Player_Control>().atk);
+            Hit(other.transform.parent.GetComponent<Player_Control>().atk,0);
         }
         if (PV.IsMine && other.CompareTag("Soldier_Attack"))
         {
-            Hit(other.transform.parent.GetComponent<Soldier>().atk);
+            Hit(other.transform.parent.GetComponent<Soldier>().atk,0);
         }
         if (other.CompareTag("Monster_Attack"))
         {
@@ -954,13 +984,13 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
             {
                 if (hitObj.monsterType == Monster.Type.demon || hitObj.monsterType == Monster.Type.golem)
                 {
-                    Hit(hitObj.atk * 2f);
+                    Hit(hitObj.atk * 2f,0);
                 }
             }
             else
             {
                 
-                Hit(hitObj.atk);
+                Hit(hitObj.atk,0);
             }
         }
 
@@ -1012,7 +1042,12 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
                 curOccupied_value += Time.deltaTime * 5f;
         }
     }
-
+    [PunRPC]
+    void RecoverHP()
+    {
+        Hp_Recovery1.Play();
+        Hp_Recovery2.Play();
+    }
     void Use_Item_num(int index)
     {
         bool acceptUse = true;
@@ -1027,7 +1062,12 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
                         acceptUse = false;
                         break;
                     }
-                    curHP += 100f;
+                    PV.RPC("RecoverHP", RpcTarget.All);
+                    GameObject ft = PhotonNetwork.Instantiate("Damage_Text", transform.position, Quaternion.Euler(new Vector3(45f, 0f, 0f)));
+                    ft.GetComponent<TextMesh>().text = "" + 200;
+                    ft.GetComponent<TextMesh>().color = Color.green;
+
+                    curHP += 200f;
                     break;
 
                 default:

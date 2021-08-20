@@ -7,12 +7,12 @@ using Photon.Realtime;
 public class Player_remove : MonoBehaviourPunCallbacks
 {
     public PhotonView PV;
-
+    public int deleteCount;
 
     // Update is called once per frame
     void Update()
     {
-        if (gameObject.transform.childCount == 1)
+        if (gameObject.transform.childCount == deleteCount)
         {
             PV.RPC("DestroyRPC", RpcTarget.AllBuffered);
         }

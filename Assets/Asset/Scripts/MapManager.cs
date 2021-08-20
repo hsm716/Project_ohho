@@ -1,14 +1,18 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 using Photon.Pun;
 
 public class MapManager : MonoBehaviourPunCallbacks
 {
     public PhotonView PV;
 
+
     public Transform Section_Offsets;
     public GameObject[] Sections;
+
+    public GameObject Section_Mesh;
     public Transform Bridges;
     //public GameObject[] Sections2;
     public int[] Order;
@@ -25,9 +29,16 @@ public class MapManager : MonoBehaviourPunCallbacks
 
         StartCoroutine(Call_Section());
         StartCoroutine(CallBridges());
+        //StartCoroutine(NavMeshBaker());
         //PV.RPC("Shuffle", RpcTarget.All);
     }
+/*    IEnumerator NavMeshBaker()
+    {
+        yield return new WaitForSeconds(26f);
 
+        Section_Mesh.transform.GetChild(0).GetComponent<NavMeshSurface>().BuildNavMesh();
+
+    }*/
     void Shuffle()
     {
         bool[] selected_state = new bool[] { false, false, false, false, false, false };

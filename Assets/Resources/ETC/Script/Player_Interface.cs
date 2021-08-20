@@ -49,6 +49,7 @@ public class Player_Interface : MonoBehaviour
 
     public bool isArena_in = false;
 
+    public RawImage minimap_Renderer;
 
     public Image RedBuff_image;
     public Image BlueBuff_image;
@@ -65,6 +66,9 @@ public class Player_Interface : MonoBehaviour
 
         name = "twig";
         item_Material.Add(name, 0);
+        name = "forest_spirit";
+        item_Material.Add(name, 0);
+
 
     }
     void Update()

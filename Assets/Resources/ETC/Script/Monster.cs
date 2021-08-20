@@ -18,11 +18,19 @@ public class Monster : MonoBehaviourPunCallbacks, IPunObservable
 
     public PhotonView PV;
 
+    public int myPoolNum;
+
     public CapsuleCollider myCol;
     public CapsuleCollider skillCol;
     public BoxCollider meleeArea;
 
     public AudioSource sound_melee_attack;
+    public AudioSource sound_golem_PunchAttack;
+
+
+    public GameObject FloatingText_prefab;
+
+
 
     public Player_Control Last_Hiter;
 
@@ -53,8 +61,13 @@ public class Monster : MonoBehaviourPunCallbacks, IPunObservable
     public float maxSkillAmount;
 
 
+    public ParticleSystem shockWave;
+    public ParticleSystem hitSword;
+
     public AudioSource sound_source;
-    public AudioClip sound_hit;
+    public AudioClip sound_slash_hit;
+    public AudioClip sound_arrow_hit;
+    public AudioClip sound_golem_PunchAttack_clip;
     void Awake()
     {
         anim = GetComponent<Animator>();
@@ -110,12 +123,27 @@ public class Monster : MonoBehaviourPunCallbacks, IPunObservable
 
 
     [PunRPC]
-    public void Hit(float atk_)
+    public void Hit(float atk_,int type)
     {
         anim.SetTrigger("doHit");
+        hitSword.Play();
+
         curHP -= atk_;
-        sound_source.PlayOneShot(sound_hit);
-        if (!isAttack)
+        if (PV.IsMine)
+        {
+            GameObject ft = PhotonNetwork.Instantiate("Damage_Text", transform.position, Quaternion.Euler(new Vector3(45f, 0f, 0f)));
+            ft.GetComponent<TextMesh>().text = "" + (int)atk_;
+        }
+        if (type == 0)
+        {
+            sound_source.PlayOneShot(sound_slash_hit);
+        }
+        else if(type==1)
+        {
+            sound_source.PlayOneShot(sound_arrow_hit);
+        }
+            
+        if (!isAttack&&!isSkill)
         {
             isChase = true;
             agent.isStopped = false;
@@ -125,6 +153,7 @@ public class Monster : MonoBehaviourPunCallbacks, IPunObservable
             float expAmount=0f;
             if (monsterType == Type.slime)
             {
+                
                 expAmount = 20f;
                 if (Last_Hiter.GetComponent<QuestData>().questIsActive[0])
                 {
@@ -133,6 +162,7 @@ public class Monster : MonoBehaviourPunCallbacks, IPunObservable
                     
                     //Last_Hiter.GetComponent<QuestData>().Quest();
                 }
+
             }
             else if(monsterType == Type.demon)
             {
@@ -168,6 +198,8 @@ public class Monster : MonoBehaviourPunCallbacks, IPunObservable
             myCol.enabled = false;
             isDead = true;
             anim.SetTrigger("doDead");
+
+             
         }
     }
     
@@ -267,6 +299,7 @@ public class Monster : MonoBehaviourPunCallbacks, IPunObservable
                     isAttack = true;
                     agent.isStopped = true;
                     anim.transform.forward = target.position - transform.position;
+                    sound_source.PlayOneShot(sound_golem_PunchAttack_clip);
                     anim.SetTrigger("doAttack");
                     Invoke("AttackEnd", 1.5f);
                 }
@@ -280,6 +313,7 @@ public class Monster : MonoBehaviourPunCallbacks, IPunObservable
     {
         meleeArea.enabled = true;
         Invoke("Attack_areaOff", 0.2f);
+
     }
     public void Attack_areaOff()
     {
@@ -302,7 +336,7 @@ public class Monster : MonoBehaviourPunCallbacks, IPunObservable
         if (other.CompareTag("Player_Sword"))
         {
             Last_Hiter = other.transform.parent.GetComponent<Player_Control>();
-            Hit(other.transform.parent.GetComponent<Player_Control>().atk);
+            Hit(other.transform.parent.GetComponent<Player_Control>().atk,0);
         }
 
 
@@ -323,11 +357,13 @@ public class Monster : MonoBehaviourPunCallbacks, IPunObservable
         if (monsterType == Type.demon)
         {
             Camera_Move.Instance.ShakeCamera(5f, 0.75f);
+            shockWave.Play();
         }
         else if(monsterType == Type.golem)
         {
             Camera_Move.Instance.ShakeCamera(3f, 0.6f);
         }
+
         agent.velocity = Vector3.zero;
         skillCol.enabled = true;
         agent.isStopped = true;
@@ -434,7 +470,21 @@ public class Monster : MonoBehaviourPunCallbacks, IPunObservable
     }*/
     public void Dead()
     {
-        PV.RPC("DestroyRPC", RpcTarget.AllBuffered);
+        int DropPercent= Random.Range(0,100);
+        if (5 < DropPercent && DropPercent < 35)
+        {
+            PhotonNetwork.Instantiate("Item_potion", transform.position, transform.rotation);
+        }
+        else if (40 < DropPercent && DropPercent < 50)
+        {
+            PhotonNetwork.Instantiate("Item_Forest_Spirit", transform.position, transform.rotation);
+        }
+
+            PV.RPC("DestroyRPC", RpcTarget.AllBuffered);
+    }
+    void Dead_RPC()
+    {
+        
     }
     [PunRPC]
     void ChaseObject(Vector3 pos)

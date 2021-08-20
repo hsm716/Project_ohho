@@ -72,6 +72,8 @@ MonoBehaviour:
   - GetHpBoost
   - Hit
   - BuffOnOff_RPC
+  - Use_Item_num
+  - RecoverHP
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1
