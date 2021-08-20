@@ -2335,7 +2335,7 @@ MonoBehaviour:
   HairText: {fileID: 88160935}
   BeardText: {fileID: 1412456688}
   SkinText: {fileID: 1828811997}
-  CustomDetail: 00000000000000000000000000000000
+  CustomDetail: 01000000000000000000000000000000
 --- !u!114 &360324423
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11803,7 +11803,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerCount: 0
-  customPreset: 
+  customPreset: 01000000000000000000000000000000
 --- !u!4 &1804134260
 Transform:
   m_ObjectHideFlags: 0

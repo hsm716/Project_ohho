@@ -30,34 +30,24 @@ public class Custonmization : MonoBehaviour
 
     private void OnEnable()
     {
-        if (!saveCheck)
-        {
-            HairText.text = "Hair1";
-            HairText.text = "Beard1";
-            SkinText.text = "Skin1";
 
+
+        if (CustomDetail[0] == 1)    //남자일 때
+        {
+            Gender = true;
+            BeardPointer.SetActive(true);
             FemalePrefab.SetActive(false);
             MalePrefab.SetActive(true);
 
-            //////////////
-            
             Male_Hairs.GetChild(male_hairNum).gameObject.SetActive(false);  //남자 머리
-            Female_Hairs.GetChild(female_hairNum).gameObject.SetActive(false);  //여자 머리
-            male_hairNum = 0;
-            female_hairNum = 0;
+            male_hairNum = CustomDetail[1];
             Male_Hairs.GetChild(male_hairNum).gameObject.SetActive(true);
-            Female_Hairs.GetChild(female_hairNum).gameObject.SetActive(true);
-
-            //////////////
 
             Beards.GetChild(beardNum).gameObject.SetActive(false);  //남자 수염
-            beardNum = 0;
+            beardNum = CustomDetail[2];
             Beards.GetChild(beardNum).gameObject.SetActive(true);
-            
-            //////////////
 
-            male_skinNum = 0;
-            female_skinNum = 0;
+            male_skinNum = CustomDetail[3];
             foreach (Transform hair in Male_Hairs)
             {
                 hair.GetChild(0).GetComponent<MeshRenderer>().material = Skins[male_skinNum];   //남자 머리
@@ -66,16 +56,31 @@ public class Custonmization : MonoBehaviour
             {
                 beard.GetChild(0).GetComponent<MeshRenderer>().material = Skins[male_skinNum];  //남자 수염
             }
+            MalePrefab.transform.GetChild(0).GetComponent<SkinnedMeshRenderer>().material = Skins[male_skinNum];   //남자 피부
+        }
+        else                        //여자일 때
+        {
+            Gender = false;
+            MalePrefab.SetActive(false);
+            FemalePrefab.SetActive(true);
+
+            Female_Hairs.GetChild(female_hairNum).gameObject.SetActive(false);  //여자 머리
+            female_hairNum = CustomDetail[1];
+            Female_Hairs.GetChild(female_hairNum).gameObject.SetActive(true);
+
+            female_skinNum = CustomDetail[3];
             foreach (Transform hair in Female_Hairs)
             {
                 hair.GetChild(0).GetComponent<MeshRenderer>().material = Skins[female_skinNum];   //여자 머리
             }
-
-            MalePrefab.transform.GetChild(0).GetComponent<SkinnedMeshRenderer>().material = Skins[male_skinNum];   //남자 피부
             FemalePrefab.transform.GetChild(0).GetComponent<SkinnedMeshRenderer>().material = Skins[female_skinNum];   //여자 피부
-
-
         }
+
+        HairText.text = "Hair" + (CustomDetail[1] + 1);
+        BeardText.text = "Beard" + (CustomDetail[2] + 1);
+        SkinText.text = "Skin" + (CustomDetail[3] + 1);
+
+
 
 
     }

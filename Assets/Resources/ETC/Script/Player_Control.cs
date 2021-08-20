@@ -212,6 +212,19 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     public int death_point;
 
     public Player_Control Last_Hiter;
+
+
+    public GameObject Male_Charactor;
+    public GameObject Female_Charactor;
+
+    public Transform Male_Hair_Offset;
+    public Transform Female_Hair_Offset;
+    public Transform Beard_Offset;
+
+    public Material[] Skins;
+
+    int[] preset = RoomManager.Instance.customPreset;
+
     private void Awake()
     {
         SoldierPoint = 20;
@@ -265,6 +278,40 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
             //var CM_cm = CM.GetComponent<Camera_Move>();
             //CM_cm.player = this.gameObject;
         }
+
+        //모든 플레이어가 자신과 같은모습으로 보임
+        if (preset[0] == 1)  //남자일 때
+        {
+            Female_Charactor.SetActive(false);
+            Male_Charactor.SetActive(true);
+
+            Female_Hair_Offset.gameObject.SetActive(false);
+            Male_Hair_Offset.gameObject.SetActive(true);
+            Beard_Offset.gameObject.SetActive(true);
+
+            Male_Hair_Offset.GetChild(preset[1]).gameObject.SetActive(true);    //남자 머리
+            Male_Hair_Offset.GetChild(preset[1]).GetChild(0).GetComponent<MeshRenderer>().material = Skins[preset[3]];
+            Beard_Offset.GetChild(preset[2]).gameObject.SetActive(true);    //남자 수염
+            Beard_Offset.GetChild(preset[2]).GetChild(0).GetComponent<MeshRenderer>().material = Skins[preset[3]];
+            Male_Charactor.GetComponent<SkinnedMeshRenderer>().material = Skins[preset[3]];
+        }
+        else                //여자일 때
+        {
+            Male_Charactor.SetActive(false);
+            Female_Charactor.SetActive(true);
+
+            Male_Hair_Offset.gameObject.SetActive(false);
+            Female_Hair_Offset.gameObject.SetActive(true);
+            Beard_Offset.gameObject.SetActive(false);
+
+            Female_Hair_Offset.GetChild(preset[1]).gameObject.SetActive(true);    //여자 머리
+            Female_Hair_Offset.GetChild(preset[1]).GetChild(0).GetComponent<MeshRenderer>().material = Skins[preset[3]];
+            Female_Charactor.GetComponent<SkinnedMeshRenderer>().material = Skins[preset[3]];
+        }
+
+
+
+
 
     }
     void stepClimb()
@@ -1464,6 +1511,11 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
             stream.SendNext(greenBuff_time);
             stream.SendNext(kill_point);
             stream.SendNext(death_point);
+            stream.SendNext(Male_Hair_Offset.gameObject.activeSelf);
+            stream.SendNext(Beard_Offset.gameObject.activeSelf);
+            stream.SendNext(Female_Hair_Offset.gameObject.activeSelf);
+            stream.SendNext(Male_Charactor.activeSelf);
+            stream.SendNext(Female_Charactor.activeSelf);
         }
         else
         {
@@ -1481,6 +1533,11 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
             greenBuff_time = (float)stream.ReceiveNext();
             kill_point = (int)stream.ReceiveNext();
             death_point = (int)stream.ReceiveNext();
+            Male_Hair_Offset.gameObject.SetActive((bool)stream.ReceiveNext());
+            Beard_Offset.gameObject.SetActive((bool)stream.ReceiveNext());
+            Female_Hair_Offset.gameObject.SetActive((bool)stream.ReceiveNext());
+            Male_Charactor.SetActive((bool)stream.ReceiveNext());
+            Female_Charactor.SetActive((bool)stream.ReceiveNext());
         }
     }
 }
