@@ -51,7 +51,8 @@ public class Monster_HpBar : MonoBehaviourPunCallbacks
                PV.RPC("DestroyRPC", RpcTarget.AllBuffered);*/
         transform.position = monster.position + offset;
         hpBar.value = monster_data.curHP / monster_data.maxHP;
-        subBar.value = monster_data.curSkillAmount / monster_data.maxSkillAmount;
+        if(subBar)
+            subBar.value = monster_data.curSkillAmount / monster_data.maxSkillAmount;
 
 
 
@@ -61,6 +62,10 @@ public class Monster_HpBar : MonoBehaviourPunCallbacks
     public void GetHpBoost()
     {
         float scaleX = (1000f / 200f) / (monster_data.maxHP / 200f);
+        if (scaleX >= 1f)
+        {
+            scaleX = 1f;
+        }
         HpLineFolder.GetComponent<HorizontalLayoutGroup>().gameObject.SetActive(false);
         foreach (Transform child in HpLineFolder.transform)
         {

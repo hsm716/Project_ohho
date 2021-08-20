@@ -100,6 +100,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     private bool mLDown;//마우스 왼쪽 입력
     private bool mRDown;//마우스 오른쪽 입력
     private bool eDown; //e 입력 (스킬 사용)
+    private bool tabDown;
 
     #endregion
 
@@ -346,12 +347,16 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
         {
             if (PI.isActive_Input ==true && GameManager.Instance.isActive)
                 InputKey();
+
+            if(tabDown)
+                PI.GameBoard_Tab.SetActive(true);
+            else
+                PI.GameBoard_Tab.SetActive(false);
+
             AnimationUpdate();
             Attack();
 
             PV.RPC("BuffOnOff_RPC", RpcTarget.All);
-
-
             animator.SetFloat("RunningAmount", curSpeed / 4f);
             
             if (mRDown&&!isDodge)
@@ -492,6 +497,8 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
             PV.RPC("Skill_R", RpcTarget.All);
             //Skill_R();
         }
+        tabDown = Input.GetKey(KeyCode.Tab);
+
 
         /*        if (Input.GetMouseButtonDown(2))
                 {
