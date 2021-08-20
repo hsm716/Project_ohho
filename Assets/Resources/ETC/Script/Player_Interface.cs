@@ -43,6 +43,8 @@ public class Player_Interface : MonoBehaviour
     //리얼 수정좀 잘좀 해주세요;; ㅅㅂ
     // Update is called once per frame
     // Im so sad, wy
+    public GameObject GameBoard_Tab;
+
 
     public bool isArena = false;
     public bool isActive_Input;

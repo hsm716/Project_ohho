@@ -93,6 +93,8 @@ public class Monster : MonoBehaviourPunCallbacks, IPunObservable
             curHP = 1000f;
             maxHP = 1000f;
             atk = 10f;
+            curSkillAmount = 0f;
+            maxSkillAmount = 0f;
         }
         if (monsterType == Type.golem)
         {
@@ -423,7 +425,10 @@ public class Monster : MonoBehaviourPunCallbacks, IPunObservable
 
             if (PV.IsMine)
             {
-                target = Last_Hiter.transform;
+                if (Last_Hiter)
+                    target = Last_Hiter.transform;
+                else
+                    target = null;
                 /*if (Vector3.Distance(transform.position, target.position) <= 0.5f && !isChase)
                 {
                     agent.isStopped = true;
