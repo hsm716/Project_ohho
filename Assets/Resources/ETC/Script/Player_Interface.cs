@@ -80,7 +80,7 @@ public class Player_Interface : MonoBehaviour
         {
             ArenaIn();
         }
-        if(time <= 0f && isArena_in == true)
+        if(time <= 0f && isArena==true)
         {
             ArenaOut();
         }
@@ -98,18 +98,29 @@ public class Player_Interface : MonoBehaviour
     }
     void ArenaIn()
     {
-        player_data.horizontalMove = 0f;
-        player_data.verticalMove = 0f;
-
-        MC.transform.GetChild(7).gameObject.SetActive(true);
+       
+        GameManager.Instance.isActive = false;
+        isActive_Input = false;
+        GameObject arenaCanvas = MC.transform.GetChild(7).gameObject;
+        arenaCanvas.SetActive(true);
+        arenaCanvas.transform.GetChild(0).gameObject.SetActive(true);
     }
     void ArenaOut()
     {
-        isArena_in = false;
+        isActive_Input = true;
         gm.arena_time = 300f;
         isArena = false;
 
-        transform.position = player_data.Respawn_Center.transform.GetChild((int)(player_data.PV.ViewID / 1000)).transform.position;
+        GameObject[] soldiers = GameObject.FindGameObjectsWithTag("Soldier");
+
+        foreach(var s in soldiers)
+        {
+            Destroy(s);
+        }
+        
+
+
+        player_data.transform.position = player_data.Respawn_Center.transform.GetChild((int)(player_data.PV.ViewID / 1000)).transform.position;
     }
 
 
@@ -177,4 +188,5 @@ public class Player_Interface : MonoBehaviour
         }
         LevelUpPanel.SetActive(true);
     }
+    
 }

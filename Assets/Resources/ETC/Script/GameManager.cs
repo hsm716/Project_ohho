@@ -7,8 +7,10 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviourPunCallbacks,IPunObservable
 {
+    static public GameManager Instance;
     public PhotonView PV;
 
+    public bool isActive;
     public float game_time;
     public float arena_time;
     public int ReadyCountCur;
@@ -30,6 +32,7 @@ public class GameManager : MonoBehaviourPunCallbacks,IPunObservable
     // Start is called before the first frame update
     void Start()
     {
+        Instance = this;
         game_time = 0f;
         arena_time = 300f;
         Player[] players = PhotonNetwork.PlayerList;
