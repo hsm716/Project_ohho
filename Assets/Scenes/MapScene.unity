@@ -161,6 +161,7 @@ MonoBehaviour:
   - {fileID: 538919626221646077, guid: 96ac13ee1205f7541802504b7b9edf44, type: 3}
   - {fileID: 5586871337158090729, guid: 95a539da0615ee14cbdb2e80b4e8a876, type: 3}
   - {fileID: 5586871337158090729, guid: 31c59b9d6c1e95e4abc8e99a96d71ef0, type: 3}
+  Section_Mesh: {fileID: 0}
   Bridges: {fileID: 1063482623}
   Order: 
   mat: {fileID: 0}
@@ -1241,6 +1242,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: ForestSection
+      objectReference: {fileID: 0}
+    - target: {fileID: 6609937157169228683, guid: a2e038a16c5e6ec41b29882d0fc6f670,
+        type: 3}
+      propertyPath: sceneViewId
+      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a2e038a16c5e6ec41b29882d0fc6f670, type: 3}
@@ -31335,76 +31341,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!1001 &3487281199591639714
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 6502979887674284017, guid: 99252a764aecd3346944e56a4c754649,
-        type: 3}
-      propertyPath: m_Name
-      value: SnowSection
-      objectReference: {fileID: 0}
-    - target: {fileID: 6502979887674284018, guid: 99252a764aecd3346944e56a4c754649,
-        type: 3}
-      propertyPath: m_RootOrder
-      value: 18
-      objectReference: {fileID: 0}
-    - target: {fileID: 6502979887674284018, guid: 99252a764aecd3346944e56a4c754649,
-        type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6502979887674284018, guid: 99252a764aecd3346944e56a4c754649,
-        type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6502979887674284018, guid: 99252a764aecd3346944e56a4c754649,
-        type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6502979887674284018, guid: 99252a764aecd3346944e56a4c754649,
-        type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6502979887674284018, guid: 99252a764aecd3346944e56a4c754649,
-        type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6502979887674284018, guid: 99252a764aecd3346944e56a4c754649,
-        type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6502979887674284018, guid: 99252a764aecd3346944e56a4c754649,
-        type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6502979887674284018, guid: 99252a764aecd3346944e56a4c754649,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6502979887674284018, guid: 99252a764aecd3346944e56a4c754649,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6502979887674284018, guid: 99252a764aecd3346944e56a4c754649,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 99252a764aecd3346944e56a4c754649, type: 3}
+  m_IsActive: 1
 --- !u!1001 &3669230463351228182
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -43999,7 +43936,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 6ef2405ce325b3046a69a59ae0cc23e3, type: 2}
+  - {fileID: 2100000, guid: 6e5ae6be18c000a41b9085e0c275ee19, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
