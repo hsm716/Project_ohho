@@ -159,9 +159,11 @@ public class Player_Arena : MonoBehaviour
     [PunRPC]
     void StartGame_RPC()
     {
+        GameManager.Instance.isActive = true;
         player_data.PI.isActive_Input = true;
         player_data.PI.isArena = true;
         player_data.PI.isArena_in = true;
+        player_data.PI.MC.transform.GetChild(7).transform.GetChild(0).gameObject.SetActive(true);
         gm.arena_time = 60f;
         Soldier_Spawn();
         Invoke("active_false", 1f);
@@ -169,7 +171,7 @@ public class Player_Arena : MonoBehaviour
     
     void active_false()
     {
-        this.gameObject.SetActive(false);
+        this.transform.GetChild(0).gameObject.SetActive(false);
     }
 
     public void Select_melee()

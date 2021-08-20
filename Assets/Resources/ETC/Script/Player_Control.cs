@@ -342,7 +342,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     {
         if (PV.IsMine)
         {
-            if (PI.isActive_Input ==true)
+            if (PI.isActive_Input ==true && GameManager.Instance.isActive)
                 InputKey();
             AnimationUpdate();
             Attack();
