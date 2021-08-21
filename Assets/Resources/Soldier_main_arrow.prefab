@@ -16,9 +16,9 @@ GameObject:
   - component: {fileID: 8796531901517190163}
   - component: {fileID: 7940576031627107055}
   - component: {fileID: 409076558785317393}
-  - component: {fileID: 1135527924655073082}
   - component: {fileID: 3907593296059522527}
   - component: {fileID: 7735649542083335045}
+  - component: {fileID: 1135527924655073082}
   m_Layer: 6
   m_Name: Soldier_arrow
   m_TagString: Soldier
@@ -199,33 +199,6 @@ MonoBehaviour:
   m_SynchronizeAngularVelocity: 1
   m_TeleportEnabled: 0
   m_TeleportIfDistanceGreaterThan: 3
---- !u!114 &1135527924655073082
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2431980505928694439}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9b8c4a61274f60b4ea5fb4299cfdbf14, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ShowLayerWeightsInspector: 1
-  ShowParameterInspector: 1
-  m_SynchronizeParameters:
-  - Type: 4
-    SynchronizeType: 2
-    Name: isRunning
-  - Type: 9
-    SynchronizeType: 1
-    Name: doAttack
-  - Type: 9
-    SynchronizeType: 1
-    Name: doDead
-  m_SynchronizeLayers:
-  - SynchronizeType: 1
-    LayerIndex: 0
 --- !u!82 &3907593296059522527
 AudioSource:
   m_ObjectHideFlags: 0
@@ -418,6 +391,33 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &1135527924655073082
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2431980505928694439}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b8c4a61274f60b4ea5fb4299cfdbf14, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowLayerWeightsInspector: 1
+  ShowParameterInspector: 1
+  m_SynchronizeParameters:
+  - Type: 4
+    SynchronizeType: 2
+    Name: isRunning
+  - Type: 9
+    SynchronizeType: 1
+    Name: doAttack
+  - Type: 9
+    SynchronizeType: 1
+    Name: doDead
+  m_SynchronizeLayers:
+  - SynchronizeType: 1
+    LayerIndex: 0
 --- !u!1 &2431984841439185523
 GameObject:
   m_ObjectHideFlags: 0

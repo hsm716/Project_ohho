@@ -78,6 +78,8 @@ MonoBehaviour:
   - SetLastHitter
   - raiseKillPoint
   - InitAnim
+  - CheckFinished_Arena
+  - SetRank
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

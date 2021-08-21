@@ -62,6 +62,8 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     public float curEXP;
     public float maxEXP;
 
+    public string getValue;
+
     public CapsuleCollider myCollider;
 
     [Header("R 무기 위치")]
@@ -252,7 +254,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
             level = 1;
             walkSpeed = 4f;
             curSpeed = walkSpeed;
-            transform.position = Respawn_Center.transform.GetChild((int)(PV.ViewID / 1000)).transform.position;
+            transform.position = Respawn_Center.transform.GetChild((int)(PV.ViewID / 1000) -1 ).transform.position;
             SoldierType = Random.Range(0,3);
             Set1_Init_pos = Set1.localPosition;
             Set2_Init_pos = Set2.localPosition;
@@ -271,7 +273,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
             animator = GetComponent<Animator>();
             CM = GameObject.Find("Main Camera");
             CVC =CM.GetComponent<CinemachineVirtualCamera>();
-            CVC.Follow = this.transform;
+            //CVC.Follow = this.transform;
             characterCamera = CM.GetComponent<Camera>();
 
             MM = GameObject.Find("Minimap Camera");
@@ -817,7 +819,8 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
             int layerMask = (1 << LayerMask.NameToLayer("Environment")) |  (1 << LayerMask.NameToLayer("Wall"));
             RaycastHit hitResult;
             /////////////////////
-            
+           
+
             if (Physics.Raycast(ray, out hitResult,100f,layerMask))
             {
                 //Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.forward) * hitResult.distance, Color.yellow);
@@ -918,7 +921,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
             rgbd.isKinematic = true;
             death_point += 1;
             GameObject.Find("MainCanvas").transform.Find("RespawnPanel").gameObject.SetActive(true);
-            Invoke("Respawn", 5f);
+            Invoke("Respawn", 10f);
             //PV.RPC("DestroyRPC", RpcTarget.AllBuffered);
         }
     }
@@ -1518,6 +1521,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
             stream.SendNext(Female_Hair_Offset.gameObject.activeSelf);
             stream.SendNext(Male_Charactor.activeSelf);
             stream.SendNext(Female_Charactor.activeSelf);
+            stream.SendNext(getValue);
         }
         else
         {
@@ -1540,6 +1544,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
             Female_Hair_Offset.gameObject.SetActive((bool)stream.ReceiveNext());
             Male_Charactor.SetActive((bool)stream.ReceiveNext());
             Female_Charactor.SetActive((bool)stream.ReceiveNext());
+            getValue = (string)stream.ReceiveNext();
         }
     }
 }

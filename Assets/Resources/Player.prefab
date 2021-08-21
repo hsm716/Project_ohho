@@ -9638,6 +9638,9 @@ MonoBehaviour:
   gm: {fileID: 0}
   Ready: {fileID: 6887245568649800887}
   GameStart: {fileID: 1229903425415044765}
+  ranking_img: {fileID: 0}
+  ranking_123_sp: []
+  rank: 0
 --- !u!1 &1475325225120940943
 GameObject:
   m_ObjectHideFlags: 0
@@ -42637,10 +42640,8 @@ GameObject:
   - component: {fileID: 7044034116310767683}
   - component: {fileID: 7044034116310767101}
   - component: {fileID: 7044034116310767100}
-  - component: {fileID: 7044034116310767099}
   - component: {fileID: 7044034116310767728}
   - component: {fileID: 7044034116310768113}
-  - component: {fileID: 7044034116310766630}
   - component: {fileID: 7470863561650004738}
   - component: {fileID: 3679897044333957649}
   - component: {fileID: 8445971448879983316}
@@ -42648,6 +42649,8 @@ GameObject:
   - component: {fileID: 7146764721617380019}
   - component: {fileID: 3985553274305804934}
   - component: {fileID: 6279836584305621176}
+  - component: {fileID: 7044034116310766630}
+  - component: {fileID: 7044034116310767099}
   m_Layer: 6
   m_Name: Player
   m_TagString: Player
@@ -42726,7 +42729,6 @@ MonoBehaviour:
   - {fileID: 7044034116310766630}
   - {fileID: 7044034116310767100}
   - {fileID: 7044034116310767099}
-  - {fileID: 7146764721617380019}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -42838,116 +42840,6 @@ MonoBehaviour:
   - {fileID: 2100000, guid: 2a12d3fc0532ba64e972160db18dfd99, type: 2}
   - {fileID: 2100000, guid: 130ecdefde3e5d1498bba318575e4cdd, type: 2}
   - {fileID: 2100000, guid: 6a1aa24b3a1119649993fb5aee44d302, type: 2}
---- !u!114 &7044034116310767099
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7044034116310768680}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9b8c4a61274f60b4ea5fb4299cfdbf14, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ShowLayerWeightsInspector: 1
-  ShowParameterInspector: 1
-  m_SynchronizeParameters:
-  - Type: 4
-    SynchronizeType: 2
-    Name: isRunning
-  - Type: 9
-    SynchronizeType: 1
-    Name: doDodge
-  - Type: 4
-    SynchronizeType: 2
-    Name: isRunningBack
-  - Type: 9
-    SynchronizeType: 1
-    Name: doDodge_back
-  - Type: 4
-    SynchronizeType: 2
-    Name: isRunning_Sword
-  - Type: 4
-    SynchronizeType: 2
-    Name: isRunningBack_Sword
-  - Type: 4
-    SynchronizeType: 2
-    Name: isIdle_Sword
-  - Type: 9
-    SynchronizeType: 1
-    Name: doSlash
-  - Type: 4
-    SynchronizeType: 2
-    Name: isRunningBack_Arrow
-  - Type: 4
-    SynchronizeType: 2
-    Name: isRunning_Arrow
-  - Type: 4
-    SynchronizeType: 2
-    Name: isIdle_Arrow
-  - Type: 9
-    SynchronizeType: 1
-    Name: doDive
-  - Type: 9
-    SynchronizeType: 1
-    Name: doShoot
-  - Type: 4
-    SynchronizeType: 2
-    Name: isAim_Arrow
-  - Type: 9
-    SynchronizeType: 0
-    Name: "-------------------------\uC77C\uBC18----------------"
-  - Type: 9
-    SynchronizeType: 0
-    Name: "------------------------\uAC80\uC0AC------------------------"
-  - Type: 9
-    SynchronizeType: 0
-    Name: "----------------------\uAD81\uC218--------------------------"
-  - Type: 9
-    SynchronizeType: 0
-    Name: "----------------------\uBC95\uC0AC------------------------"
-  - Type: 4
-    SynchronizeType: 2
-    Name: isIdle_Magic
-  - Type: 4
-    SynchronizeType: 2
-    Name: isRunning_Magic
-  - Type: 4
-    SynchronizeType: 2
-    Name: isRunningBack_Magic
-  - Type: 9
-    SynchronizeType: 1
-    Name: doSpell
-  - Type: 9
-    SynchronizeType: 1
-    Name: doDeffense
-  - Type: 4
-    SynchronizeType: 2
-    Name: isDeffensing
-  - Type: 9
-    SynchronizeType: 1
-    Name: doShieldAttack_Sword
-  - Type: 9
-    SynchronizeType: 0
-    Name: doSkill_E
-  - Type: 1
-    SynchronizeType: 0
-    Name: RunningAmount
-  - Type: 9
-    SynchronizeType: 1
-    Name: doDeath
-  m_SynchronizeLayers:
-  - SynchronizeType: 1
-    LayerIndex: 0
-  - SynchronizeType: 1
-    LayerIndex: 1
-  - SynchronizeType: 1
-    LayerIndex: 2
-  - SynchronizeType: 1
-    LayerIndex: 3
-  - SynchronizeType: 1
-    LayerIndex: 4
 --- !u!136 &7044034116310767728
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -42978,22 +42870,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 112
   m_CollisionDetection: 0
---- !u!114 &7044034116310766630
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7044034116310768680}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 64179f3720bbfe947b7724caa67b7c1d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_SynchronizeVelocity: 1
-  m_SynchronizeAngularVelocity: 1
-  m_TeleportEnabled: 0
-  m_TeleportIfDistanceGreaterThan: 3
 --- !u!82 &7470863561650004738
 AudioSource:
   m_ObjectHideFlags: 0
@@ -43543,6 +43419,132 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &7044034116310766630
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7044034116310768680}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64179f3720bbfe947b7724caa67b7c1d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SynchronizeVelocity: 1
+  m_SynchronizeAngularVelocity: 1
+  m_TeleportEnabled: 0
+  m_TeleportIfDistanceGreaterThan: 3
+--- !u!114 &7044034116310767099
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7044034116310768680}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b8c4a61274f60b4ea5fb4299cfdbf14, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowLayerWeightsInspector: 1
+  ShowParameterInspector: 1
+  m_SynchronizeParameters:
+  - Type: 4
+    SynchronizeType: 2
+    Name: isRunning
+  - Type: 9
+    SynchronizeType: 1
+    Name: doDodge
+  - Type: 4
+    SynchronizeType: 2
+    Name: isRunningBack
+  - Type: 9
+    SynchronizeType: 1
+    Name: doDodge_back
+  - Type: 4
+    SynchronizeType: 2
+    Name: isRunning_Sword
+  - Type: 4
+    SynchronizeType: 2
+    Name: isRunningBack_Sword
+  - Type: 4
+    SynchronizeType: 2
+    Name: isIdle_Sword
+  - Type: 9
+    SynchronizeType: 1
+    Name: doSlash
+  - Type: 4
+    SynchronizeType: 2
+    Name: isRunningBack_Arrow
+  - Type: 4
+    SynchronizeType: 2
+    Name: isRunning_Arrow
+  - Type: 4
+    SynchronizeType: 2
+    Name: isIdle_Arrow
+  - Type: 9
+    SynchronizeType: 1
+    Name: doDive
+  - Type: 9
+    SynchronizeType: 1
+    Name: doShoot
+  - Type: 4
+    SynchronizeType: 2
+    Name: isAim_Arrow
+  - Type: 9
+    SynchronizeType: 0
+    Name: "-------------------------\uC77C\uBC18----------------"
+  - Type: 9
+    SynchronizeType: 0
+    Name: "------------------------\uAC80\uC0AC------------------------"
+  - Type: 9
+    SynchronizeType: 0
+    Name: "----------------------\uAD81\uC218--------------------------"
+  - Type: 9
+    SynchronizeType: 0
+    Name: "----------------------\uBC95\uC0AC------------------------"
+  - Type: 4
+    SynchronizeType: 2
+    Name: isIdle_Magic
+  - Type: 4
+    SynchronizeType: 2
+    Name: isRunning_Magic
+  - Type: 4
+    SynchronizeType: 2
+    Name: isRunningBack_Magic
+  - Type: 9
+    SynchronizeType: 1
+    Name: doSpell
+  - Type: 9
+    SynchronizeType: 1
+    Name: doDeffense
+  - Type: 4
+    SynchronizeType: 2
+    Name: isDeffensing
+  - Type: 9
+    SynchronizeType: 1
+    Name: doShieldAttack_Sword
+  - Type: 9
+    SynchronizeType: 0
+    Name: doSkill_E
+  - Type: 1
+    SynchronizeType: 0
+    Name: RunningAmount
+  - Type: 9
+    SynchronizeType: 1
+    Name: doDeath
+  m_SynchronizeLayers:
+  - SynchronizeType: 1
+    LayerIndex: 0
+  - SynchronizeType: 1
+    LayerIndex: 1
+  - SynchronizeType: 1
+    LayerIndex: 2
+  - SynchronizeType: 1
+    LayerIndex: 3
+  - SynchronizeType: 1
+    LayerIndex: 4
 --- !u!1 &7044034116310768681
 GameObject:
   m_ObjectHideFlags: 0

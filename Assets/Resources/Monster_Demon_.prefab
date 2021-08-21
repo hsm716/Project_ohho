@@ -1386,14 +1386,14 @@ GameObject:
   m_Component:
   - component: {fileID: 7096625335698109310}
   - component: {fileID: 7149939901725228124}
-  - component: {fileID: 7091300514427539300}
   - component: {fileID: 7091300514427539301}
+  - component: {fileID: 7091300514427539300}
   - component: {fileID: 7091300514427539302}
   - component: {fileID: 7091300514427539303}
   - component: {fileID: 7091300514427539226}
-  - component: {fileID: 7091300514427539227}
   - component: {fileID: 5277342291399536681}
   - component: {fileID: 354389158491495231}
+  - component: {fileID: 7091300514427539227}
   m_Layer: 6
   m_Name: Monster_Demon
   m_TagString: Monster
@@ -1447,6 +1447,31 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &7091300514427539301
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7091300514427539296}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents:
+  - {fileID: 7091300514427539300}
+  - {fileID: 5277342291399536681}
+  - {fileID: 7091300514427539227}
+  sceneViewId: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!114 &7091300514427539300
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1489,31 +1514,6 @@ MonoBehaviour:
   sound_slash_hit: {fileID: 8300000, guid: 0c339317cde75f74da607b404bf128cc, type: 3}
   sound_arrow_hit: {fileID: 8300000, guid: 55e20f59b5cc3f94d9a63c4cdc02d0e9, type: 3}
   sound_golem_PunchAttack_clip: {fileID: 0}
---- !u!114 &7091300514427539301
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7091300514427539296}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ObservedComponentsFoldoutOpen: 1
-  Group: 0
-  prefixField: -1
-  Synchronization: 3
-  OwnershipTransfer: 0
-  observableSearch: 2
-  ObservedComponents:
-  - {fileID: 7091300514427539300}
-  - {fileID: 7091300514427539227}
-  - {fileID: 5277342291399536681}
-  sceneViewId: 0
-  InstantiationId: 0
-  isRuntimeInstantiated: 0
 --- !u!136 &7091300514427539302
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -1566,36 +1566,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 112
   m_CollisionDetection: 0
---- !u!114 &7091300514427539227
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7091300514427539296}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9b8c4a61274f60b4ea5fb4299cfdbf14, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ShowLayerWeightsInspector: 1
-  ShowParameterInspector: 1
-  m_SynchronizeParameters:
-  - Type: 4
-    SynchronizeType: 2
-    Name: isRunning
-  - Type: 9
-    SynchronizeType: 1
-    Name: doAttack
-  - Type: 9
-    SynchronizeType: 1
-    Name: doDead
-  - Type: 4
-    SynchronizeType: 1
-    Name: doSkill
-  m_SynchronizeLayers:
-  - SynchronizeType: 1
-    LayerIndex: 0
 --- !u!114 &5277342291399536681
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1708,6 +1678,36 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &7091300514427539227
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7091300514427539296}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b8c4a61274f60b4ea5fb4299cfdbf14, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowLayerWeightsInspector: 1
+  ShowParameterInspector: 1
+  m_SynchronizeParameters:
+  - Type: 4
+    SynchronizeType: 2
+    Name: isRunning
+  - Type: 9
+    SynchronizeType: 1
+    Name: doAttack
+  - Type: 9
+    SynchronizeType: 1
+    Name: doDead
+  - Type: 4
+    SynchronizeType: 1
+    Name: doSkill
+  m_SynchronizeLayers:
+  - SynchronizeType: 1
+    LayerIndex: 0
 --- !u!1 &7091313744871026212
 GameObject:
   m_ObjectHideFlags: 0

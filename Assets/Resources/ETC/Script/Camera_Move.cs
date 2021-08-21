@@ -37,6 +37,9 @@ public class Camera_Move : MonoBehaviour
     private CinemachineVirtualCamera CVC;
     private float shakeTimer;
 
+    Vector3 curPos;
+    public float camSpeed=20f;
+    public float screenSizeThickness = 10f;
     private void Awake()
     {
         Instance = this;
@@ -52,6 +55,8 @@ public class Camera_Move : MonoBehaviour
     }
     private void Update()
     {
+
+
         if (shakeTimer > 0)
         {
             shakeTimer -= Time.deltaTime;

@@ -485,7 +485,7 @@ public class Monster : MonoBehaviourPunCallbacks, IPunObservable
         {
             PhotonNetwork.Instantiate("Item_potion", transform.position, transform.rotation);
         }
-        else if (40 < DropPercent && DropPercent < 50)
+        else if (36 < DropPercent && DropPercent < 90)
         {
             PhotonNetwork.Instantiate("Item_Forest_Spirit", transform.position, transform.rotation);
         }

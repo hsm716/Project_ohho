@@ -15,17 +15,21 @@ public class GameManager : MonoBehaviourPunCallbacks,IPunObservable
     public float arena_time;
     public int ReadyCountCur;
     public int ReadyCountMax;
+
+    public int ArenaRank;
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
         if (stream.IsWriting)
         {
             stream.SendNext(arena_time);
             stream.SendNext(ReadyCountCur);
+            stream.SendNext(ArenaRank);
         }
         else
         {
             arena_time = (float)stream.ReceiveNext();
             ReadyCountCur = (int)stream.ReceiveNext();
+            ArenaRank = (int)stream.ReceiveNext();
         }
     }
 
@@ -37,6 +41,7 @@ public class GameManager : MonoBehaviourPunCallbacks,IPunObservable
         arena_time = 300f;
         Player[] players = PhotonNetwork.PlayerList;
         ReadyCountMax = players.Count();
+        ArenaRank = players.Count();
     }
 
     // Update is called once per frame

@@ -50,7 +50,8 @@ MonoBehaviour:
   Synchronization: 3
   OwnershipTransfer: 0
   observableSearch: 2
-  ObservedComponents: []
+  ObservedComponents:
+  - {fileID: -3840907266817466589}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -66,4 +67,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0db951365aecf3b408dc32e5128df0be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  PV: {fileID: 8184000765810104730}
   MC: {fileID: 0}
+  getInt: 0

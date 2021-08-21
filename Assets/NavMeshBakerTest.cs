@@ -18,7 +18,7 @@ public class NavMeshBakerTest : MonoBehaviour
     void StartMesh()
     {
         navMesh_parent.transform.GetChild(0).GetComponent<NavMeshSurface>().BuildNavMesh();
-        GameManager.Instance.arena_time = 10f;
+        GameManager.Instance.arena_time = 300f;
         GameManager.Instance.game_time = 0f;
         GameManager.Instance.isActive = true;
     }

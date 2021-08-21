@@ -1,3 +1,4 @@
+using Photon.Pun;
 using Photon.Realtime;
 using System.Collections;
 using System.Collections.Generic;
@@ -95,6 +96,11 @@ public class Player_Interface : MonoBehaviour
         {
             ArenaOut();
         }
+        if(isArena == true)
+        {
+            CheckFinished_Arena();
+        }
+        //CheckFinished_Arena();
         HP_UI.text = player_data.curHP +" / " + player_data.maxHP;
         
         HPBAR.value = (player_data.curHP / player_data.maxHP);
@@ -118,10 +124,11 @@ public class Player_Interface : MonoBehaviour
         arenaCanvas.SetActive(true);
         arenaCanvas.transform.GetChild(0).gameObject.SetActive(true);
     }
-    void ArenaOut()
+
+    public void ArenaOut()
     {
         isActive_Input = true;
-        gm.arena_time = 10f;
+        gm.arena_time = 30f;
         isArena = false;
         isArena_in = false;
 
@@ -138,6 +145,32 @@ public class Player_Interface : MonoBehaviour
         player_data.rgbd.isKinematic = true;
         player_data.transform.position = player_data.Respawn_Center.transform.GetChild((int)(player_data.PV.ViewID / 1000)).transform.position;
         player_data.rgbd.isKinematic = false;
+
+
+        GameObject arenaCanvas = MC.transform.GetChild(7).gameObject;
+        arenaCanvas.transform.GetChild(2).gameObject.SetActive(true);
+
+        //PA.ranking_img.sprite = PA.ranking_123_sp[PA.rank-1];
+
+        
+    }
+
+    void CheckFinished_Arena()
+    {
+        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+        int count = 0;
+        foreach (var player in players)
+        {
+            Player_Control pc = player.GetComponent<Player_Control>();
+            if (pc.isDeath)
+            {
+                count += 1;
+            }
+        }
+        if (count >= gm.ReadyCountMax - 1)
+        {
+            ArenaOut();
+        }
     }
 
 

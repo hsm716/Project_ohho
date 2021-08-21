@@ -7,7 +7,7 @@ public class MonsterSpawner : MonoBehaviour
 {
     public PhotonView PV;
     public int poolNum;
-    public Queue<GameObject> SlimePool = new Queue<GameObject>();
+    //public Queue<GameObject> SlimePool = new Queue<GameObject>();
     public int curCount_Slime;
     int maxCount_Slime;
     void Start()
@@ -24,7 +24,7 @@ public class MonsterSpawner : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        curCount_Slime = SlimePool.Count;
+        //curCount_Slime = SlimePool.Count;
     }
 /*    public void InsertQue(GameObject slime)
     {
@@ -38,11 +38,11 @@ public class MonsterSpawner : MonoBehaviour
     {
         while (true)
         {
-            if (SlimePool.Count <= maxCount_Slime)
-            {
+            /*if (SlimePool.Count <= maxCount_Slime)
+            {*/
                 GameObject Slime = PhotonNetwork.Instantiate("Monster_Slime", new Vector3(Random.Range(transform.position.x, transform.position.x + 6f), transform.position.y, Random.Range(transform.position.z, transform.position.z + 6f)), Quaternion.identity);
-                SlimePool.Enqueue(Slime);
-            }
+                //SlimePool.Enqueue(Slime);
+            //}
             
             yield return new WaitForSeconds(5f);
         }

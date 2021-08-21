@@ -35,6 +35,14 @@ public class Player_Arena : MonoBehaviour
 
 
     bool isReady;
+
+    bool isSetRank;
+
+    public Image ranking_img;
+    public Sprite[] ranking_123_sp;
+
+    public int rank;
+    
     private void Awake()
     {
         FindMyPlayer();
@@ -88,8 +96,21 @@ public class Player_Arena : MonoBehaviour
                 GameStart.SetActive(false);
             }
         }
+        if (isSetRank==false && player_data.PI.isArena && player_data.curHP <= 0f)
+        {
+            isSetRank = true;
+            rank = gm.ArenaRank;
+            PV.RPC("SetRank", RpcTarget.All);
+            gm.ArenaRank-=1;
+        }
 
     }
+    [PunRPC]
+    void SetRank()
+    {
+        rank = gm.ArenaRank;
+    }
+
     public void Soldier_assign(string index)
     {
         int soldier_type = 0;
