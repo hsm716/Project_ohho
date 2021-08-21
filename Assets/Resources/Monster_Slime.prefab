@@ -1117,13 +1117,13 @@ GameObject:
   - component: {fileID: 1571135606747084619}
   - component: {fileID: 2985847482042990181}
   - component: {fileID: 7573847842707405467}
-  - component: {fileID: 7644243768528807344}
   - component: {fileID: 1481613412223847049}
   - component: {fileID: 6630070694315985598}
   - component: {fileID: 7869307939333453749}
   - component: {fileID: 4961426835770664919}
   - component: {fileID: 8741503345221602546}
   - component: {fileID: 5061323987198559601}
+  - component: {fileID: 7644243768528807344}
   m_Layer: 6
   m_Name: Slime
   m_TagString: Monster
@@ -1169,8 +1169,8 @@ MonoBehaviour:
   observableSearch: 2
   ObservedComponents:
   - {fileID: 7573847842707405467}
-  - {fileID: 7644243768528807344}
   - {fileID: 7869307939333453749}
+  - {fileID: 7644243768528807344}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -1216,38 +1216,6 @@ MonoBehaviour:
   sound_slash_hit: {fileID: 8300000, guid: 0c339317cde75f74da607b404bf128cc, type: 3}
   sound_arrow_hit: {fileID: 8300000, guid: 55e20f59b5cc3f94d9a63c4cdc02d0e9, type: 3}
   sound_golem_PunchAttack_clip: {fileID: 0}
---- !u!114 &7644243768528807344
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1576065233965799783}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9b8c4a61274f60b4ea5fb4299cfdbf14, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ShowLayerWeightsInspector: 1
-  ShowParameterInspector: 1
-  m_SynchronizeParameters:
-  - Type: 4
-    SynchronizeType: 2
-    Name: isRunning
-  - Type: 9
-    SynchronizeType: 1
-    Name: doAttack
-  - Type: 9
-    SynchronizeType: 0
-    Name: doDead
-  - Type: 9
-    SynchronizeType: 0
-    Name: doHit
-  m_SynchronizeLayers:
-  - SynchronizeType: 1
-    LayerIndex: 0
-  - SynchronizeType: 0
-    LayerIndex: 1
 --- !u!95 &1481613412223847049
 Animator:
   serializedVersion: 3
@@ -1431,6 +1399,38 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &7644243768528807344
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1576065233965799783}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b8c4a61274f60b4ea5fb4299cfdbf14, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowLayerWeightsInspector: 1
+  ShowParameterInspector: 1
+  m_SynchronizeParameters:
+  - Type: 4
+    SynchronizeType: 2
+    Name: isRunning
+  - Type: 9
+    SynchronizeType: 1
+    Name: doAttack
+  - Type: 9
+    SynchronizeType: 0
+    Name: doDead
+  - Type: 9
+    SynchronizeType: 0
+    Name: doHit
+  m_SynchronizeLayers:
+  - SynchronizeType: 1
+    LayerIndex: 0
+  - SynchronizeType: 0
+    LayerIndex: 1
 --- !u!1 &1719020994704663252
 GameObject:
   m_ObjectHideFlags: 0
