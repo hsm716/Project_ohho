@@ -6,6 +6,8 @@ using UnityEngine;
 public class MonsterSpawner : MonoBehaviour
 {
     public PhotonView PV;
+    public enum Type { slime, golem,demon};
+    public Type spawnType;
     public int poolNum;
     //public Queue<GameObject> SlimePool = new Queue<GameObject>();
     public int curCount_Slime;
@@ -15,9 +17,21 @@ public class MonsterSpawner : MonoBehaviour
         if (PhotonNetwork.IsMasterClient)
         {
             maxCount_Slime = 10;
-            StartCoroutine(Spawn());
-            //StartCoroutine(Spawn_demon());
-            StartCoroutine(Spawn_golem());
+            if (spawnType == Type.demon)
+            {
+                StartCoroutine(Spawn_demon());
+            }
+            if (spawnType == Type.golem)
+            {
+                StartCoroutine(Spawn_golem());
+            }
+            if(spawnType == Type.slime)
+            {
+                StartCoroutine(Spawn());
+            }
+            
+            //
+            
         }
     }
 
@@ -51,7 +65,8 @@ public class MonsterSpawner : MonoBehaviour
     {
         while (true)
         {
-            PhotonNetwork.Instantiate("Monster_Demon_", new Vector3(Random.Range(transform.position.x, transform.localPosition.x + 0.2f), transform.position.y, Random.Range(transform.position.z, transform.localPosition.z + 0.2f)), Quaternion.identity);
+            yield return new WaitForSeconds(27f);
+            PhotonNetwork.Instantiate("Monster_Demon_", transform.position, Quaternion.identity);
             
 
             yield return new WaitForSeconds(500f);
@@ -61,7 +76,8 @@ public class MonsterSpawner : MonoBehaviour
     {
         while (true)
         {
-            GameObject golem =  PhotonNetwork.Instantiate("Monster_Golem", new Vector3(Random.Range(transform.position.x, transform.position.x + 0.2f), transform.position.y, Random.Range(transform.position.z, transform.position.z + 0.2f)), Quaternion.identity);
+            yield return new WaitForSeconds(27f);
+            GameObject golem =  PhotonNetwork.Instantiate("Monster_Golem", transform.position, Quaternion.identity);
             golem.transform.GetChild(0).GetComponent<Monster>().golem_Index = Random.Range(0, 3);
             yield return new WaitForSeconds(230f);
         }

@@ -79,6 +79,10 @@ public class Monster : MonoBehaviourPunCallbacks, IPunObservable
         Init_Pos = transform.position;
         agent.isStopped = true;
 
+       
+    }
+    private void Start()
+    {
         if (monsterType == Type.demon)
         {
             curHP = 10000f;
@@ -113,13 +117,7 @@ public class Monster : MonoBehaviourPunCallbacks, IPunObservable
         isChase = false;
         isDead = false;
         target = null;
-    }
-    private void Start()
-    {
-        if (monsterType == Type.golem)
-        {
-            SKMR.material = skinMat[golem_Index];
-        }
+
 
     }
 
