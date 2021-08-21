@@ -44,7 +44,7 @@ public class MonsterSpawner : MonoBehaviour
                 //SlimePool.Enqueue(Slime);
             //}
             
-            yield return new WaitForSeconds(5f);
+            yield return new WaitForSeconds(10f);
         }
     }
     IEnumerator Spawn_demon()
@@ -63,7 +63,7 @@ public class MonsterSpawner : MonoBehaviour
         {
             GameObject golem =  PhotonNetwork.Instantiate("Monster_Golem", new Vector3(Random.Range(transform.position.x, transform.position.x + 0.2f), transform.position.y, Random.Range(transform.position.z, transform.position.z + 0.2f)), Quaternion.identity);
             golem.transform.GetChild(0).GetComponent<Monster>().golem_Index = Random.Range(0, 3);
-            yield return new WaitForSeconds(20f);
+            yield return new WaitForSeconds(230f);
         }
         
     }

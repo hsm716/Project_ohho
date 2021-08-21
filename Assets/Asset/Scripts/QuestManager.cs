@@ -124,13 +124,13 @@ public class QuestManager : MonoBehaviourPunCallbacks//, IPunObservable
 
         foreach (GameObject p in players)   //다른 사람의 퀘스트 진행을 삭제
         {
-            if (p.GetComponent<Player_Control>().PV.Owner.NickName == PhotonNetwork.LocalPlayer.NickName)   //자신만
+            if (p.GetComponent<Player_Control>().PV.ViewID == viewID)   //자신만
             {
                 p.GetComponent<QuestData>().questIsActive[npcID] = false;
                 p.GetComponent<QuestData>().questClearCheck[npcID] = true;
                 continue;
             }
-                p.GetComponent<QuestData>().questClearCheck[npcID] = false;
+            p.GetComponent<QuestData>().questClearCheck[npcID] = false;
             p.GetComponent<QuestData>().questIsActive[npcID] = false;
             
             //if (!(p.GetComponent<Player_Control>().PV.Owner.NickName == PhotonNetwork.LocalPlayer.NickName))    //자신을 제외한 나머지

@@ -934,6 +934,8 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     [PunRPC]
     void raiseKillPoint()
     {
+        if (!Last_Hiter.CompareTag("Player"))
+            return;
         Last_Hiter.kill_point += 1;
         Last_Hiter.curEXP += 50f * level;
     }
