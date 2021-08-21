@@ -7,14 +7,20 @@ using Photon.Realtime;
 using UnityEditor;
 using System.Linq;
 
-public class PlayerManager : MonoBehaviour
+public class PlayerManager : MonoBehaviourPunCallbacks, IPunObservable
 {
     PhotonView PV;
     public GameObject MC;
     Player[] players;
+
+    public int[] Preset_test;
+    public string preset_string;
+
     void Awake()
     {
         PV = GetComponent<PhotonView>();
+        preset_string = "";
+
     }
 
     void Start()
@@ -22,6 +28,7 @@ public class PlayerManager : MonoBehaviour
         RoomManager.Instance.playerCount++;
         MC = GameObject.Find("MainCanvas");
         players = PhotonNetwork.PlayerList;
+
     }
     bool spawnCheck = true;
     void Update()
@@ -47,7 +54,20 @@ public class PlayerManager : MonoBehaviour
     IEnumerator LateSpawn()
     {
         yield return new WaitForSeconds(0);
-        PhotonNetwork.Instantiate("Player", new Vector3(-2, 23.5f, -4.1f), Quaternion.identity);
+        GameObject PC = PhotonNetwork.Instantiate("Player", new Vector3(-2, 23.5f, -4.1f), Quaternion.identity);
+        PC.transform.GetChild(0).GetComponent<Player_Control>().preset_data = preset_string;
         MC.transform.GetChild(2).gameObject.SetActive(true);
+    }
+
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        if (stream.IsWriting)
+        {
+            stream.SendNext(preset_string);
+        }
+        else
+        {
+            preset_string = (string)stream.ReceiveNext();
+        }
     }
 }

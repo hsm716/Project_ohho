@@ -58,6 +58,8 @@ public class Launcher1 : MonoBehaviourPunCallbacks
         Debug.Log("Joined Lobby");
     }
 
+    GameObject Custom;
+
     public void CreateRoom()
     {
         if (string.IsNullOrEmpty(roomNameInputField.text))
@@ -66,6 +68,7 @@ public class Launcher1 : MonoBehaviourPunCallbacks
         }
         PhotonNetwork.CreateRoom(roomNameInputField.text);
         MenuManager.Instance.OpenMenu("Loading");
+
     }
 
     public override void OnJoinedRoom()
@@ -86,6 +89,7 @@ public class Launcher1 : MonoBehaviourPunCallbacks
         }
 
         startGameButton.SetActive(PhotonNetwork.IsMasterClient);
+
     }
 
     public override void OnMasterClientSwitched(Player newMasterClient)

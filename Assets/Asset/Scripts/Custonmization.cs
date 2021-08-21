@@ -2,8 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using Photon.Pun;
+using Photon.Realtime;
 
-public class Custonmization : MonoBehaviour
+public class Custonmization : MonoBehaviourPunCallbacks
 {
 
     public GameObject MalePrefab;   //³²ÀÚ ¸ðµ¨
@@ -385,6 +387,14 @@ public class Custonmization : MonoBehaviour
             CustomDetail[3] = female_skinNum;
         }
         saveCheck = true;
-        RoomManager.Instance.customPreset = CustomDetail;
+        string temp = "";
+        for (int i = 0; i < CustomDetail.Length; i++)
+        {
+            temp += CustomDetail[i].ToString();
+        }
+
+
+        RoomManager.Instance.custom_string = temp;
+
     }
 }

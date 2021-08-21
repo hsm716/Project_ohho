@@ -23,6 +23,9 @@ TagManager:
   - Item_Material
   - Occupied_Area
   - MonsterSpawner
+  - CustomPreset
+  - PlayerManager
+  - CustomManager
   layers:
   - Default
   - TransparentFX

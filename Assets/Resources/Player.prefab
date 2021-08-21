@@ -30481,6 +30481,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3282578f8da373c4c9212688ef31cd25, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  PA: {fileID: 0}
   player_data: {fileID: 7044034116310767100}
   expBar: {fileID: 3549236188747884179}
   expPercent: {fileID: 3434287469116495791}
@@ -30530,6 +30531,7 @@ MonoBehaviour:
   RedBuff_image: {fileID: 7976882918918875154}
   BlueBuff_image: {fileID: 3502961103306438348}
   GreenBuff_image: {fileID: 1716698845242349891}
+  Respawn_Arena: {fileID: 0}
 --- !u!1 &4371111085661611220
 GameObject:
   m_ObjectHideFlags: 0
@@ -42836,6 +42838,8 @@ MonoBehaviour:
   - {fileID: 2100000, guid: 2a12d3fc0532ba64e972160db18dfd99, type: 2}
   - {fileID: 2100000, guid: 130ecdefde3e5d1498bba318575e4cdd, type: 2}
   - {fileID: 2100000, guid: 6a1aa24b3a1119649993fb5aee44d302, type: 2}
+  preset_data: 01000000000000000000000000000000
+  preset_int: 01000000000000000000000000000000
 --- !u!114 &7044034116310767099
 MonoBehaviour:
   m_ObjectHideFlags: 0
