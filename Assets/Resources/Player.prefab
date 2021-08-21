@@ -9638,6 +9638,9 @@ MonoBehaviour:
   gm: {fileID: 0}
   Ready: {fileID: 6887245568649800887}
   GameStart: {fileID: 1229903425415044765}
+  ranking_img: {fileID: 0}
+  ranking_123_sp: []
+  rank: 0
 --- !u!1 &1475325225120940943
 GameObject:
   m_ObjectHideFlags: 0
