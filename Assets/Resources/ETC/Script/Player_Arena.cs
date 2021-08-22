@@ -36,18 +36,17 @@ public class Player_Arena : MonoBehaviour
 
     bool isReady;
 
-    bool isSetRank;
 
     public Image ranking_img;
+    public TextMeshProUGUI ranking_txt;
+    public TextMeshProUGUI username_txt;
     public Sprite[] ranking_123_sp;
 
-    public int rank;
-    
     private void Awake()
     {
         FindMyPlayer();
         SoldierType = player_data.SoldierType;
-        player_data.transform.position = Respawn_Center.transform.GetChild((player_data.PV.ViewID / 1000) - 1).position;
+        player_data.transform.position = Respawn_Center.transform.GetChild((int)(player_data.PV.ViewID / 1000) - 1).position;
         isActive_SoldierSpot = new int[,] { { 0,0,0,0,0,0,0,0,0,0},
                                              {0,0,0,0,0,0,0,0,0,0},
                                              {0,0,0,0,0,0,0,0,0,0},
@@ -67,8 +66,16 @@ public class Player_Arena : MonoBehaviour
         }
 
     }
+    public void ButtonClick()
+    {
+        this.transform.GetChild(2).gameObject.SetActive(false);
+        this.gameObject.SetActive(false);
+    }
     void Update()
     {
+        ranking_img.sprite = ranking_123_sp[player_data.arenaRank - 1];
+        ranking_txt.text = ""+player_data.arenaRank;
+        username_txt.text = player_data.username;
 
         curSoldierPoint.text = player_data.SoldierPoint+" / " +player_data.SoldierPoint_max;
         if (isSelect_arrow)
@@ -96,19 +103,7 @@ public class Player_Arena : MonoBehaviour
                 GameStart.SetActive(false);
             }
         }
-        if (isSetRank==false && player_data.PI.isArena && player_data.curHP <= 0f)
-        {
-            isSetRank = true;
-            rank = gm.ArenaRank;
-            PV.RPC("SetRank", RpcTarget.All);
-            gm.ArenaRank-=1;
-        }
 
-    }
-    [PunRPC]
-    void SetRank()
-    {
-        rank = gm.ArenaRank;
     }
 
     public void Soldier_assign(string index)
@@ -141,12 +136,17 @@ public class Player_Arena : MonoBehaviour
 
 
     }
+    private void OnEnable()
+    {
+        PV.RPC("InitReadyCount", RpcTarget.All);
+        player_data.rgbd.isKinematic = true;
+        player_data.transform.position = Respawn_Center.transform.GetChild((player_data.PV.ViewID / 1000) - 1).position;
+    }
     public void ReadyGame()
     {
         if (isReady == false)
         {
-            player_data.rgbd.isKinematic = true;
-            player_data.transform.position = Respawn_Center.transform.GetChild((player_data.PV.ViewID / 1000) - 1).position;
+            
             PV.RPC("ReadyGamePlus_RPC", RpcTarget.All);
            
             Ready.image.color = new Color(1f, 1f, 1f);
@@ -154,8 +154,7 @@ public class Player_Arena : MonoBehaviour
         }
         else
         {
-            player_data.rgbd.isKinematic = true;
-            player_data.transform.position = Respawn_Center.transform.GetChild((player_data.PV.ViewID / 1000) - 1).position;
+           
             PV.RPC("ReadyGameMinus_RPC", RpcTarget.All);
            
             Ready.image.color = new Color(1f, 1f, 0.5f);
@@ -164,6 +163,11 @@ public class Player_Arena : MonoBehaviour
 
        
 
+    }
+    [PunRPC]
+    void InitReadyCount()
+    {
+        player_data.PI.gm.ReadyCountCur = 0;
     }
     [PunRPC]
     void ReadyGamePlus_RPC()
@@ -179,15 +183,16 @@ public class Player_Arena : MonoBehaviour
     public void StartGame()
     {
 
-        player_data.rgbd.isKinematic = false;
+        
         PV.RPC("StartGame_RPC",RpcTarget.All);
     }
     [PunRPC]
     void StartGame_RPC()
     {
+        player_data.rgbd.isKinematic = false;
         GameManager.Instance.isActive = true;
         player_data.PI.isActive_Input = true;
-        player_data.PI.isArena = true;
+        player_data.isArena = true;
         player_data.PI.isArena_in = true;
         player_data.PI.MC.transform.GetChild(7).transform.GetChild(0).gameObject.SetActive(true);
         gm.arena_time = 60f;
@@ -241,6 +246,7 @@ public class Player_Arena : MonoBehaviour
                 if(isActive_SoldierSpot[i,j] == 1)
                 {
                     GameObject go = PhotonNetwork.Instantiate(SoldierType_melee_str[SoldierType], player_data.transform.position, transform.rotation);
+                    go.transform.parent = player_data.transform;
                     Soldier so = go.transform.GetChild(0).GetComponent<Soldier>();
                     so.myNumber = j;
                     so.mySetNumber = i;
@@ -248,6 +254,7 @@ public class Player_Arena : MonoBehaviour
                 else if(isActive_SoldierSpot[i, j] == 2)
                 {
                     GameObject go = PhotonNetwork.Instantiate(SoldierType_arrow_str[SoldierType], player_data.transform.position, transform.rotation);
+                    go.transform.parent = player_data.transform;
                     Soldier so = go.transform.GetChild(0).GetComponent<Soldier>();
                     so.myNumber = j;
                     so.mySetNumber = i;

@@ -80,6 +80,10 @@ MonoBehaviour:
   - InitAnim
   - CheckFinished_Arena
   - SetRank
+  - setArenaRank
+  - setArenaRank_stay
+  - initRank
+  - InitReadyCount
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

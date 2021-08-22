@@ -60,6 +60,14 @@ public class Player_Interface : MonoBehaviour
     public Image BlueBuff_image;
     public Image GreenBuff_image;
     public GameObject Respawn_Arena;
+
+    public Text arenaPPP;
+
+    public Text curShield_degree;
+    public Text curAttack_degree;
+    public Text curSpeed_degree;
+    public Text curCritical_degree;
+    public Text curHP_degree;
     private void Awake()
     {
         isActive_Input = true;
@@ -87,16 +95,16 @@ public class Player_Interface : MonoBehaviour
     {
         time = gm.arena_time;
         time_txt.text = string.Format("{0:00}",(int)(time/60)) + " : " + string.Format("{0:00}", (time % 60));
-
-        if (time <= 0f&&isArena==false)
+        arenaPPP.text = ""+GameManager.Instance.arenaRank;
+        if (time <= 0f&&player_data.isArena==false)
         {
             ArenaIn();
         }
-        if(time <= 0f && isArena==true)
+        if(time <= 0f && player_data.isArena==true)
         {
             ArenaOut();
         }
-        if(isArena == true)
+        if(player_data.isArena == true)
         {
             CheckFinished_Arena();
         }
@@ -117,7 +125,7 @@ public class Player_Interface : MonoBehaviour
     {
         player_data.horizontalMove = 0f;
         player_data.verticalMove = 0f;
-
+        player_data.arenaWin = true;
         GameManager.Instance.isActive = false;
         isActive_Input = false;
         GameObject arenaCanvas = MC.transform.GetChild(7).gameObject;
@@ -129,8 +137,14 @@ public class Player_Interface : MonoBehaviour
     {
         isActive_Input = true;
         gm.arena_time = 30f;
-        isArena = false;
+        player_data.isArena = false;
         isArena_in = false;
+
+/*        if (player_data.arenaWin)
+        {
+            player_data.arenaRank = GameManager.Instance.arenaRank-1;
+        }*/
+       
 
         if (player_data.PV.IsMine)
         {
@@ -141,14 +155,21 @@ public class Player_Interface : MonoBehaviour
             }
         }
 
+        player_data.Invoke("Respawn",3f);
 
-        player_data.rgbd.isKinematic = true;
-        player_data.transform.position = player_data.Respawn_Center.transform.GetChild((int)(player_data.PV.ViewID / 1000)).transform.position;
-        player_data.rgbd.isKinematic = false;
+/*        player_data.rgbd.isKinematic = true;
+        player_data.transform.position = player_data.Respawn_Center.transform.GetChild((int)(player_data.PV.ViewID / 1000)-1).transform.position;
+        player_data.rgbd.isKinematic = false;*/
 
 
         GameObject arenaCanvas = MC.transform.GetChild(7).gameObject;
         arenaCanvas.transform.GetChild(2).gameObject.SetActive(true);
+
+        if (player_data.arenaWin)
+        {
+            player_data.arenaRank=1;
+        }
+        player_data.PV.RPC("initRank", RpcTarget.All);
 
         //PA.ranking_img.sprite = PA.ranking_123_sp[PA.rank-1];
 
@@ -167,8 +188,12 @@ public class Player_Interface : MonoBehaviour
                 count += 1;
             }
         }
-        if (count >= gm.ReadyCountMax - 1)
+        if (count >= GameManager.Instance.ReadyCountMax - 1)
         {
+            if (player_data.arenaWin)
+            {
+                
+            }
             ArenaOut();
         }
     }

@@ -227,6 +227,10 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     public string preset_data;
     public int[] preset_int = { 1, 0, 0, 0 };
 
+    public int arenaRank;
+    public bool arenaWin;
+    public bool isArena;
+
     private void Awake()
     {
         SoldierPoint = 20;
@@ -253,7 +257,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
             level = 1;
             walkSpeed = 4f;
             curSpeed = walkSpeed;
-            transform.position = Respawn_Center.transform.GetChild((int)(PV.ViewID / 1000)).transform.position;
+            transform.position = Respawn_Center.transform.GetChild((int)(PV.ViewID / 1000)-1).transform.position;
             SoldierType = Random.Range(0,3);
             Set1_Init_pos = Set1.localPosition;
             Set2_Init_pos = Set2.localPosition;
@@ -288,6 +292,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
 
     void Start()
     {
+        arenaRank = GameManager.Instance.arenaRank;
         for (int i = 0; i < 4; i++)
         {
             preset_int[i] = preset_data[i] - '0';
@@ -364,7 +369,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
         FreezeVelocity();
         if (isDeath == false)
         {
-            stepClimb();
+            //stepClimb();
             if (curStyle == Style.WeaponStyle.Arrow || curStyle == Style.WeaponStyle.Magic)
             {
                 if (isAttackReady == true)
@@ -858,10 +863,10 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
 
 
     // 리스폰 동작코드, 210624_황승민
-    void Respawn()
+    public void Respawn()
     {
         curHP = maxHP;
-        transform.position = Respawn_Center.transform.GetChild((int)(PV.ViewID / 1000)).transform.position;
+        transform.position = Respawn_Center.transform.GetChild((int)(PV.ViewID / 1000)-1).transform.position;
         GameObject.Find("MainCanvas").transform.Find("RespawnPanel").gameObject.SetActive(false);
         myCollider.enabled = true;
         rgbd.isKinematic = false;
@@ -920,16 +925,47 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
 
         if (curHP <= 0 && isDeath==false)
         {
-            isDeath = true;
-            PV.RPC("raiseKillPoint", RpcTarget.All);
-            animator.SetTrigger("doDeath");
-            myCollider.enabled = false;
-            rgbd.isKinematic = true;
-            death_point += 1;
-            GameObject.Find("MainCanvas").transform.Find("RespawnPanel").gameObject.SetActive(true);
-            Invoke("Respawn", 5f);
+            if (isArena == true)
+            {
+                arenaWin = false;
+                PV.RPC("setArenaRank", RpcTarget.All);
+                isDeath = true;
+                animator.SetTrigger("doDeath");
+                GameObject.Find("MainCanvas").transform.Find("RespawnPanel").gameObject.SetActive(true);
+                myCollider.enabled = false;
+                rgbd.isKinematic = true;
+
+                //PI.ArenaOut();
+
+            }
+            else
+            {
+                isDeath = true;
+                PV.RPC("raiseKillPoint", RpcTarget.All);
+                animator.SetTrigger("doDeath");
+                myCollider.enabled = false;
+                rgbd.isKinematic = true;
+                death_point += 1;
+                GameObject.Find("MainCanvas").transform.Find("RespawnPanel").gameObject.SetActive(true);
+                Invoke("Respawn", 4f * level);
+            }
             //PV.RPC("DestroyRPC", RpcTarget.AllBuffered);
         }
+    }
+    [PunRPC]
+    void initRank()
+    {
+        GameManager.Instance.arenaRank = GameManager.Instance.ReadyCountMax;
+    }
+    [PunRPC]
+    void setArenaRank()
+    {
+        arenaRank = GameManager.Instance.arenaRank--;
+    }
+    [PunRPC]
+    void setArenaRank_stay()
+    {
+        arenaRank = GameManager.Instance.arenaRank;
     }
     [PunRPC]
     void raiseKillPoint()
@@ -1530,6 +1566,10 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
             stream.SendNext(Female_Hair_Offset.gameObject.activeSelf);
             stream.SendNext(Male_Charactor.activeSelf);
             stream.SendNext(Female_Charactor.activeSelf);
+            stream.SendNext(arenaRank);
+            stream.SendNext(isDeath);
+            stream.SendNext(arenaWin);
+            stream.SendNext(isArena);
         }
         else
         {
@@ -1553,6 +1593,10 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
             Female_Hair_Offset.gameObject.SetActive((bool)stream.ReceiveNext());
             Male_Charactor.SetActive((bool)stream.ReceiveNext());
             Female_Charactor.SetActive((bool)stream.ReceiveNext());
+            arenaRank = (int)stream.ReceiveNext();
+            isDeath = (bool)stream.ReceiveNext();
+            arenaWin = (bool)stream.ReceiveNext();
+            isArena = (bool)stream.ReceiveNext();
         }
     }
 }

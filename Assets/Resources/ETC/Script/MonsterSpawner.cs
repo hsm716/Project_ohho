@@ -19,15 +19,15 @@ public class MonsterSpawner : MonoBehaviour
             maxCount_Slime = 10;
             if (spawnType == Type.demon)
             {
-                StartCoroutine(Spawn_demon());
+               // StartCoroutine(Spawn_demon());
             }
             if (spawnType == Type.golem)
             {
-                StartCoroutine(Spawn_golem());
+              //  StartCoroutine(Spawn_golem());
             }
             if(spawnType == Type.slime)
             {
-                StartCoroutine(Spawn());
+               // StartCoroutine(Spawn());
             }
             
             //
@@ -55,7 +55,8 @@ public class MonsterSpawner : MonoBehaviour
             /*if (SlimePool.Count <= maxCount_Slime)
             {*/
                 GameObject Slime = PhotonNetwork.Instantiate("Monster_Slime", new Vector3(Random.Range(transform.position.x, transform.position.x + 6f), transform.position.y, Random.Range(transform.position.z, transform.position.z + 6f)), Quaternion.identity);
-                //SlimePool.Enqueue(Slime);
+            Slime.transform.parent = this.transform;
+            //SlimePool.Enqueue(Slime);
             //}
             
             yield return new WaitForSeconds(10f);
@@ -66,7 +67,8 @@ public class MonsterSpawner : MonoBehaviour
         while (true)
         {
             yield return new WaitForSeconds(27f);
-            PhotonNetwork.Instantiate("Monster_Demon_", transform.position, Quaternion.identity);
+            GameObject demon = PhotonNetwork.Instantiate("Monster_Demon_", transform.position, Quaternion.identity);
+            demon.transform.parent = this.transform;
             
 
             yield return new WaitForSeconds(500f);
@@ -79,6 +81,7 @@ public class MonsterSpawner : MonoBehaviour
             yield return new WaitForSeconds(27f);
             GameObject golem =  PhotonNetwork.Instantiate("Monster_Golem", transform.position, Quaternion.identity);
             golem.transform.GetChild(0).GetComponent<Monster>().golem_Index = Random.Range(0, 3);
+            golem.transform.parent = this.transform;
             yield return new WaitForSeconds(230f);
         }
         

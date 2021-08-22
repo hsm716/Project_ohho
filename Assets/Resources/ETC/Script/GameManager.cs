@@ -16,32 +16,32 @@ public class GameManager : MonoBehaviourPunCallbacks,IPunObservable
     public int ReadyCountCur;
     public int ReadyCountMax;
 
-    public int ArenaRank;
+    public int arenaRank;
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
         if (stream.IsWriting)
         {
             stream.SendNext(arena_time);
             stream.SendNext(ReadyCountCur);
-            stream.SendNext(ArenaRank);
+            stream.SendNext(arenaRank);
         }
         else
         {
             arena_time = (float)stream.ReceiveNext();
             ReadyCountCur = (int)stream.ReceiveNext();
-            ArenaRank = (int)stream.ReceiveNext();
+            arenaRank = (int)stream.ReceiveNext();
         }
     }
 
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         Instance = this;
         game_time = 0f;
         arena_time = 300f;
         Player[] players = PhotonNetwork.PlayerList;
         ReadyCountMax = players.Count();
-        ArenaRank = players.Count();
+        arenaRank = ReadyCountMax;
     }
 
     // Update is called once per frame
