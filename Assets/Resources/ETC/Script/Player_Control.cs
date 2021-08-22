@@ -231,6 +231,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     public bool arenaWin;
     public bool isArena;
 
+    public GameObject KillLogs;
     private void Awake()
     {
         SoldierPoint = 20;
@@ -274,6 +275,9 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
                         ArrowIntialize(10);*/
             rgbd = GetComponent<Rigidbody>();
             animator = GetComponent<Animator>();
+
+            KillLogs = GameObject.Find("KillLogs");
+
             CM = GameObject.Find("Main Camera");
             CVC =CM.GetComponent<CinemachineVirtualCamera>();
             CVC.Follow = this.transform;
@@ -608,7 +612,27 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
         {
             Use_Item_num(3);
         }
-
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            if (QD.QuestBoardPanel.activeSelf == false)
+                QD.ShowQuestBoard();
+            else
+                QD.CloseQuestBoard();
+        }
+        if (Input.GetKeyDown(KeyCode.N))
+        {
+            if (minimap.transform.localScale.x == 1.25f)
+            {
+                minimap.transform.localScale = new Vector3(2f, 2f, 1f);
+                minimapCamera.orthographicSize = 25f;
+               
+            }
+            else
+            {
+                minimap.transform.localScale = new Vector3(1.25f, 1.25f, 1f);
+                minimapCamera.orthographicSize = 15f;
+            }
+        }
         if (Input.GetKeyDown(KeyCode.R))
         {
             PV.RPC("Skill_R", RpcTarget.All);
@@ -940,6 +964,8 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
             }
             else
             {
+                PhotonNetwork.Instantiate("killLog", Vector3.zero, Quaternion.identity);
+
                 isDeath = true;
                 PV.RPC("raiseKillPoint", RpcTarget.All);
                 animator.SetTrigger("doDeath");
@@ -1549,6 +1575,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
             stream.SendNext(transform.position);
             stream.SendNext(transform.rotation);
             stream.SendNext(curHP);
+            stream.SendNext(maxHP);
             stream.SendNext(Hp_Bar.hpBar.value);
             stream.SendNext(atk);
             stream.SendNext(pullPower);
@@ -1576,6 +1603,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
             curPos = (Vector3)stream.ReceiveNext();
             curRot = (Quaternion)stream.ReceiveNext();
             curHP = (float)stream.ReceiveNext();
+            maxHP = (float)stream.ReceiveNext();
             curHpValue = (float)stream.ReceiveNext();
             atk = (float)stream.ReceiveNext();
             pullPower = (float)stream.ReceiveNext();

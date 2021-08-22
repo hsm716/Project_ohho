@@ -27,7 +27,7 @@ public class Player_Interface : MonoBehaviour
     public TextMeshProUGUI[] select_name;
 
     public Sprite[] select_ability_icons;
-    string[] select_ability_names = { "HP", "SPEED", "POWER", "SHIELD", "MP" };
+    string[] select_ability_names = { "HP", "SPD", "ATK", "DEF", "STAMINA", "CRITICAL" };
 
 
     public Image[] Inventory_item_img;
@@ -40,6 +40,7 @@ public class Player_Interface : MonoBehaviour
     public TextMeshProUGUI time_txt;
 
     public float time;
+    public Slider timeSlider;
     public GameObject MC;
 
     public GameManager gm;
@@ -56,18 +57,36 @@ public class Player_Interface : MonoBehaviour
 
     public RawImage minimap_Renderer;
 
+
+
+    bool atk_possible;
+    bool def_possible;
+    bool spd_possible;
+    bool critical_possible;
+    bool hp_possible;
+    bool stamina_possible;
+
+    int atk_count = 0;
+    int def_count = 0;
+    int spd_count = 0;
+    int critical_count = 0;
+    int hp_count = 0;
+    int stamina_count = 0;
+
     public Image RedBuff_image;
     public Image BlueBuff_image;
     public Image GreenBuff_image;
     public GameObject Respawn_Arena;
 
-    public Text arenaPPP;
+    
+    public TextMeshProUGUI curDefense_degree_txt;
+    public TextMeshProUGUI curAttack_degree_txt;
+    public TextMeshProUGUI curSpeed_degree_txt;
+    public TextMeshProUGUI curCritical_degree_txt;
+    public TextMeshProUGUI curHP_degree_txt;
+    public TextMeshProUGUI curStamina_degree_txt;
 
-    public Text curShield_degree;
-    public Text curAttack_degree;
-    public Text curSpeed_degree;
-    public Text curCritical_degree;
-    public Text curHP_degree;
+    public TextMeshProUGUI player_level_txt;
     private void Awake()
     {
         isActive_Input = true;
@@ -86,6 +105,20 @@ public class Player_Interface : MonoBehaviour
         item_Material.Add(name, 0);
 
 
+        atk_possible = false ;
+        def_possible = false;
+        spd_possible = false;
+        critical_possible = false;
+        hp_possible = false;
+        stamina_possible = false;
+
+        atk_count = 0;
+        def_count = 0;
+        spd_count = 0;
+        critical_count = 0;
+        hp_count = 0;
+        stamina_count = 0;
+
     }
     private void Start()
     {
@@ -93,9 +126,31 @@ public class Player_Interface : MonoBehaviour
     }
     void Update()
     {
+        if(atk_count>=3)
+            atk_possible = true;
+        if (def_count >= 3)
+            def_possible = true;
+        if (spd_count >= 3)
+            spd_possible = true;
+        if (critical_count >= 3)
+            critical_possible = true;
+        if (hp_count >= 3)
+            hp_possible = true;
+        if (stamina_count >= 3)
+            stamina_possible = true;
+
         time = gm.arena_time;
-        time_txt.text = string.Format("{0:00}",(int)(time/60)) + " : " + string.Format("{0:00}", (time % 60));
-        arenaPPP.text = ""+GameManager.Instance.arenaRank;
+        time_txt.text = string.Format("{0:00}",(int)(time/60)) + " : " + string.Format("{0:00}", (int)(time % 60));
+        timeSlider.value = time / 300f;
+        curDefense_degree_txt.text = def_count +" / 3";
+        curAttack_degree_txt.text = atk_count +" / 3";
+        curSpeed_degree_txt.text = spd_count +" / 3";
+        curHP_degree_txt.text = hp_count +" / 3";
+        curCritical_degree_txt.text = critical_count +" / 3";
+        curStamina_degree_txt.text = stamina_count +" / 3";
+
+        player_level_txt.text = ""+player_data.level;
+
         if (time <= 0f&&player_data.isArena==false)
         {
             ArenaIn();
@@ -109,7 +164,7 @@ public class Player_Interface : MonoBehaviour
             CheckFinished_Arena();
         }
         //CheckFinished_Arena();
-        HP_UI.text = player_data.curHP +" / " + player_data.maxHP;
+        HP_UI.text = (int)player_data.curHP +" / " + player_data.maxHP;
         
         HPBAR.value = (player_data.curHP / player_data.maxHP);
         expBar.value = (player_data.curEXP / player_data.maxEXP) * 100;
@@ -198,7 +253,6 @@ public class Player_Interface : MonoBehaviour
         }
     }
 
-
     public void Select(int index)
     {
         //qwe
@@ -206,16 +260,24 @@ public class Player_Interface : MonoBehaviour
         {
             case "HP":
                 HpUp();
+                hp_count += 1;
                 break;
-            case "SPEED":
+            case "SPD":
                 SpeedUp();
+                spd_count += 1;
                 break;
-            case "POWER":
+            case "ATK":
                 PowerUp();
+                atk_count += 1;
                 break;
-            case "SHIELD":
+            case "DEF":
+                def_count += 1;
                 break;
-            case "MP":
+            case "CRITICAL":
+                critical_count += 1;
+                break;
+            case "STAMINA":
+                stamina_count += 1;
                 break;
 
         }
@@ -243,12 +305,12 @@ public class Player_Interface : MonoBehaviour
         //qq
         yield return new WaitForSeconds(1f);
 
-        bool[] selected_state = { false, false, false, false, false };
+        bool[] selected_state = { hp_possible, spd_possible, atk_possible, def_possible, critical_possible,stamina_possible };
 
         int count = 0;
         while (count < 3)
         {
-            int rand_idx = Random.Range(0, 5);
+            int rand_idx = Random.Range(0, 6);
             if (selected_state[rand_idx] == false)
             {
                 selected_state[rand_idx] = true;

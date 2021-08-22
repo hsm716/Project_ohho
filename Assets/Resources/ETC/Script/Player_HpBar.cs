@@ -1,3 +1,4 @@
+using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -11,7 +12,7 @@ public class Player_HpBar : MonoBehaviour
     public Slider subBar;
     public GameObject HpLineFolder;
     public Text Level_text;
-    //  public PhotonView PV;
+    public PhotonView PV;
 
     //   private Player_Control playerLogic;
     Vector3 offset = new Vector3(0f, 2.3f, 0f);
@@ -19,7 +20,7 @@ public class Player_HpBar : MonoBehaviour
     private void Awake()
     {
         player_data = player.GetComponent<Player_Control>();
-        GetHpBoost();
+        PV.RPC("GetHpBoost", RpcTarget.All);
     }
 
     void Update()
@@ -42,6 +43,7 @@ public class Player_HpBar : MonoBehaviour
 
         
     }
+    [PunRPC]
     public void GetHpBoost()
     {
         float scaleX = (1000f / 200f) / (player_data.maxHP / 200f);

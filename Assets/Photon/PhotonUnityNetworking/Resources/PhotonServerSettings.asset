@@ -84,6 +84,7 @@ MonoBehaviour:
   - setArenaRank_stay
   - initRank
   - InitReadyCount
+  - SetLog_RPC
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1
