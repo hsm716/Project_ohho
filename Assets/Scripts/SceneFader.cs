@@ -9,6 +9,7 @@ public class SceneFader : MonoBehaviour
     public Image img;
     public AnimationCurve curve;
     public DialogueTrigger DT;
+    public GameObject continueButton;
 
     public void FadeIn()
     {
@@ -17,6 +18,7 @@ public class SceneFader : MonoBehaviour
 
     public void FadeOut()
     {
+        continueButton.SetActive(false);
         StartCoroutine(FadeOut_());
     }
 

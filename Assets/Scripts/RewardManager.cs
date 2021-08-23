@@ -8,6 +8,7 @@ public class RewardManager : MonoBehaviourPunCallbacks
     public static RewardManager Instance;
 
     public SceneFader sceneFader;
+    public Transform reward_position;
 
     public int most_jumlyung;   //최대 점령 수
     public int most_yaktal;     //최대 약탈 수
@@ -74,16 +75,8 @@ public class RewardManager : MonoBehaviourPunCallbacks
         BossKill();
         Final_Reward();
     }
-    /*
-    void UIClose()
-    {
-        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
-        foreach (GameObject p in players)
-        {
-            p.
-        }
-    }
-    */
+
+    
     void Occupy()
     {
         GameObject QM = GameObject.Find("QuestManager");
@@ -215,6 +208,8 @@ public class RewardManager : MonoBehaviourPunCallbacks
 
     void Final_Reward()
     {
+        UIClose();
+
         GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
         int mostStar = 0;
         
@@ -226,7 +221,18 @@ public class RewardManager : MonoBehaviourPunCallbacks
                 Final_Winner = p;
             }
         }
+        Final_Winner.transform.position = reward_position.position;
+        Final_Winner.transform.rotation = reward_position.rotation;
+
+    }
 
 
+    void UIClose()
+    {
+        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+        foreach (GameObject p in players)
+        {
+            p.transform.parent.GetChild(1).gameObject.SetActive(false); //인터페치스캔버스 끄기
+        }
     }
 }
