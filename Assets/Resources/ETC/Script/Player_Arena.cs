@@ -246,7 +246,7 @@ public class Player_Arena : MonoBehaviour
                 if(isActive_SoldierSpot[i,j] == 1)
                 {
                     GameObject go = PhotonNetwork.Instantiate(SoldierType_melee_str[SoldierType], player_data.transform.position, transform.rotation);
-                    go.transform.parent = player_data.transform;
+                    //go.transform.parent = player_data.transform;
                     Soldier so = go.transform.GetChild(0).GetComponent<Soldier>();
                     so.myNumber = j;
                     so.mySetNumber = i;
@@ -254,7 +254,7 @@ public class Player_Arena : MonoBehaviour
                 else if(isActive_SoldierSpot[i, j] == 2)
                 {
                     GameObject go = PhotonNetwork.Instantiate(SoldierType_arrow_str[SoldierType], player_data.transform.position, transform.rotation);
-                    go.transform.parent = player_data.transform;
+                    //go.transform.parent = player_data.transform;
                     Soldier so = go.transform.GetChild(0).GetComponent<Soldier>();
                     so.myNumber = j;
                     so.mySetNumber = i;
