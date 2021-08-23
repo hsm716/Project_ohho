@@ -87,6 +87,26 @@ public class Player_Interface : MonoBehaviour
     public TextMeshProUGUI curStamina_degree_txt;
 
     public TextMeshProUGUI player_level_txt;
+
+
+    public Image skill_E_img;
+    public Image skill_E_backimg;
+    public TextMeshProUGUI skill_E_CoolTime_txt;
+
+    public Image skill_R_img;
+    public Image skill_R_backimg;
+
+    public Image skill_F_img;
+    public Image skill_F_backimg;
+
+    public Image skill_G_img;
+    public Image skill_G_backimg;
+
+    public Sprite skill_E_sword_sp;
+    public Sprite skill_E_arrow_sp;
+    public Sprite skill_E_magic_sp;
+
+    public Sprite skill_R_sp;
     private void Awake()
     {
         isActive_Input = true;
@@ -123,6 +143,7 @@ public class Player_Interface : MonoBehaviour
     private void Start()
     {
         Respawn_Arena = GameObject.Find("Respawn_Arena");
+
     }
     void Update()
     {
@@ -150,6 +171,34 @@ public class Player_Interface : MonoBehaviour
         curStamina_degree_txt.text = stamina_count +" / 3";
 
         player_level_txt.text = ""+player_data.level;
+
+
+        if (player_data.curStyle == Style.WeaponStyle.Sword)
+        {
+            skill_E_img.sprite = skill_E_sword_sp;
+            skill_E_backimg.sprite = skill_E_sword_sp;
+        }
+        else if (player_data.curStyle == Style.WeaponStyle.Arrow)
+        {
+            skill_E_img.sprite = skill_E_arrow_sp;
+            skill_E_backimg.sprite = skill_E_arrow_sp;
+        }
+        else if (player_data.curStyle == Style.WeaponStyle.Magic)
+        {
+            skill_E_img.sprite = skill_E_magic_sp;
+            skill_E_backimg.sprite = skill_E_magic_sp;
+        }
+
+
+        if (player_data.isSkill_E_Ready)
+        {
+            skill_E_CoolTime_txt.text = "";
+            skill_E_backimg.fillAmount = 0;
+        }
+        else {
+            skill_E_CoolTime_txt.text = "" + (int)(player_data.skill_E_cooltime - player_data.skill_E_Delay);
+            skill_E_backimg.fillAmount =  (1 - (player_data.skill_E_Delay / player_data.skill_E_cooltime));
+        }
 
         if (time <= 0f&&player_data.isArena==false)
         {
