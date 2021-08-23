@@ -7,8 +7,8 @@ using Photon.Pun;
 public class QuestManager : MonoBehaviourPunCallbacks//, IPunObservable
 {
     public static QuestManager Instance;
-    public bool[] questOk = { false, false, false, false, false, false };   //false > 구역이 점령되지 않은 상태
-    public int[] SectionOwner = { 0, 0, 0, 0, 0, 0 };   //> 각 구역의 점령자의 viewID
+    public bool[] questOk = { false, false, false, false, false };   //false > 구역이 점령되지 않은 상태
+    public int[] SectionOwner = { 0, 0, 0, 0, 0 };   //> 각 구역의 점령자의 viewID
 
     public GameObject QuestARUI;    //퀘스트 수락, 거절 UI
     public GameObject QuestClearUI;   //퀘스트 완료 UI

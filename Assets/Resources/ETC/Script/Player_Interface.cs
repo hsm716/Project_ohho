@@ -181,6 +181,7 @@ public class Player_Interface : MonoBehaviour
         player_data.horizontalMove = 0f;
         player_data.verticalMove = 0f;
         player_data.arenaWin = true;
+        GameManager.Instance.areanaCount++;
         GameManager.Instance.isActive = false;
         isActive_Input = false;
         GameObject arenaCanvas = MC.transform.GetChild(7).gameObject;
@@ -223,6 +224,15 @@ public class Player_Interface : MonoBehaviour
         if (player_data.arenaWin)
         {
             player_data.arenaRank=1;
+            if(GameManager.Instance.areanaCount == 2)
+            {
+                RewardManager.Instance.arena[player_data.PV.ViewID / 1000 - 1] += 2;
+                RewardManager.Instance.Reward();
+            }
+            else
+            {
+                RewardManager.Instance.arena[player_data.PV.ViewID / 1000 - 1]++;
+            }
         }
         player_data.PV.RPC("initRank", RpcTarget.All);
 
