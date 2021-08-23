@@ -70,15 +70,15 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events:
-      - time: 0.46860966
-        functionName: Sound_Slash2
+      - time: 0.37462947
+        functionName: Skill_sword_E_effect
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
-      - time: 0.33502552
-        functionName: EffectOn_Slash
+      - time: 0.99064523
+        functionName: Skill_sword_E_Out
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0

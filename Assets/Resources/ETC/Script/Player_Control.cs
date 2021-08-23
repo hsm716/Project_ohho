@@ -100,7 +100,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     private bool dDown; //LShift 입력
     private bool mLDown;//마우스 왼쪽 입력
     private bool mRDown;//마우스 오른쪽 입력
-    private bool eDown; //e 입력 (스킬 사용)
+    public bool eDown; //e 입력 (스킬 사용)
     private bool tabDown;
 
     #endregion
@@ -123,6 +123,14 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
 
     // 공통 사용 변수
     public float attackDelay = 0f;
+    public float skill_E_Delay = 0f;
+    public float skill_R_Delay = 0f;
+
+    public float skill_E_cooltime=5f;
+    public float skill_R_cooltime=5f;
+
+    public bool isSkill_E_Ready;
+    public bool isSkill_R_Ready;
 
     #endregion
 
@@ -461,6 +469,67 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
             greenBuff_time -= Time.deltaTime;
         }
     }
+    void Skill()
+    {
+        skill_E_Delay +=Time.deltaTime;
+        skill_R_Delay +=Time.deltaTime;
+
+        isSkill_E_Ready = skill_E_cooltime < skill_E_Delay;
+        isSkill_R_Ready = skill_R_cooltime < skill_R_Delay;
+
+        if (eDown && !isSkill_E_Ready)
+            eDown = false;
+        if (eDown && Input.GetMouseButtonUp(1))
+        {
+            eDown = false;
+        }
+
+        if (eDown && mLDown && isSkill_E_Ready && !isSkill && !isDodge)
+        {
+            isSkill = true;
+            eDown = false;
+            if (curStyle == Style.WeaponStyle.Sword && !isAttack)
+            {
+                Skill_sword_E();
+            }
+            else if (curStyle == Style.WeaponStyle.Arrow && mRDown)
+            {
+                Skill_arrow_E();
+            }
+            skill_E_Delay = 0f;
+        }
+
+
+    }
+
+
+    Vector3 Skill_sword_E_Vector;
+    public ParticleSystem sword_E_effect;
+    public MeshCollider sword_E_area;
+    void Skill_sword_E()
+    {
+            animator.SetTrigger("doSkill_E");
+            curSpeed = 2f;
+            Skill_sword_E_Vector = mouseDir.normalized;
+    }
+    public void Skill_sword_E_effect()
+    {
+        sword_E_effect.Play();
+        sword_E_area.enabled = true;
+    }
+    public void Skill_sword_E_Out()
+    {
+        if (greenBuff_time > 0)
+            curSpeed = walkSpeed + 3f;
+        else
+            curSpeed = walkSpeed;
+
+        sword_E_area.enabled = false;
+        isSkill = false;
+
+    }
+
+
     void Update()
     {
         if (PV.IsMine)
@@ -491,6 +560,9 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
 
                 AnimationUpdate();
                 Attack();
+                Skill();
+
+
 
                 PV.RPC("BuffOnOff_RPC", RpcTarget.All);
                 animator.SetFloat("RunningAmount", curSpeed / 4f);
@@ -570,19 +642,10 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
         //퀘스트보드
 
 
-        if (Input.GetKeyDown(KeyCode.E))
+        
+        if ( Input.GetKeyDown(KeyCode.E))
         {
             eDown = true;
-        }
-        if(eDown && Input.GetMouseButtonDown(0))
-        {
-            if(curStyle == Style.WeaponStyle.Arrow)
-                Invoke("Skill_arrow_E",0.1f);
-            else if(curStyle == Style.WeaponStyle.Sword)
-            {
-                //Skill_E();
-
-            }
         }
 
         dDown = Input.GetKey(KeyCode.LeftShift);
@@ -610,9 +673,14 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
         }
         if (mRDown && Input.GetMouseButtonUp(1))
         {
-            Invoke("ShootOut", 0.2f);
-            Invoke("DeffenseOut", 0.0f);
-            Invoke("PullPower_valueChange",0.1f);
+            if (curStyle == Style.WeaponStyle.Arrow)
+            {
+                Invoke("ShootOut", 0.2f);
+                Invoke("PullPower_valueChange", 0.1f);
+            }
+            else if(curStyle == Style.WeaponStyle.Sword)
+                Invoke("DeffenseOut", 0.0f);
+            
         }
 
         if (Input.GetKeyDown(KeyCode.Alpha1))
@@ -809,25 +877,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
 
     }
 
-    Vector3 Skill_Vector;
-/*    void Skill_E()
-    {
-        isSkill = true;
-        attackEffect.enabled = false;
-        animator.SetTrigger("doSkill_E");
-        Invoke("Slash", 0.2f);
-        curSpeed = 2f;
-        Skill_Vector = mouseDir.normalized;
-        Invoke("Skill_E_Out", 0.7076923f);
-    }
-    void Skill_E_Out()
-    {
-        curSpeed = walkSpeed;
-        attackEffect.enabled = false;
-        isSkill = false;
-        eDown = false;
-
-    }*/
+  
     void FreezeVelocity()
     {
         rgbd.velocity = new Vector3(0f, rgbd.velocity.y, 0f);
@@ -845,12 +895,12 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
         }
         else
         {
-            if(isDodge)
+            if(isDodge&&!isSkill)
                 if (curStyle != Style.WeaponStyle.Magic)
                     movement.Set(dodgeVec.x, dodgeVec.y, dodgeVec.z);
-            if (isSkill)
+            if (!isDodge&&isSkill)
                 if (curStyle == Style.WeaponStyle.Sword)
-                    movement.Set(Skill_Vector.x, Skill_Vector.y, Skill_Vector.z);
+                    movement.Set(Skill_sword_E_Vector.x, Skill_sword_E_Vector.y, Skill_sword_E_Vector.z);
         }
 
         if (isDeffensing)
@@ -1161,12 +1211,14 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
 
     void Skill_arrow_E()
     {
+        animator.SetTrigger("doShoot");
         PhotonNetwork.Instantiate("Arrow_1", shootPoint.transform.position+new Vector3(-0.4f,0,0), shootPoint.transform.rotation * Quaternion.Euler(new Vector3(0f,-10f,0f)));
         PhotonNetwork.Instantiate("Arrow_1", shootPoint.transform.position+new Vector3(-0.2f,0,0), shootPoint.transform.rotation * Quaternion.Euler(new Vector3(0f, -5f, 0f)));
+        PhotonNetwork.Instantiate("Arrow_1", shootPoint.transform.position , shootPoint.transform.rotation);
         PhotonNetwork.Instantiate("Arrow_1", shootPoint.transform.position+new Vector3(0.2f,0,0), shootPoint.transform.rotation * Quaternion.Euler(new Vector3(0f, 5f, 0f)));
         PhotonNetwork.Instantiate("Arrow_1", shootPoint.transform.position+new Vector3(0.4f,0,0), shootPoint.transform.rotation * Quaternion.Euler(new Vector3(0f, 10f, 0f)));
-
-        eDown = false;
+        attackDelay = 0.2f;
+        isSkill = false;
     }
     [PunRPC]
     void Skill_R()
