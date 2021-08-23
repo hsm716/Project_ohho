@@ -154,4 +154,53 @@ public class DialogueManager : MonoBehaviour
         QuestManager.Instance.ShowQuestClear(dialogue);
     }
 
+    public void StartDialogue(Dialogue _dialogue)
+    {
+        dialogue = _dialogue;
+        dialoguePanel.SetActive(true);
+
+        nameText.text = _dialogue.name;
+        this.speakDelay = _dialogue.speakDelay;
+
+        sentences.Clear();
+
+        GameObject myPlayer = FindMyPlayer();
+
+        foreach (string sentence in dialogue.unCompletedSentences)
+        {
+            sentences.Enqueue(sentence);
+        }
+
+        NextSentence();
+    }
+
+    public void NextSentence()
+    {
+        GameObject myPlayer = FindMyPlayer();
+
+        if (sentences.Count == 0)   //마지막 대화가 끝났을 때
+        {
+            EndDialogue();
+            RewardManager.Instance.Tochair();
+            return;
+        }
+
+        string sentence = sentences.Dequeue();
+        StopAllCoroutines();
+        StartCoroutine(TypeFinal(sentence, speakDelay));
+    }
+
+    IEnumerator TypeFinal(string sentence, float delay)
+    {
+        dialogueText.text = "";
+        foreach (char letter in sentence.ToCharArray())
+        {
+            dialogueText.text += letter;
+            yield return new WaitForSeconds(delay);
+            yield return null;
+        }
+
+        yield return new WaitForSeconds(1.5f);
+        NextSentence();
+    }
 }
