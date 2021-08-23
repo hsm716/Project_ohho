@@ -118,7 +118,7 @@ public class RewardManager : MonoBehaviourPunCallbacks
             if (mode == p.GetComponent<Player_Control>().PV.ViewID / 1000)  //가장 많이 점령한 사람
             {
                 Occupier = p;
-                //Occupier.GetComponent<Player_Control>().star++;
+                Occupier.GetComponent<Player_Control>().star++;
                 most_jumlyung = max;
             }
         }
@@ -144,7 +144,7 @@ public class RewardManager : MonoBehaviourPunCallbacks
                 {
                     most_yaktal = p.GetComponent<Player_Control>().yaktal;
                     Plunderer = p;  //약탈자
-                    //Plunderer.GetComponent<Player_Control>().star++;
+                    Plunderer.GetComponent<Player_Control>().star++;
                 }
             }
 
@@ -160,7 +160,7 @@ public class RewardManager : MonoBehaviourPunCallbacks
             {
                 if(i == p.GetComponent<Player_Control>().PV.ViewID / 1000 - 1)       //1004, 2004, 3004 > 0, 1, 2
                 {
-                    //p.GetComponent<Player_Control>().star += arena[i];
+                    p.GetComponent<Player_Control>().star += arena[i];
                 }
             }
             
@@ -217,7 +217,7 @@ public class RewardManager : MonoBehaviourPunCallbacks
     {
         GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
         int mostStar = 0;
-        /*
+        
         foreach (GameObject p in players)
         {
             if(mostStar < p.GetComponent<Player_Control>().star)
@@ -225,7 +225,7 @@ public class RewardManager : MonoBehaviourPunCallbacks
                 mostStar = p.GetComponent<Player_Control>().star;
                 Final_Winner = p;
             }
-        }*/
+        }
 
 
     }

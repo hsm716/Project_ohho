@@ -178,6 +178,8 @@ public class Player_Interface : MonoBehaviour
     }
     void ArenaIn()
     {
+        GameManager.Instance.arena_time = 4000f;
+        player_data.isArena = true;
         player_data.horizontalMove = 0f;
         player_data.verticalMove = 0f;
         player_data.arenaWin = true;
@@ -227,18 +229,18 @@ public class Player_Interface : MonoBehaviour
             if(GameManager.Instance.areanaCount == 3)   //마지막 
             {
                 RewardManager.Instance.arena[player_data.PV.ViewID / 1000 - 1] += 2;
-                RewardManager.Instance.Reward();    //정산
             }
             else
             {
                 RewardManager.Instance.arena[player_data.PV.ViewID / 1000 - 1]++;
             }
         }
+        if (GameManager.Instance.areanaCount == 3)
+            RewardManager.Instance.Reward();    //정산
         player_data.PV.RPC("initRank", RpcTarget.All);
 
         //PA.ranking_img.sprite = PA.ranking_123_sp[PA.rank-1];
 
-        
     }
 
     void CheckFinished_Arena()
