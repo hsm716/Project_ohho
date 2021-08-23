@@ -224,10 +224,10 @@ public class Player_Interface : MonoBehaviour
         if (player_data.arenaWin)
         {
             player_data.arenaRank=1;
-            if(GameManager.Instance.areanaCount == 2)
+            if(GameManager.Instance.areanaCount == 3)   //마지막 
             {
                 RewardManager.Instance.arena[player_data.PV.ViewID / 1000 - 1] += 2;
-                RewardManager.Instance.Reward();
+                RewardManager.Instance.Reward();    //정산
             }
             else
             {
