@@ -181,7 +181,6 @@ public class Player_Interface : MonoBehaviour
         player_data.horizontalMove = 0f;
         player_data.verticalMove = 0f;
         player_data.arenaWin = true;
-        GameManager.Instance.areanaCount++;
         GameManager.Instance.isActive = false;
         isActive_Input = false;
         GameObject arenaCanvas = MC.transform.GetChild(7).gameObject;
