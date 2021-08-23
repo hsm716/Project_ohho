@@ -141,6 +141,7 @@ public class Player_Arena : MonoBehaviour
         PV.RPC("InitReadyCount", RpcTarget.All);
         player_data.rgbd.isKinematic = true;
         player_data.transform.position = Respawn_Center.transform.GetChild((player_data.PV.ViewID / 1000) - 1).position;
+        GameManager.Instance.areanaCount += 1;
     }
     public void ReadyGame()
     {

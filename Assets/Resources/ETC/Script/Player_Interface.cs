@@ -178,8 +178,6 @@ public class Player_Interface : MonoBehaviour
     }
     void ArenaIn()
     {
-        GameManager.Instance.arena_time = 4000f;
-        player_data.isArena = true;
         player_data.horizontalMove = 0f;
         player_data.verticalMove = 0f;
         player_data.arenaWin = true;
