@@ -107,7 +107,8 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
 
     //------------ 직업 클래스별 내용들--------------//
     #region
-
+    // Class.Magic 
+    public GameObject spellPoint;
     // Class.Arrow 관련 내용들..
     public GameObject shootPoint; // Class.Arrow의 화살이 나가는 지점
     public float pullPower; // 활 당기는 힘
@@ -117,7 +118,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     public float shieldAmount; // 쉴드량 정도
     private bool isShieldCharge; // 쉴드공격 챠지
     public BoxCollider attackArea;
-    public TrailRenderer attackEffect;
+    public ParticleSystem attackEffect;
 
 
     // 공통 사용 변수
@@ -234,9 +235,10 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     public GameObject KillLogs;
 
     public int yaktal = 0;
-
+    public int star;
     private void Awake()
     {
+        star = 0;
         SoldierPoint = 20;
         SoldierPoint_max = 20;
         NickNameText.text = PV.IsMine ? PhotonNetwork.NickName : PV.Owner.NickName;
@@ -473,6 +475,20 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
                 else
                     PI.GameBoard_Tab.SetActive(false);
 
+                if (spellPoint)
+                {
+                    float degree_value = -((int)mouseDir_y.y * 10);
+                    degree_value = Mathf.Clamp(degree_value, -90,0);
+                    spellPoint.transform.localRotation = Quaternion.Euler(new Vector3(degree_value, 0f, 0f));
+                }
+                if (shootPoint)
+                {
+                    float degree_value = -((int)mouseDir_y.y * 10);
+                    degree_value = Mathf.Clamp(degree_value, -80, 0);
+                    shootPoint.transform.localRotation = Quaternion.Euler(new Vector3(degree_value, 0f, 0f));
+                }
+
+
                 AnimationUpdate();
                 Attack();
 
@@ -564,7 +580,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
                 Invoke("Skill_arrow_E",0.1f);
             else if(curStyle == Style.WeaponStyle.Sword)
             {
-                Skill_E();
+                //Skill_E();
 
             }
         }
@@ -794,7 +810,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     }
 
     Vector3 Skill_Vector;
-    void Skill_E()
+/*    void Skill_E()
     {
         isSkill = true;
         attackEffect.enabled = false;
@@ -811,7 +827,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
         isSkill = false;
         eDown = false;
 
-    }
+    }*/
     void FreezeVelocity()
     {
         rgbd.velocity = new Vector3(0f, rgbd.velocity.y, 0f);
@@ -1072,8 +1088,20 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
 
     }
 
-    public void Slash()
+    public void Slash1()
     {
+        attackEffect.transform.localRotation = Quaternion.Euler(new Vector3(0f, 0f, 0f));
+        attackEffect.Play();
+        
+        attackArea.enabled = true;
+        Invoke("SlashOut", 0.05f);
+        // yield return new WaitForSeconds(0.1f);
+    }
+    public void Slash2()
+    {
+        attackEffect.transform.localRotation = Quaternion.Euler(new Vector3(0f, 0f, 180f));
+        attackEffect.Play();
+
         attackArea.enabled = true;
         Invoke("SlashOut", 0.05f);
         // yield return new WaitForSeconds(0.1f);
@@ -1086,12 +1114,9 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
 
     public void EffectOn_Slash()
     {
-        attackEffect.enabled = true;
+        attackEffect.Play();
     }
-    public void EffectOff_Slash()
-    {
-        attackEffect.enabled = false;
-    }
+
     public void Sound_Slash1()
     {
         sound_Slash1.Play();
@@ -1107,7 +1132,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
 
     void Shoot()
     {
-        PhotonNetwork.Instantiate("Arrow", shootPoint.transform.position, shootPoint.transform.rotation);
+        PhotonNetwork.Instantiate("Arrow_1", shootPoint.transform.position, shootPoint.transform.rotation);
         /*if(Physics.Raycast(characterCamera.ScreenPointToRay(Input.mousePosition),out hitResult,10))
         {
             var direction = new Vector3(hitResult.point.x, transform.position.y, hitResult.point.z) - transform.position;
@@ -1136,10 +1161,10 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
 
     void Skill_arrow_E()
     {
-        PhotonNetwork.Instantiate("Arrow", shootPoint.transform.position+new Vector3(-0.4f,0,0), shootPoint.transform.rotation * Quaternion.Euler(new Vector3(0f,-10f,0f)));
-        PhotonNetwork.Instantiate("Arrow", shootPoint.transform.position+new Vector3(-0.2f,0,0), shootPoint.transform.rotation * Quaternion.Euler(new Vector3(0f, -5f, 0f)));
-        PhotonNetwork.Instantiate("Arrow", shootPoint.transform.position+new Vector3(0.2f,0,0), shootPoint.transform.rotation * Quaternion.Euler(new Vector3(0f, 5f, 0f)));
-        PhotonNetwork.Instantiate("Arrow", shootPoint.transform.position+new Vector3(0.4f,0,0), shootPoint.transform.rotation * Quaternion.Euler(new Vector3(0f, 10f, 0f)));
+        PhotonNetwork.Instantiate("Arrow_1", shootPoint.transform.position+new Vector3(-0.4f,0,0), shootPoint.transform.rotation * Quaternion.Euler(new Vector3(0f,-10f,0f)));
+        PhotonNetwork.Instantiate("Arrow_1", shootPoint.transform.position+new Vector3(-0.2f,0,0), shootPoint.transform.rotation * Quaternion.Euler(new Vector3(0f, -5f, 0f)));
+        PhotonNetwork.Instantiate("Arrow_1", shootPoint.transform.position+new Vector3(0.2f,0,0), shootPoint.transform.rotation * Quaternion.Euler(new Vector3(0f, 5f, 0f)));
+        PhotonNetwork.Instantiate("Arrow_1", shootPoint.transform.position+new Vector3(0.4f,0,0), shootPoint.transform.rotation * Quaternion.Euler(new Vector3(0f, 10f, 0f)));
 
         eDown = false;
     }
@@ -1174,7 +1199,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
 
     void Spell()
     {
-        PhotonNetwork.Instantiate("Spell", attackArea.transform.position, attackArea.transform.rotation);
+        PhotonNetwork.Instantiate("Spell_1", spellPoint.transform.position, spellPoint.transform.rotation);
     }
 
 

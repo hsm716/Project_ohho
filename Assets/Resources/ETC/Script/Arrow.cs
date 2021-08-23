@@ -10,6 +10,7 @@ public class Arrow : MonoBehaviourPunCallbacks
     public Player_Control myPlayer;
     public float atk;
     public float shootPower;
+    public ParticleSystem ps;
     Vector3 dir_;
 
 
@@ -23,13 +24,15 @@ public class Arrow : MonoBehaviourPunCallbacks
     }*/
     void Awake()
     {
-        rgbd = GetComponent<Rigidbody>();
-        rgbd.isKinematic = false;
+        ps.Stop();
         FindMyPlayer();
         atk = myPlayer.atk*(myPlayer.pullPower/20f);
-        shootPower = myPlayer.pullPower;
-        dir_ = myPlayer.mouseDir_y;
-        rgbd.AddForce(dir_.normalized * shootPower, ForceMode.Impulse);
+        shootPower =   myPlayer.pullPower/2f +20f;
+        var particleMainSettings = ps.main;
+        particleMainSettings.startSpeed = shootPower;
+
+        ps.Play();
+        
         Invoke("DestroyRPC", 3f);
 
     }
@@ -45,8 +48,35 @@ public class Arrow : MonoBehaviourPunCallbacks
             }
         }
     }
+    private void OnParticleCollision(GameObject col)
+    {
+        if (col.CompareTag("Player"))
+        {
+            if (!PV.IsMine && col.GetComponent<PhotonView>().IsMine)
+            {
+                col.GetComponent<Player_Control>().Hit(atk, 1);
+            }
+            col.GetComponent<Player_Control>().Last_Hiter = myPlayer;
 
-    private void OnTriggerEnter(Collider col)
+            Debug.Log(col.gameObject.name + "를 맞춤 " + "데미지 : " + atk);
+            PV.RPC("DestroyRPC", RpcTarget.AllBuffered);
+        }
+        if (col.CompareTag("Soldier") && col.GetComponent<PhotonView>().Owner != PV.Owner)
+        {
+            col.GetComponent<Soldier>().Hit(atk, 1);
+            Debug.Log(col.gameObject.name + "를 맞춤 " + "데미지 : " + atk);
+            PV.RPC("DestroyRPC", RpcTarget.AllBuffered);
+        }
+        if (col.CompareTag("Monster"))
+        {
+            col.GetComponent<Monster>().Last_Hiter = myPlayer;
+            col.GetComponent<Monster>().Hit(atk, 1);
+
+            Debug.Log(col.gameObject.name + "를 맞춤 " + "데미지 : " + atk);
+            PV.RPC("DestroyRPC", RpcTarget.AllBuffered);
+        }
+    }
+/*    private void OnTriggerEnter(Collider col)
     {
 
 
@@ -78,7 +108,7 @@ public class Arrow : MonoBehaviourPunCallbacks
         {
             rgbd.isKinematic = true;
         }
-    }
+    }*/
 
 
 

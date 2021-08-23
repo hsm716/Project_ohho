@@ -5,19 +5,18 @@ using UnityEngine;
 
 public class Spell : MonoBehaviourPunCallbacks
 {
-    Rigidbody rgbd;
     public PhotonView PV;
     public Player_Control myPlayer;
     public float atk;
 
-    public GameObject boom;
-    Vector3 dir_;
-    Vector3 dir;
-    public float distance;
+    //public GameObject boom;
+    //Vector3 dir_;
+    //Vector3 dir;
+    //public float distance;
 
 
-    Vector3 curPos;
-    Quaternion curRot;
+    //Vector3 curPos;
+    //Quaternion curRot;
 
     /*[PunRPC]
     public void Shoot(Vector3 dir)
@@ -29,23 +28,13 @@ public class Spell : MonoBehaviourPunCallbacks
     }*/
     void Awake()
     {
-        rgbd = GetComponent<Rigidbody>();
         FindMyPlayer();
         atk = myPlayer.atk;
-        rgbd.isKinematic = false;
-        dir_ = myPlayer.mouseDir_y;
-        distance = Vector3.Distance(transform.position, dir_ + transform.position);
-        rgbd.AddForce( dir_.normalized*9f/** 10f*/, ForceMode.Impulse);
-        boom.GetComponent<SpellExplosion>().atk = atk;
-        StartCoroutine("Boom");
-        Invoke("RgbdOnRPC", 0.4f);
-        Invoke("DestroyRPC", 1.0f);
+        //StartCoroutine("Boom");
+        Invoke("DestroyRPC", 3.0f);
 
     }
-    void RgbdOnRPC()
-    {
-        rgbd.useGravity = true;
-    }
+
 /*    private void Update()
     {
       *//*  if (PV.IsMine)
@@ -73,59 +62,96 @@ public class Spell : MonoBehaviourPunCallbacks
                 break;
             }
         }
+    
     }
-    private void OnTriggerEnter(Collider col)
+
+    private void OnParticleCollision(GameObject col)
     {
-        if((col.CompareTag("Player") && col.GetComponent<PhotonView>().Owner.NickName != PV.Owner.NickName))
+        if (col.CompareTag("Player"))
         {
-            rgbd.isKinematic = true;
-            boom.SetActive(true);
-            boom.transform.parent = null;
+            if (!PV.IsMine && col.GetComponent<PhotonView>().Owner != PV.Owner)
+            {
+                col.GetComponent<Player_Control>().Hit(atk, 2);
+            }
             //PhotonNetwork.Instantiate("Explosion", transform.position+new Vector3(0f,0.3f,0f), Quaternion.Euler(new Vector3(-transform.rotation.x,-transform.rotation.y,-transform.rotation.z)));
-            //col.GetComponent<Player_Control>().Hit(atk);
 
-            Invoke("DestroyRPC", 0f);
+            col.GetComponent<Player_Control>().Last_Hiter = myPlayer;
+
         }
-        if (col.CompareTag("Ground"))
+        if ((!PV.IsMine && col.CompareTag("Soldier") && col.GetComponent<PhotonView>().Owner != PV.Owner))
         {
-            rgbd.isKinematic = true;
-            boom.SetActive(true);
-            boom.transform.parent = null;
-            //PhotonNetwork.Instantiate("Explosion", transform.position+new Vector3(0f,0.3f,0f), Quaternion.Euler(new Vector3(-transform.rotation.x,-transform.rotation.y,-transform.rotation.z)));
-            //col.GetComponent<Player_Control>().Hit(atk);
 
-            Invoke("DestroyRPC",0f);
-        }
-        if ((col.CompareTag("Soldier") && col.GetComponent<Soldier>().PV.Owner != PV.Owner))
-        {
-            rgbd.isKinematic = true;
-            boom.SetActive(true);
-            boom.transform.parent = null;
             //PhotonNetwork.Instantiate("Explosion", transform.position+new Vector3(0f,0.3f,0f), Quaternion.Euler(new Vector3(-transform.rotation.x,-transform.rotation.y,-transform.rotation.z)));
-            //col.GetComponent<Player_Control>().Hit(atk);
+            col.GetComponent<Soldier>().Hit(atk, 2);
 
-            Invoke("DestroyRPC", 0f);
+
         }
         if (col.CompareTag("Monster"))
         {
-            rgbd.isKinematic = true;
-            boom.SetActive(true);
-            boom.transform.parent = null;
-            //PhotonNetwork.Instantiate("Explosion", transform.position+new Vector3(0f,0.3f,0f), Quaternion.Euler(new Vector3(-transform.rotation.x,-transform.rotation.y,-transform.rotation.z)));
-            //col.GetComponent<Player_Control>().Hit(atk);
 
-            Invoke("DestroyRPC", 0f);
+            //PhotonNetwork.Instantiate("Explosion", transform.position+new Vector3(0f,0.3f,0f), Quaternion.Euler(new Vector3(-transform.rotation.x,-transform.rotation.y,-transform.rotation.z)));
+            col.GetComponent<Monster>().Last_Hiter = myPlayer;
+            col.GetComponent<Monster>().Hit(atk, 2);
+
+            //PV.RPC("Set_LastHiter", RpcTarget.All, col);
+
+
         }
     }
 
-    IEnumerator Boom()
-    {
-        yield return new WaitForSeconds(0.95f);
-        rgbd.isKinematic = true;
-        boom.SetActive(true);
-        boom.transform.parent = null;
-        //PhotonNetwork.Instantiate("Explosion", transform.position, transform.rotation);
-    }
+
+    /*    private void OnTriggerEnter(Collider col)
+        {
+            if((col.CompareTag("Player") && col.GetComponent<PhotonView>().Owner.NickName != PV.Owner.NickName))
+            {
+                rgbd.isKinematic = true;
+                boom.SetActive(true);
+                boom.transform.parent = null;
+                //PhotonNetwork.Instantiate("Explosion", transform.position+new Vector3(0f,0.3f,0f), Quaternion.Euler(new Vector3(-transform.rotation.x,-transform.rotation.y,-transform.rotation.z)));
+                //col.GetComponent<Player_Control>().Hit(atk);
+
+                Invoke("DestroyRPC", 0f);
+            }
+            if (col.CompareTag("Ground"))
+            {
+                rgbd.isKinematic = true;
+                boom.SetActive(true);
+                boom.transform.parent = null;
+                //PhotonNetwork.Instantiate("Explosion", transform.position+new Vector3(0f,0.3f,0f), Quaternion.Euler(new Vector3(-transform.rotation.x,-transform.rotation.y,-transform.rotation.z)));
+                //col.GetComponent<Player_Control>().Hit(atk);
+
+                Invoke("DestroyRPC",0f);
+            }
+            if ((col.CompareTag("Soldier") && col.GetComponent<Soldier>().PV.Owner != PV.Owner))
+            {
+                rgbd.isKinematic = true;
+                boom.SetActive(true);
+                boom.transform.parent = null;
+                //PhotonNetwork.Instantiate("Explosion", transform.position+new Vector3(0f,0.3f,0f), Quaternion.Euler(new Vector3(-transform.rotation.x,-transform.rotation.y,-transform.rotation.z)));
+                //col.GetComponent<Player_Control>().Hit(atk);
+
+                Invoke("DestroyRPC", 0f);
+            }
+            if (col.CompareTag("Monster"))
+            {
+                rgbd.isKinematic = true;
+                boom.SetActive(true);
+                boom.transform.parent = null;
+                //PhotonNetwork.Instantiate("Explosion", transform.position+new Vector3(0f,0.3f,0f), Quaternion.Euler(new Vector3(-transform.rotation.x,-transform.rotation.y,-transform.rotation.z)));
+                //col.GetComponent<Player_Control>().Hit(atk);
+
+                Invoke("DestroyRPC", 0f);
+            }
+        }
+
+        IEnumerator Boom()
+        {
+            yield return new WaitForSeconds(0.95f);
+            rgbd.isKinematic = true;
+            boom.SetActive(true);
+            boom.transform.parent = null;
+            //PhotonNetwork.Instantiate("Explosion", transform.position, transform.rotation);
+        }*/
     [PunRPC]
     void DestroyRPC()
     {
