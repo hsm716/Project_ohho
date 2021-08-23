@@ -232,6 +232,9 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     public bool isArena;
 
     public GameObject KillLogs;
+
+    public int yaktal = 0;
+
     private void Awake()
     {
         SoldierPoint = 20;

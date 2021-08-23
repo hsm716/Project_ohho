@@ -40,6 +40,8 @@ public class QuestData : MonoBehaviourPunCallbacks//, IPunObservable
     public float OccupiedValue_cur = 0f;
     public float OccupiedValue_max = 100f;
 
+
+
     //public bool areaReach = false;
     Player_Control myPlayer;
     private void Awake()

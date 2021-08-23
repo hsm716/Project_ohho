@@ -86,7 +86,7 @@ public class QuestManager : MonoBehaviourPunCallbacks//, IPunObservable
     {
         QuestARUI.SetActive(false);
     }
-
+    public GameObject myPlayer;
     public void QuestClear()
     {
         GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
@@ -100,6 +100,7 @@ public class QuestManager : MonoBehaviourPunCallbacks//, IPunObservable
             {
                 if (p.GetComponent<QuestData>().questClearCheck[dialogue.npcId])
                 {
+                    myPlayer = p;
                     npcID = dialogue.npcId;
                     viewID = p.GetComponent<PhotonView>().ViewID;
                     
@@ -117,6 +118,10 @@ public class QuestManager : MonoBehaviourPunCallbacks//, IPunObservable
     [PunRPC]
     public void QuestClear2(int npcID, int viewID, bool ok)
     {
+        if(SectionOwner[npcID] != 0)
+        {
+            myPlayer.GetComponent<Player_Control>().yaktal++;
+        }
         SectionOwner[npcID] = viewID;
         questOk[npcID] = ok;
 
