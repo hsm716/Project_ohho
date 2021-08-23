@@ -41,7 +41,7 @@ public class RewardManager : MonoBehaviourPunCallbacks
         most_jumlyung = 0;
         most_yaktal = 0;
 
-        StartCoroutine(Test());
+        //tartCoroutine(Test());
     }
 
     IEnumerator Test()  //페이드아웃 테스트
@@ -74,7 +74,7 @@ public class RewardManager : MonoBehaviourPunCallbacks
         BossKill();
         Final_Reward();
     }
-
+    /*
     void UIClose()
     {
         GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
@@ -83,7 +83,7 @@ public class RewardManager : MonoBehaviourPunCallbacks
             p.
         }
     }
-
+    */
     void Occupy()
     {
         GameObject QM = GameObject.Find("QuestManager");
