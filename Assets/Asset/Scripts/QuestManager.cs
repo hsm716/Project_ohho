@@ -86,7 +86,7 @@ public class QuestManager : MonoBehaviourPunCallbacks//, IPunObservable
     {
         QuestARUI.SetActive(false);
     }
-    public GameObject myPlayer;
+
     public void QuestClear()
     {
         GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
@@ -100,7 +100,6 @@ public class QuestManager : MonoBehaviourPunCallbacks//, IPunObservable
             {
                 if (p.GetComponent<QuestData>().questClearCheck[dialogue.npcId])
                 {
-                    myPlayer = p;
                     npcID = dialogue.npcId;
                     viewID = p.GetComponent<PhotonView>().ViewID;
                     
@@ -118,14 +117,21 @@ public class QuestManager : MonoBehaviourPunCallbacks//, IPunObservable
     [PunRPC]
     public void QuestClear2(int npcID, int viewID, bool ok)
     {
-        if(SectionOwner[npcID] != 0)
+        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+        foreach (GameObject p in players)
         {
-            myPlayer.GetComponent<Player_Control>().yaktal++;
+            if (p.GetComponent<Player_Control>().PV.ViewID == viewID)
+            {
+                if (SectionOwner[npcID] != 0)
+                {
+                    p.GetComponent<Player_Control>().yaktal++;
+                }
+            
+            }
         }
+
         SectionOwner[npcID] = viewID;
         questOk[npcID] = ok;
-
-        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
 
         foreach (GameObject p in players)   //다른 사람의 퀘스트 진행을 삭제
         {
