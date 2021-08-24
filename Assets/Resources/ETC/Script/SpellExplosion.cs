@@ -32,18 +32,18 @@ public class SpellExplosion : MonoBehaviourPunCallbacks
         {
             if (!PV.IsMine && col.GetComponent<PhotonView>().Owner != PV.Owner)
             {
-                col.GetComponent<Player_Control>().Hit(atk, 2);
+                col.GetComponent<Player_Control>().Hit(atk, 2, myPlayer.curCritical);
             }
             //PhotonNetwork.Instantiate("Explosion", transform.position+new Vector3(0f,0.3f,0f), Quaternion.Euler(new Vector3(-transform.rotation.x,-transform.rotation.y,-transform.rotation.z)));
 
             col.GetComponent<Player_Control>().Last_Hiter = myPlayer;
 
         }
-        if ((!PV.IsMine && col.CompareTag("Soldier") && col.GetComponent<PhotonView>().Owner != PV.Owner))
+        if (col.CompareTag("Soldier") && col.GetComponent<PhotonView>().Owner != PV.Owner)
         {
 
             //PhotonNetwork.Instantiate("Explosion", transform.position+new Vector3(0f,0.3f,0f), Quaternion.Euler(new Vector3(-transform.rotation.x,-transform.rotation.y,-transform.rotation.z)));
-            col.GetComponent<Soldier>().Hit(atk, 2);
+            col.GetComponent<Soldier>().Hit(atk, 2, myPlayer.curCritical);
 
 
         }
@@ -52,7 +52,7 @@ public class SpellExplosion : MonoBehaviourPunCallbacks
 
             //PhotonNetwork.Instantiate("Explosion", transform.position+new Vector3(0f,0.3f,0f), Quaternion.Euler(new Vector3(-transform.rotation.x,-transform.rotation.y,-transform.rotation.z)));
             col.GetComponent<Monster>().Last_Hiter = myPlayer;
-            col.GetComponent<Monster>().Hit(atk, 2);
+            col.GetComponent<Monster>().Hit(atk, 2, myPlayer.curCritical);
 
             //PV.RPC("Set_LastHiter", RpcTarget.All, col);
 

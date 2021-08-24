@@ -18,6 +18,10 @@ public class GameManager : MonoBehaviourPunCallbacks,IPunObservable
 
     public int arenaRank;
     public int areanaCount;
+
+    public bool isStart = false;
+    public bool doPlayerSpawn = false;
+    public bool doStartCamera = false;
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
         if (stream.IsWriting)
@@ -26,6 +30,9 @@ public class GameManager : MonoBehaviourPunCallbacks,IPunObservable
             stream.SendNext(ReadyCountCur);
             stream.SendNext(arenaRank);
             stream.SendNext(areanaCount);
+           // stream.SendNext(isStart);
+           // stream.SendNext(doPlayerSpawn);
+           // stream.SendNext(doStartCamera);
         }
         else
         {
@@ -33,6 +40,9 @@ public class GameManager : MonoBehaviourPunCallbacks,IPunObservable
             ReadyCountCur = (int)stream.ReceiveNext();
             arenaRank = (int)stream.ReceiveNext();
             areanaCount = (int)stream.ReceiveNext();
+          //  isStart = (bool)stream.ReceiveNext();
+          //  doPlayerSpawn = (bool)stream.ReceiveNext();
+          //  doStartCamera = (bool)stream.ReceiveNext();
         }
     }
 

@@ -57,6 +57,13 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     public float curHP;
     public float maxHP;
 
+    public float curStamina;//Magic = 마나
+    public float maxStamina;
+
+    public int curCritical;
+
+    public int curDefense;
+
     public float atk;
     public int level;
     public float curEXP;
@@ -258,12 +265,16 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
         username = PV.IsMine ? PhotonNetwork.NickName : PV.Owner.NickName;
         HealthImage.color = PV.IsMine ? Color.green : Color.red;
         //NickNameText.color = PV.IsMine ? Color.green : Color.red;
+        curCritical = 0;
         maxHP = 2000f;
         curHP = 2000f;
         curEXP = 0f;
         maxEXP = 100f;
+        curDefense = 0;
+        curStamina = 100f;
+        maxStamina = 100f;
         pullPower = 20f;
-        shieldAmount = 500f;
+        shieldAmount = 200f;
         Respawn_Center = GameObject.Find("Respawn_Spots");
 
         //
@@ -498,7 +509,9 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
         {
             if (isSkill)
             {
-                attackDelay = 0.5f;
+                curStamina -= Time.deltaTime * 40f;
+                attackDelay = 0.4f;
+                skill_E_Delay = 0f;
             }
         }
 
@@ -602,7 +615,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
                 if (spellPoint)
                 {
                     float degree_value = -((int)mouseDir_y.y * 10);
-                    degree_value = Mathf.Clamp(degree_value, -90,0);
+                    degree_value = Mathf.Clamp(degree_value, -90, 0);
                     spellPoint.transform.localRotation = Quaternion.Euler(new Vector3(degree_value, 0f, 0f));
                 }
                 if (shootPoint)
@@ -616,10 +629,14 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
                 AnimationUpdate();
                 Attack();
                 Skill();
-                if (curStyle==Style.WeaponStyle.Magic && isSkill == true && !skill_setFalse)
+                if (curStyle != Style.WeaponStyle.Magic && isSkill == true && !skill_setFalse)
                 {
                     skill_setFalse = true;
-                    Invoke("isSkill_autoFalse",1f);
+                    Invoke("isSkill_autoFalse", 1f);
+                }
+                if (curStyle == Style.WeaponStyle.Magic && isSkill&&curStamina <=2f)
+                {
+                    Skill_magic_E_out();
                 }
 
 
@@ -639,11 +656,21 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
                 {
                     shieldAmount = 0f;
                 }
-                if (shieldAmount >= 1000f)
+                if (shieldAmount >= 300f)
                 {
-                    shieldAmount = 1000f;
+                    shieldAmount = 300f;
                 }
                 shieldAmount += Time.deltaTime * 50f;
+
+
+                curStamina += Time.deltaTime*10f;
+                
+                if(curStamina >= maxStamina)
+                {
+                    curStamina = maxStamina;
+                }
+
+
 
                 if (curHP >= maxHP)
                 {
@@ -711,7 +738,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
         dDown = Input.GetKey(KeyCode.LeftShift);
         if (Input.GetKeyDown(KeyCode.LeftShift))
         {
-            if(curStyle == Style.WeaponStyle.Magic)
+            if(curStyle == Style.WeaponStyle.Magic&&curStamina>=45f)
                 PV.RPC("Teleport",RpcTarget.All);
         }
 
@@ -827,6 +854,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     {
         telportEffect.Play();
         sound_Teleport.Play();
+        curStamina -= 45f;
         rgbd.AddForce(movement*1000f, ForceMode.Impulse);
     }
     void PullPower_valueChange()
@@ -901,8 +929,9 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     [PunRPC]
     void Dodge()
     {
-        if (!isDodge && dDown &&!isAttack &&!isDeffensing&&!isSkill_R)
+        if (!isDodge && dDown &&!isAttack &&!isDeffensing&&!isSkill_R&& curStamina>=50f)
         {
+            curStamina -= 50f;
             dodgeVec = movement;
            
             if (greenBuff_time > 0f)
@@ -1077,8 +1106,13 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
         }
     }
     [PunRPC]
-    public void Hit(float atk_,int type)
+    public void Hit(float atk_,int type,int critical)
     {
+        bool isCritical = Random.Range(0, 100) < critical;
+        if (isCritical)
+            atk_ *= 1.5f;
+
+        atk_ -=atk_ *(float)(curDefense / 100f);
 
         if (type == 0)
         {
@@ -1091,7 +1125,12 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
         if (PV.IsMine)
         {
             GameObject ft = PhotonNetwork.Instantiate("Damage_Text", transform.position, Quaternion.Euler(new Vector3(45f, 0f, 0f)));
-            ft.GetComponent<TextMesh>().text = "" + (int)atk_;
+            ft.transform.GetChild(0).transform.GetComponent<TextMesh>().text = "" + (int)atk_;
+            if (isCritical)
+            {
+                ft.transform.GetChild(0).transform.GetComponent<TextMesh>().color = new Color(0.8962264f, 0.2352941f, 0f);
+                ft.transform.GetChild(0).transform.GetComponent<TextMesh>().characterSize = 0.1f;
+            }
 
             if (isDeffensing)
             {
@@ -1388,18 +1427,18 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
             }*/
             if (other.transform.parent.GetComponent<Player_Control>().isSkill)
             {
-                Hit(other.transform.parent.GetComponent<Player_Control>().atk * 1.5f, 0);
+                Hit(other.transform.parent.GetComponent<Player_Control>().atk * 1.5f, 0, other.transform.parent.GetComponent<Player_Control>().curCritical);
             }
             else
             {
-                Hit(other.transform.parent.GetComponent<Player_Control>().atk, 0);
+                Hit(other.transform.parent.GetComponent<Player_Control>().atk, 0, other.transform.parent.GetComponent<Player_Control>().curCritical);
             }
 
             Last_Hiter = other.transform.parent.GetComponent<Player_Control>();
         }
-        if (PV.Owner != other.transform.parent.GetComponent<Soldier>().PV.Owner && other.CompareTag("Soldier_Attack"))
+        if (other.CompareTag("Soldier_Attack") && PV.Owner != other.transform.parent.GetComponent<Soldier>().PV.Owner )
         {
-            Hit(other.transform.parent.GetComponent<Soldier>().atk,0);
+            Hit(other.transform.parent.GetComponent<Soldier>().atk,0,0);
         }
         if (other.CompareTag("Monster_Attack"))
         {
@@ -1408,13 +1447,13 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
             {
                 if (hitObj.monsterType == Monster.Type.demon || hitObj.monsterType == Monster.Type.golem)
                 {
-                    Hit(hitObj.atk * 2f,0);
+                    Hit(hitObj.atk * 2f,0,0);
                 }
             }
             else
             {
                 
-                Hit(hitObj.atk,0);
+                Hit(hitObj.atk,0,0);
             }
         }
 
@@ -1487,9 +1526,9 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
                         break;
                     }
                     PV.RPC("RecoverHP", RpcTarget.All);
-                    GameObject ft = PhotonNetwork.Instantiate("Damage_Text", transform.position, Quaternion.Euler(new Vector3(45f, 0f, 0f)));
+                    GameObject ft = PhotonNetwork.Instantiate("Damage_Text", transform.position, Quaternion.Euler(new Vector3(55f, 0f, 0f)));
                     ft.GetComponent<TextMesh>().text = "" + 200;
-                    ft.GetComponent<TextMesh>().color = Color.green;
+                    ft.transform.GetChild(0).transform.GetComponent<TextMesh>().color = Color.green;
 
                     curHP += 200f;
                     break;
@@ -1787,6 +1826,12 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
             stream.SendNext(arenaWin);
             stream.SendNext(isArena);
             stream.SendNext(isSkill);
+
+            stream.SendNext(curStamina);
+            stream.SendNext(maxStamina);
+
+            stream.SendNext(curCritical);
+            stream.SendNext(curDefense);
         }
         else
         {
@@ -1816,6 +1861,12 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
             arenaWin = (bool)stream.ReceiveNext();
             isArena = (bool)stream.ReceiveNext();
             isSkill = (bool)stream.ReceiveNext();
+
+            curStamina = (float)stream.ReceiveNext();
+            maxStamina = (float)stream.ReceiveNext();
+
+            curCritical = (int)stream.ReceiveNext();
+            curDefense = (int)stream.ReceiveNext();
         }
     }
 }

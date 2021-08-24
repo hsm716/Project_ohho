@@ -48,13 +48,13 @@ public class Soldier_Arrow : MonoBehaviourPunCallbacks
 
         if (col.CompareTag("Player") && col.GetComponent<PhotonView>().Owner != mySoldier.PV.Owner)
         {
-            col.GetComponent<Player_Control>().Hit(atk,1);
+            col.GetComponent<Player_Control>().Hit(atk,1,0);
             Debug.Log(col.gameObject.name + "를 맞춤 " + "데미지 : " + atk);
             PV.RPC("DestroyRPC", RpcTarget.AllBuffered);
         }
         if (col.CompareTag("Soldier") && col.GetComponent<PhotonView>().Owner != mySoldier.PV.Owner)
         {
-            col.GetComponent<Soldier>().Hit(atk,1);
+            col.GetComponent<Soldier>().Hit(atk,1,0);
             Debug.Log(col.gameObject.name + "를 맞춤 " + "데미지 : " + atk);
             PV.RPC("DestroyRPC", RpcTarget.AllBuffered);
         }

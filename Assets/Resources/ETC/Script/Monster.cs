@@ -123,16 +123,26 @@ public class Monster : MonoBehaviourPunCallbacks, IPunObservable
 
 
     [PunRPC]
-    public void Hit(float atk_,int type)
+    public void Hit(float atk_,int type,int critical)
     {
+        bool isCritical = Random.Range(0, 100) < critical;
+        if (isCritical)
+            atk_ *= 1.5f;
+
         anim.SetTrigger("doHit");
         hitSword.Play();
 
         curHP -= atk_;
         if (PV.IsMine)
         {
-            GameObject ft = PhotonNetwork.Instantiate("Damage_Text", transform.position, Quaternion.Euler(new Vector3(45f, 0f, 0f)));
-            ft.GetComponent<TextMesh>().text = "" + (int)atk_;
+            GameObject ft = PhotonNetwork.Instantiate("Damage_Text", transform.position, Quaternion.Euler(new Vector3(55f, 0f, 0f)));
+            
+           ft.transform.GetChild(0).transform.GetComponent<TextMesh>().text = "" + (int)atk_;
+            if (isCritical)
+            {
+                ft.transform.GetChild(0).transform.GetComponent<TextMesh>().color = new Color(0.8962264f, 0.2352941f, 0f);
+                ft.transform.GetChild(0).transform.GetComponent<TextMesh>().characterSize = 0.1f;
+            }
         }
         if (type == 0)
         {
@@ -342,11 +352,11 @@ public class Monster : MonoBehaviourPunCallbacks, IPunObservable
         {
             if (other.transform.parent.GetComponent<Player_Control>().isSkill)
             {
-                Hit(other.transform.parent.GetComponent<Player_Control>().atk*1.5f, 0);
+                Hit(other.transform.parent.GetComponent<Player_Control>().atk*1.5f, 0, other.transform.parent.GetComponent<Player_Control>().curCritical);
             }
             else
             {
-                Hit(other.transform.parent.GetComponent<Player_Control>().atk , 0);
+                Hit(other.transform.parent.GetComponent<Player_Control>().atk , 0, other.transform.parent.GetComponent<Player_Control>().curCritical);
             }
             Last_Hiter = other.transform.parent.GetComponent<Player_Control>();
             

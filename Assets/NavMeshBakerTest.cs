@@ -11,10 +11,17 @@ public class NavMeshBakerTest : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Invoke("StartMesh", 27f);
+        
         
     }
-
+    private void Update()
+    {
+        if (GameManager.Instance.isStart == true)
+        {
+            GameManager.Instance.isStart = false;
+            Invoke("StartMesh", 20f);
+        }
+    }
     void StartMesh()
     {
         navMesh_parent.transform.GetChild(0).GetComponent<NavMeshSurface>().BuildNavMesh();

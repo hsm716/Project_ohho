@@ -96,10 +96,24 @@ public class Soldier : MonoBehaviourPunCallbacks,IPunObservable
             }
         }
     }
-    public void Hit(float atk_,int type)
+    public void Hit(float atk_,int type,int critical)
     {
         curHP -= atk_;
-        if(type == 0)
+        bool isCritical = Random.Range(0, 100) < critical;
+        if (isCritical)
+            atk_ *= 1.5f;
+
+        if (PV.IsMine)
+        {
+            GameObject ft = PhotonNetwork.Instantiate("Damage_Text", transform.position, Quaternion.Euler(new Vector3(55f, 0f, 0f)));
+            ft.transform.GetChild(0).transform.GetComponent<TextMesh>().text = "" + (int)atk_;
+            if (isCritical)
+            {
+                ft.transform.GetChild(0).transform.GetComponent<TextMesh>().color = new Color(0.8962264f, 0.2352941f, 0f);
+                ft.transform.GetChild(0).transform.GetComponent<TextMesh>().characterSize = 0.1f;
+            }
+        }
+        if (type == 0)
         {
             sound_source.PlayOneShot(sound_slash_hit);
         }
@@ -113,6 +127,7 @@ public class Soldier : MonoBehaviourPunCallbacks,IPunObservable
             isDead = true;
             anim.SetTrigger("doDead");
         }
+
     }
 
     private void FixedUpdate()
@@ -258,17 +273,17 @@ public class Soldier : MonoBehaviourPunCallbacks,IPunObservable
 
         if (other.CompareTag("Soldier_Attack") && other.transform.parent.GetComponent<Soldier>().PV.Owner.NickName != PV.Owner.NickName)
         {
-            Hit(other.transform.parent.GetComponent<Soldier>().atk,0);
+            Hit(other.transform.parent.GetComponent<Soldier>().atk,0,0);
         }
         if(other.CompareTag("Player_Sword") && other.transform.parent.GetComponent<Player_Control>().PV.Owner != PV.Owner)
         {
             if (other.transform.parent.GetComponent<Player_Control>().isSkill)
             {
-                Hit(other.transform.parent.GetComponent<Player_Control>().atk * 1.5f, 0);
+                Hit(other.transform.parent.GetComponent<Player_Control>().atk * 1.5f, 0, other.transform.parent.GetComponent<Player_Control>().curCritical);
             }
             else
             {
-                Hit(other.transform.parent.GetComponent<Player_Control>().atk, 0);
+                Hit(other.transform.parent.GetComponent<Player_Control>().atk, 0, other.transform.parent.GetComponent<Player_Control>().curCritical);
             }
         }
 

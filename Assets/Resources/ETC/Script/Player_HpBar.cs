@@ -1,3 +1,4 @@
+using ExitGames.Client.Photon.StructWrapping;
 using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
@@ -34,11 +35,18 @@ public class Player_HpBar : MonoBehaviour
 
         if (player_data.curStyle == Style.WeaponStyle.Arrow)
         {
+            subBar.transform.GetChild(1).transform.GetChild(0).GetComponent<Image>().color = new Color(0.8f, 0.44f, 0.39f);
             subBar.value = player_data.pullPower / 40f;
         }
         else if(player_data.curStyle == Style.WeaponStyle.Sword)
         {
             subBar.value = player_data.shieldAmount / 1000f;
+        }
+        else if(player_data.curStyle == Style.WeaponStyle.Magic)
+        {
+
+            subBar.transform.GetChild(1).transform.GetChild(0).transform.GetComponent<Image>().color = new Color(0.38f,0.55f,0.8f);
+            subBar.value = player_data.curStamina / player_data.maxStamina;
         }
 
         

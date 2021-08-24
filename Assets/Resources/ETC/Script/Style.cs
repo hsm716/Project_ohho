@@ -32,7 +32,13 @@ public class Style : MonoBehaviourPunCallbacks
         myPlayer.curStyle = WeaponStyle.Sword;
         //myPlayer.WeaponPosition_R.transform.GetChild(1).gameObject.SetActive(true);
         //myPlayer.WeaponPosition_L.transform.GetChild(1).gameObject.SetActive(true);
-        myPlayer.atk = 200f;
+        myPlayer.atk = 250f;
+        myPlayer.curHP = 2500f;
+        myPlayer.maxHP = 2500f;
+        myPlayer.curStamina = 100f;
+        myPlayer.maxStamina = 100f;
+        //myPlayer.Hp_Bar.PV.RPC("GetHpBoost", RpcTarget.All);
+
         myPlayer.animator.Rebind();
         myPlayer.animator.Play("Idle_Sword");
 
@@ -45,6 +51,11 @@ public class Style : MonoBehaviourPunCallbacks
         myPlayer.curStyle = WeaponStyle.Arrow;
        // myPlayer.WeaponPosition_L.transform.GetChild(2).gameObject.SetActive(true);
         myPlayer.atk = 150f;
+        myPlayer.curHP = 2000f;
+        myPlayer.maxHP = 2000f;
+        myPlayer.curStamina = 80f;
+        myPlayer.maxStamina = 80f;
+        //myPlayer.Hp_Bar.PV.RPC("GetHpBoost", RpcTarget.All);
         myPlayer.animator.Rebind();
         myPlayer.animator.Play("Idle_Arrow");
 
@@ -58,6 +69,11 @@ public class Style : MonoBehaviourPunCallbacks
         myPlayer.curStyle = WeaponStyle.Magic;
         //myPlayer.WeaponPosition_R.transform.GetChild(2).gameObject.SetActive(true);
         myPlayer.atk = 225f;
+        myPlayer.curHP = 1750f;
+        myPlayer.maxHP = 1750f;
+        myPlayer.curStamina = 200f;
+        myPlayer.maxStamina = 200f;
+        //myPlayer.Hp_Bar.PV.RPC("GetHpBoost", RpcTarget.All);
         myPlayer.animator.Rebind();
         myPlayer.animator.Play("Idle_Magic");
 
