@@ -227,16 +227,6 @@ public class RewardManager : MonoBehaviourPunCallbacks
         
         foreach (GameObject p in players)
         {
-            /*
-            if(mostStar < p.GetComponent<Player_Control>().star)
-            {
-                mostStar = p.GetComponent<Player_Control>().star;
-                First_Player = p;
-            }
-
-
-            */
-
             Player_Control player_data_ = p.GetComponent<Player_Control>();
             int index = player_data_.PV.ViewID / 1000 - 1;
             RankPlayers[index] = p;
@@ -288,15 +278,6 @@ public class RewardManager : MonoBehaviourPunCallbacks
             
             
         }
-
-        foreach (GameObject player in RankPlayers)
-        {
-
-
-
-        }
-
-
 
 
 

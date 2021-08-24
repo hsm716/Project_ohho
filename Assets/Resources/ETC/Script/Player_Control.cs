@@ -1814,6 +1814,9 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
             stream.SendNext(blueBuff_time);
             stream.SendNext(greenBuff_time);
             stream.SendNext(kill_point);
+            stream.SendNext(monster_killpoint);
+            stream.SendNext(star);
+            stream.SendNext(yaktal);
             stream.SendNext(death_point);
             stream.SendNext(preset_data);
             stream.SendNext(Male_Hair_Offset.gameObject.activeSelf);
@@ -1849,6 +1852,9 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
             blueBuff_time = (float)stream.ReceiveNext();
             greenBuff_time = (float)stream.ReceiveNext();
             kill_point = (int)stream.ReceiveNext();
+            monster_killpoint = (int)stream.ReceiveNext();
+            star = (int)stream.ReceiveNext();
+            yaktal = (int)stream.ReceiveNext();
             death_point = (int)stream.ReceiveNext();
             preset_data = (string)stream.ReceiveNext();
             Male_Hair_Offset.gameObject.SetActive((bool)stream.ReceiveNext());
