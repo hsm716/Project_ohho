@@ -54,7 +54,7 @@ public class Arrow : MonoBehaviourPunCallbacks
         {
             if (!PV.IsMine && col.GetComponent<PhotonView>().IsMine)
             {
-                col.GetComponent<Player_Control>().Hit(atk, 1);
+                col.GetComponent<Player_Control>().Hit(atk, 1,myPlayer.curCritical);
             }
             col.GetComponent<Player_Control>().Last_Hiter = myPlayer;
 
@@ -63,14 +63,14 @@ public class Arrow : MonoBehaviourPunCallbacks
         }
         if (col.CompareTag("Soldier") && col.GetComponent<PhotonView>().Owner != PV.Owner)
         {
-            col.GetComponent<Soldier>().Hit(atk, 1);
+            col.GetComponent<Soldier>().Hit(atk, 1, myPlayer.curCritical);
             Debug.Log(col.gameObject.name + "를 맞춤 " + "데미지 : " + atk);
             PV.RPC("DestroyRPC", RpcTarget.AllBuffered);
         }
         if (col.CompareTag("Monster"))
         {
             col.GetComponent<Monster>().Last_Hiter = myPlayer;
-            col.GetComponent<Monster>().Hit(atk, 1);
+            col.GetComponent<Monster>().Hit(atk, 1, myPlayer.curCritical);
 
             Debug.Log(col.gameObject.name + "를 맞춤 " + "데미지 : " + atk);
             PV.RPC("DestroyRPC", RpcTarget.AllBuffered);

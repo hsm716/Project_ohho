@@ -20,6 +20,9 @@ public class MapManager : MonoBehaviourPunCallbacks
     public Material mat;
     public float split = -1;
 
+    public bool isStart = false;
+    public GameObject navMesh_parent;
+
     void Start()
     {
 
@@ -27,11 +30,37 @@ public class MapManager : MonoBehaviourPunCallbacks
         if (PhotonNetwork.IsMasterClient)
             Shuffle();
 
-        StartCoroutine(Call_Section());
-        StartCoroutine(CallBridges());
+       /* StartCoroutine(Call_Section());
+        StartCoroutine(CallBridges());*/
+
+    }
+    private void Update()
+    {
+        if (GameManager.Instance.isStart == true)
+        {
+            GameManager.Instance.isStart = false;
+            StartCoroutine(Call_Section());
+            StartCoroutine(CallBridges());
+            Invoke("StartMesh", 20f);
+        }
+    
+    }
+
+    void StartMesh()
+    {
+        navMesh_parent.transform.GetChild(0).GetComponent<NavMeshSurface>().BuildNavMesh();
+        GameManager.Instance.arena_time = 300f;
+        GameManager.Instance.game_time = 0f;
+        GameManager.Instance.isActive = true;
+        GameManager.Instance.doPlayerSpawn = true;
 
     }
 
+    [PunRPC]
+    void activeStart()
+    {
+        GameManager.Instance.isStart = false;
+    }
     void Shuffle()
     {
         bool[] selected_state = new bool[] { false, false, false, false, false, false };

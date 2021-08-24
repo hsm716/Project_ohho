@@ -36,12 +36,16 @@ public class PlayerManager : MonoBehaviourPunCallbacks, IPunObservable
         if(RoomManager.Instance.playerCount >= players.Count() && spawnCheck)
         {
             spawnCheck = false;
-            if (PV.IsMine)
-            {
+            GameManager.Instance.isStart = true;
+            GameManager.Instance.doStartCamera = true;
 
-                CreateController();
 
-            }
+        }
+        if (PV.IsMine && GameManager.Instance.doPlayerSpawn)
+        {
+            GameManager.Instance.doPlayerSpawn = false;
+            CreateController();
+
         }
     }
 

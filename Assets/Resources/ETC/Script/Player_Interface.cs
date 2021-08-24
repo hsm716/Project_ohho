@@ -19,6 +19,9 @@ public class Player_Interface : MonoBehaviour
 
     public Slider HPBAR;
 
+    public Slider STAMINA_BAR;
+    public TextMeshProUGUI STAMINA_UI_Txt;
+
     public GameObject LevelUpPanel;
     public TextMeshProUGUI Next_Level;
 
@@ -216,6 +219,10 @@ public class Player_Interface : MonoBehaviour
         HP_UI.text = (int)player_data.curHP +" / " + player_data.maxHP;
         
         HPBAR.value = (player_data.curHP / player_data.maxHP);
+
+        STAMINA_UI_Txt.text = (int)player_data.curStamina + " / " + player_data.maxStamina;
+        STAMINA_BAR.value = (player_data.curStamina / player_data.maxStamina);
+
         expBar.value = (player_data.curEXP / player_data.maxEXP) * 100;
         Next_Level.text = "" + player_data.level;
         expPercent.text = string.Format("{0:0.00}", ((player_data.curEXP / player_data.maxEXP) * 100)) + "%";
@@ -329,18 +336,29 @@ public class Player_Interface : MonoBehaviour
                 atk_count += 1;
                 break;
             case "DEF":
+                DefenseUp();
                 def_count += 1;
                 break;
             case "CRITICAL":
+                CriticalUp();
                 critical_count += 1;
                 break;
             case "STAMINA":
+                StaminaUp();
                 stamina_count += 1;
                 break;
 
         }
         LevelUpPanel.SetActive(false);
 
+    }
+    public void DefenseUp()
+    {
+        player_data.curDefense += 5;
+    }
+    public void CriticalUp()
+    {
+        player_data.curCritical += 15;
     }
     public void HpUp()
     {
@@ -356,6 +374,10 @@ public class Player_Interface : MonoBehaviour
     public void PowerUp()
     {
         player_data.atk *= 1.25f;
+    }
+    public void StaminaUp()
+    {
+        player_data.maxStamina += 50f;
     }
 
     IEnumerator Shuffle()
