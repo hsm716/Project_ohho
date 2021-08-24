@@ -27,7 +27,7 @@ public class RoomManager : MonoBehaviourPunCallbacks//, IPunObservable
         DontDestroyOnLoad(gameObject);
         Instance = this;
 
-
+        custom_string = "1000";
     }
 
     public override void OnEnable()

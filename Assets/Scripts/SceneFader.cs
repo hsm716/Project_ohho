@@ -35,7 +35,7 @@ public class SceneFader : MonoBehaviour
         }
         yield return new WaitForSeconds(1.5f);
 
-
+        RewardManager.Instance.ShowPanel();
     }
 
     IEnumerator FadeOut_()
