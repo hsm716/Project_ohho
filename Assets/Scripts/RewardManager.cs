@@ -7,10 +7,6 @@ using Photon.Pun;
 public class RewardManager : MonoBehaviourPunCallbacks
 {
     public static RewardManager Instance;
-
-    public GameObject RankingPanel;
-    public GameObject RankCamera;
-
     public SceneFader sceneFader;
     public Transform reward_position;
 
@@ -32,9 +28,8 @@ public class RewardManager : MonoBehaviourPunCallbacks
     public GameObject Second_Player;    //2등
     public GameObject Third_Player;     //3등
 
-    public GameObject[] RankPlayers = { null, null, null };
+    public GameObject[] RankPlayers;
     public int[] arena = { 0, 0, 0 };
-    public int[] stars = { 0, 0, 0 };
     public int[] score = { 0, 0, 0 };
 
     public Text[] NameText;
@@ -59,27 +54,12 @@ public class RewardManager : MonoBehaviourPunCallbacks
         most_jumlyung = 0;
         most_yaktal = 0;
 
-        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
-        foreach (GameObject p in players)
-        {
-            if (p.GetComponent<Player_Control>().PV.Owner.NickName == PhotonNetwork.LocalPlayer.NickName)
-            {
-                First_Player = p;
-                Second_Player = p;
-                Third_Player = p;
-            }
-
-        }
-
-
-
-
-        StartCoroutine(Test());
+        //tartCoroutine(Test());
     }
 
     IEnumerator Test()  //페이드아웃 테스트
     {
-        yield return new WaitForSeconds(30f);
+        yield return new WaitForSeconds(5f);
         Reward();
     }
 
@@ -91,27 +71,7 @@ public class RewardManager : MonoBehaviourPunCallbacks
     IEnumerator Test3() //페이드인 테스트
     {
         yield return new WaitForSeconds(2f);
-        RankCamera.SetActive(true);
-        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
-        foreach (GameObject p in players)
-        {
-            if(p.GetComponent<Player_Control>().PV.Owner.NickName == PhotonNetwork.LocalPlayer.NickName)
-            {
-                p.GetComponent<Player_Control>().characterCamera.gameObject.SetActive(false);
-                //p.GetComponent<Player_Control>().minimapCamera.gameObject.SetActive(false);
-                p.GetComponent<Player_Control>().WeaponPosition_L.SetActive(false);
-                p.GetComponent<Player_Control>().WeaponPosition_R.SetActive(false);
-
-                p.GetComponent<Player_Control>().enabled = false;
-            }
-
-        }
-
-        First_Player.transform.position = reward_position.position;
-        First_Player.transform.rotation = reward_position.rotation;
-        //앉는 애니메이션
         sceneFader.FadeIn();
-
     }
 
     public void Reward()
@@ -125,7 +85,6 @@ public class RewardManager : MonoBehaviourPunCallbacks
         Kill();
         Level();
         BossKill();
-
         Final_Reward();
     }
 
@@ -262,69 +221,91 @@ public class RewardManager : MonoBehaviourPunCallbacks
     {
         UIClose();
 
+        int[] stars = { 0, 0, 0 };
         GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
-        //int mostStar = 0;
+        int mostStar = 0;
         
         foreach (GameObject p in players)
         {
+            /*
+            if(mostStar < p.GetComponent<Player_Control>().star)
+            {
+                mostStar = p.GetComponent<Player_Control>().star;
+                First_Player = p;
+            }
+
+
+            */
+
             Player_Control player_data_ = p.GetComponent<Player_Control>();
             int index = player_data_.PV.ViewID / 1000 - 1;
-            RankPlayers[index] = p; //먼저 순서대로 넣은 뒤 스타가 많은 사람을 앞으로
-        }
+            RankPlayers[index] = p;
 
-        for (int i = 1; i < 2; i++) //1
-        {
-            for (int j = 0; j < 2; j++) //0, 1
+            stars[index] = player_data_.star;
+            //score[index] += player_data_.kill_point * 10 + player_data_.monster_kill_point * 2;
+
+            for (int i = 1; i < 2; i++) //1
             {
-                if (RankPlayers[j].GetComponent<Player_Control>().star >= RankPlayers[j + 1].GetComponent<Player_Control>().star)   //앞이 별이 많거나 같으면
+                for (int j = 0; j < 2; j++) //0, 1
                 {
-                    if (RankPlayers[j].GetComponent<Player_Control>().star == RankPlayers[j + 1].GetComponent<Player_Control>().star)   //별이 같으면
+                    if (RankPlayers[j].GetComponent<Player_Control>().star >= RankPlayers[j + 1].GetComponent<Player_Control>().star)   //앞이 크거나 같으면
                     {
-                        if (RankPlayers[j].GetComponent<Player_Control>().score < RankPlayers[j + 1].GetComponent<Player_Control>().score)   //앞이 스코어가 높으면
+                        if (RankPlayers[j].GetComponent<Player_Control>().score == RankPlayers[j + 1].GetComponent<Player_Control>().score)
                         {
                             GameObject temp = RankPlayers[j];
                             RankPlayers[j] = RankPlayers[j + 1];
                             RankPlayers[j + 1] = temp;
                         }
                     }
-                }
-                else    //앞보다 별이 작으면 바꾸기
-                {
-                    GameObject temp = RankPlayers[j];
-                    RankPlayers[j] = RankPlayers[j + 1];
-                    RankPlayers[j + 1] = temp;
+                    else    //앞이 작으면 바꾸기
+                    {
+                        GameObject temp = RankPlayers[j];
+                        RankPlayers[j] = RankPlayers[j + 1];
+                        RankPlayers[j + 1] = temp;
+                    }
+
                 }
 
-            }
-            // i = 1
-            if (RankPlayers[i].GetComponent<Player_Control>().star >= RankPlayers[i + 1].GetComponent<Player_Control>().star)   //앞이 크거나 같으면
-            {
-                if (RankPlayers[i].GetComponent<Player_Control>().star == RankPlayers[i + 1].GetComponent<Player_Control>().star)     //별이 같으면 
+                if (RankPlayers[i].GetComponent<Player_Control>().star >= RankPlayers[i + 1].GetComponent<Player_Control>().star)   //앞이 크거나 같으면
                 {
-                    if (RankPlayers[i].GetComponent<Player_Control>().score < RankPlayers[i + 1].GetComponent<Player_Control>().score)   //앞이 스코어가 높으면
+                    if (RankPlayers[i].GetComponent<Player_Control>().score == RankPlayers[i + 1].GetComponent<Player_Control>().score)
                     {
                         GameObject temp = RankPlayers[i];
                         RankPlayers[i] = RankPlayers[i + 1];
                         RankPlayers[i + 1] = temp;
                     }
                 }
+                else        //앞이 작으면 바꾸기
+                {
+                    GameObject temp = RankPlayers[i];
+                    RankPlayers[i] = RankPlayers[i + 1];
+                    RankPlayers[i + 1] = temp;
+                }
+
             }
-            else        //앞이 작으면 바꾸기
-            {
-                GameObject temp = RankPlayers[i];
-                RankPlayers[i] = RankPlayers[i + 1];
-                RankPlayers[i + 1] = temp;
-            }
+
+            
+            
+            
+        }
+
+        foreach (GameObject player in RankPlayers)
+        {
+
+
+
         }
 
 
-        First_Player = RankPlayers[0];
-        Second_Player = RankPlayers[1];
-        Third_Player = RankPlayers[2];
+
+
 
         RankDisplay();
+
+        First_Player.transform.position = reward_position.position;
+        First_Player.transform.rotation = reward_position.rotation;
     }
-     
+
     void UIClose()
     {
         GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
@@ -337,82 +318,89 @@ public class RewardManager : MonoBehaviourPunCallbacks
     public void RankDisplay()
     {
         GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
-
-        Player_Control first_player_date = First_Player.GetComponent<Player_Control>();
-        Player_Control second_player_date = Second_Player.GetComponent<Player_Control>();
-        Player_Control third_player_date = Third_Player.GetComponent<Player_Control>();
-
-
-
-        NameText[0].text = first_player_date.username;
-        KDText[0].text = first_player_date.kill_point + " / " + first_player_date.death_point;
-
-        for (int j = 0; j < 5; j++) //점령지
+        foreach (GameObject p in players)
         {
-            if (first_player_date.QD.questClearCheck[j] == true && first_player_date.QD.questIsActive[j] == false)
+            Player_Control player_data_ = p.GetComponent<Player_Control>();
+
+            if(p == First_Player)    //1등
             {
-                OccupiedList[0].transform.GetChild(j).gameObject.SetActive(true);
+                NameText[0].text = player_data_.username;
+                KDText[0].text = player_data_.kill_point + " / " + player_data_.death_point;
+
+                for (int j = 0; j < 5; j++) //점령지
+                {
+                    if (player_data_.QD.questClearCheck[j] == true && player_data_.QD.questIsActive[j] == false)
+                    {
+                        OccupiedList[0].transform.GetChild(j).gameObject.SetActive(true);
+                    }
+                    else
+                    {
+                        OccupiedList[0].transform.GetChild(j).gameObject.SetActive(false);
+                    }
+                }
+
+                for (int i = 0; i < player_data_.star; i++) //별
+                {
+                    StartCoroutine(Star(0, i)); //딜레이
+                }
             }
-            else
+            else if(p == Second_Player)     //2등
             {
-                OccupiedList[0].transform.GetChild(j).gameObject.SetActive(false);
+                NameText[1].text = player_data_.username;
+                KDText[1].text = player_data_.kill_point + " / " + player_data_.death_point;
+
+                for (int j = 0; j < 5; j++) //점령지
+                {
+                    if (player_data_.QD.questClearCheck[j] == true && player_data_.QD.questIsActive[j] == false)
+                    {
+                        OccupiedList[1].transform.GetChild(j).gameObject.SetActive(true);
+
+                    }
+                    else
+                    {
+                        OccupiedList[1].transform.GetChild(j).gameObject.SetActive(false);
+                    }
+                }
+
+                for (int i = 0; i < player_data_.star; i++) //별
+                {
+                    StartCoroutine(Star(2, i)); //딜레이
+                }
             }
+            else        //3등
+            {
+                NameText[2].text = player_data_.username;
+                KDText[2].text = player_data_.kill_point + " / " + player_data_.death_point;
+
+                for (int j = 0; j < 5; j++) //점령지
+                {
+                    if (player_data_.QD.questClearCheck[j] == true && player_data_.QD.questIsActive[j] == false)
+                    {
+                        OccupiedList[2].transform.GetChild(j).gameObject.SetActive(true);
+                    }
+                    else
+                    {
+                        OccupiedList[2].transform.GetChild(j).gameObject.SetActive(false);
+                    }
+                }
+
+                for (int i = 0; i < player_data_.star; i++) //별
+                {
+                    StartCoroutine(Star(2, i)); //딜레이
+                }
+            }
+
+
         }
-
-
-        NameText[1].text = second_player_date.username;
-        KDText[1].text = second_player_date.kill_point + " / " + second_player_date.death_point;
-
-        for (int j = 0; j < 5; j++) //점령지
-        {
-            if (second_player_date.QD.questClearCheck[j] == true && second_player_date.QD.questIsActive[j] == false)
-            {
-                OccupiedList[1].transform.GetChild(j).gameObject.SetActive(true);
-
-            }
-            else
-            {
-                OccupiedList[1].transform.GetChild(j).gameObject.SetActive(false);
-            }
-        }
-
-        NameText[2].text = third_player_date.username;
-        KDText[2].text = third_player_date.kill_point + " / " + third_player_date.death_point;
-
-        for (int j = 0; j < 5; j++) //점령지
-        {
-            if (third_player_date.QD.questClearCheck[j] == true && third_player_date.QD.questIsActive[j] == false)
-            {
-                OccupiedList[2].transform.GetChild(j).gameObject.SetActive(true);
-            }
-            else
-            {
-                OccupiedList[2].transform.GetChild(j).gameObject.SetActive(false);
-            }
-        }
-
     }
 
     IEnumerator Star(int index, int num)
     {
-        yield return new WaitForSeconds(3f);
-        for (int i = 0; i < num; i++)
-        {
-            yield return new WaitForSeconds(0.1f);
-            StarList[index].transform.GetChild(i).gameObject.SetActive(true);
-        }
-
+        yield return new WaitForSeconds(0.1f);
+        OccupiedList[index].transform.GetChild(num).gameObject.SetActive(true);
     }
 
-    public void ShowPanel()
-    {
-        RankingPanel.SetActive(true);
 
-        StartCoroutine(Star(0, First_Player.GetComponent<Player_Control>().star));
-        StartCoroutine(Star(1, Second_Player.GetComponent<Player_Control>().star));
-        StartCoroutine(Star(2, Third_Player.GetComponent<Player_Control>().star));
-
-    }
 
     public void Detail_FoldOut(int num) //펼치기
     {
