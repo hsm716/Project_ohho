@@ -472,7 +472,6 @@ public class Monster : MonoBehaviourPunCallbacks, IPunObservable
                 {
                     if(Vector3.Distance(transform.position,InitPos) <= 0.5f)
                     {
-                        Debug.Log(Vector3.Distance(transform.position, InitPos));
                         isChase = false;
                         agent.isStopped = true;
                     }

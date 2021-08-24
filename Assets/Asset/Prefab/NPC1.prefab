@@ -42,7 +42,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5120040710683942110}
-  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+  m_Mesh: {fileID: 5104947338709939888, guid: a32ef41ccfb1fdf4e8b00f5d691b44f1, type: 3}
 --- !u!23 &5120040710683942083
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -62,7 +62,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a128c48c7665e4b45a2f28601145c0d9, type: 2}
+  - {fileID: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -110,15 +110,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dialogue:
+    npcId: 0
     name: NPC1
     speakDelay: 0.05
-    sentences:
-    - 'This dialogue system is by far the best one available on the Asset Store.
-
-'
-    - Not only is this great for dialogues. The associated Lua scripting environment
-      is amazing and opens up tons of
-    - Bye-bye
+    unCompletedSentences: []
+    duringSentences: []
+    CompletedSentences: []
+    AlreadySentences: []
 --- !u!54 &5120040710683942084
 Rigidbody:
   m_ObjectHideFlags: 0
