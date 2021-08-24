@@ -433,7 +433,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
             }
 
         }
-        score = kill_point * 10 + monster_killpoint * 2;
+        score = kill_point * 10 + yaktal * 5 + monster_killpoint * 2;
 
     }
     [PunRPC]

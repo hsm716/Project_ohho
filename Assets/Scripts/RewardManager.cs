@@ -38,6 +38,8 @@ public class RewardManager : MonoBehaviourPunCallbacks
 
     public Text[] NameText;
     public Text[] KDText;
+    public Text[] YaktalText;
+    public Text[] MonsterKillText;
     public Transform[] StarList;
     public Transform[] OccupiedList;  //child로 검사
 
@@ -360,6 +362,8 @@ public class RewardManager : MonoBehaviourPunCallbacks
             {
                 NameText[0].text = player_data_.username;
                 KDText[0].text = player_data_.kill_point + " / " + player_data_.death_point;
+                YaktalText[0].text = player_data_.yaktal.ToString();
+                MonsterKillText[0].text = player_data_.monster_killpoint.ToString();
 
                 for (int j = 0; j < 5; j++) //점령지
                 {
@@ -377,6 +381,8 @@ public class RewardManager : MonoBehaviourPunCallbacks
             {
                 NameText[1].text = player_data_.username;
                 KDText[1].text = player_data_.kill_point + " / " + player_data_.death_point;
+                YaktalText[1].text = player_data_.yaktal.ToString();
+                MonsterKillText[1].text = player_data_.monster_killpoint.ToString();
 
                 for (int j = 0; j < 5; j++) //점령지
                 {
@@ -395,6 +401,8 @@ public class RewardManager : MonoBehaviourPunCallbacks
             {
                 NameText[2].text = player_data_.username;
                 KDText[2].text = player_data_.kill_point + " / " + player_data_.death_point;
+                YaktalText[2].text = player_data_.yaktal.ToString();
+                MonsterKillText[2].text = player_data_.monster_killpoint.ToString();
 
                 for (int j = 0; j < 5; j++) //점령지
                 {

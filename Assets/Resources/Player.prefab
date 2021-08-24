@@ -45510,8 +45510,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PV: {fileID: 7044034116310767101}
-  questIsActive: 000000000000
-  questClearCheck: 000000000000
+  questIsActive: 0000000000
+  questClearCheck: 0000000000
   QuestBoardPanel: {fileID: 826295190637946927}
   GiveupPanel: {fileID: 8988781676409890370}
   questnum: 0
