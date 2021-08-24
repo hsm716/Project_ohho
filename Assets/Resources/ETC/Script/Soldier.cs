@@ -262,7 +262,14 @@ public class Soldier : MonoBehaviourPunCallbacks,IPunObservable
         }
         if(other.CompareTag("Player_Sword") && other.transform.parent.GetComponent<Player_Control>().PV.Owner != PV.Owner)
         {
-            Hit(other.transform.parent.GetComponent<Player_Control>().atk,0);
+            if (other.transform.parent.GetComponent<Player_Control>().isSkill)
+            {
+                Hit(other.transform.parent.GetComponent<Player_Control>().atk * 1.5f, 0);
+            }
+            else
+            {
+                Hit(other.transform.parent.GetComponent<Player_Control>().atk, 0);
+            }
         }
 
 

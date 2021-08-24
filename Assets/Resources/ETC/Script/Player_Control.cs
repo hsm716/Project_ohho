@@ -83,7 +83,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     private bool isRunning; // 움직이고 있는지
     private bool isRunningBack; // 뒤로 움직이고 있는지
     private bool isDeffensing; // 방어중인지 (class.Sword만 가능)
-    private bool isSkill;
+    public bool isSkill;
     private bool isSkill_R;
     private bool isLevelUp;
     public bool isDodge; // 구르기 중인지
@@ -244,6 +244,8 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
 
     public int yaktal = 0;
     public int star;
+
+    public int monster_killpoint;
     private void Awake()
     {
         star = 0;
@@ -387,7 +389,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
         if (isDeath == false)
         {
             //stepClimb();
-            if (curStyle == Style.WeaponStyle.Arrow || curStyle == Style.WeaponStyle.Magic)
+            if (curStyle == Style.WeaponStyle.Arrow)
             {
                 if (isAttackReady == true)
                 {
@@ -396,6 +398,17 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
                         Dodge();
                     Turn();
                 }
+            }
+            else if(curStyle == Style.WeaponStyle.Magic)
+            {
+                if (isAttackReady == true)
+                {
+                    Moving();
+                    if (curStyle != Style.WeaponStyle.Magic)
+                        Dodge();
+                   
+                }
+                Turn();
             }
             else
             {
@@ -477,6 +490,14 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
         isSkill_E_Ready = skill_E_cooltime < skill_E_Delay;
         isSkill_R_Ready = skill_R_cooltime < skill_R_Delay;
 
+        if(curStyle == Style.WeaponStyle.Magic)
+        {
+            if (isSkill)
+            {
+                attackDelay = 0.5f;
+            }
+        }
+
         if (eDown && !isSkill_E_Ready)
             eDown = false;
         if (eDown && Input.GetMouseButtonUp(1))
@@ -490,22 +511,44 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
             eDown = false;
             if (curStyle == Style.WeaponStyle.Sword && !isAttack)
             {
-                Skill_sword_E();
+                PV.RPC("Skill_sword_E", RpcTarget.All);
+                //Skill_sword_E();
             }
             else if (curStyle == Style.WeaponStyle.Arrow && mRDown)
             {
                 Skill_arrow_E();
+            }
+            else if(curStyle == Style.WeaponStyle.Magic )
+            {
+                PV.RPC("Skill_magic_E", RpcTarget.All);
             }
             skill_E_Delay = 0f;
         }
 
 
     }
+    public ParticleSystem skill_magic_E_effect;
+    [PunRPC]
+    void Skill_magic_E()
+    {
+        animator.SetBool("isSkill_E", true);
+        animator.SetTrigger("doSpell_Skill_E");
+        skill_magic_E_effect.Play();
+
+    }
+    [PunRPC]
+    void Skill_magic_E_out()
+    {
+        skill_magic_E_effect.Stop();
+        animator.SetBool("isSkill_E", false);
+        isSkill = false;
+    }
 
 
     Vector3 Skill_sword_E_Vector;
     public ParticleSystem sword_E_effect;
     public MeshCollider sword_E_area;
+    [PunRPC]
     void Skill_sword_E()
     {
             animator.SetTrigger("doSkill_E");
@@ -515,6 +558,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     public void Skill_sword_E_effect()
     {
         sword_E_effect.Play();
+        sound_Slash2.Play();
         sword_E_area.enabled = true;
     }
     public void Skill_sword_E_Out()
@@ -526,6 +570,13 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
 
         sword_E_area.enabled = false;
         isSkill = false;
+
+    }
+
+    bool skill_setFalse=false;
+    void isSkill_autoFalse() {
+        isSkill = false;
+        skill_setFalse = false;
 
     }
 
@@ -561,6 +612,11 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
                 AnimationUpdate();
                 Attack();
                 Skill();
+                if (curStyle==Style.WeaponStyle.Magic && isSkill == true && !skill_setFalse)
+                {
+                    skill_setFalse = true;
+                    Invoke("isSkill_autoFalse",1f);
+                }
 
 
 
@@ -668,6 +724,10 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
             if (curStyle == Style.WeaponStyle.Sword && !dDown)
             {
                 isDeffensing = true;
+            }
+            if(curStyle == Style.WeaponStyle.Magic && isSkill)
+            {
+                PV.RPC("Skill_magic_E_out", RpcTarget.All);
             }
             //Deffense();
         }
@@ -945,6 +1005,34 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
                 }
             }
         }
+        else if (curStyle ==Style.WeaponStyle.Magic && isSkill)
+        {
+            Ray ray = characterCamera.ScreenPointToRay(Input.mousePosition);
+            // 레이어마스크 /////
+            int layerMask = (1 << LayerMask.NameToLayer("Environment")) | (1 << LayerMask.NameToLayer("Wall"));
+            RaycastHit hitResult;
+            /////////////////////
+
+            if (Physics.Raycast(ray, out hitResult, 100f, layerMask))
+            {
+                //Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.forward) * hitResult.distance, Color.yellow);
+                //Debug.Log(hitResult.transform.gameObject.name);
+                mouseDir = new Vector3(hitResult.point.x, transform.position.y, hitResult.point.z) - transform.position;
+                animator.transform.forward = Vector3.Slerp(animator.transform.forward, mouseDir, 0.05f);
+                mouseDir_y = new Vector3(hitResult.point.x, hitResult.point.y, hitResult.point.z) - transform.position;
+                if (mouseDir.x * horizontalMove <= 0f && mouseDir.z * verticalMove <= 0f)
+                {
+                    if (mouseDir.x * horizontalMove == 0f && mouseDir.z * verticalMove == 0f)
+                        isRunningBack = false;
+                    else
+                        isRunningBack = true;
+                }
+                else
+                {
+                    isRunningBack = false;
+                }
+            }
+        }
     }
 
     // 줌인 줌아웃 동작코드, 210624_황승민
@@ -996,55 +1084,58 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
         {
             sound_source.PlayOneShot(sound_arrow_hit);
         }
-
-        GameObject ft = PhotonNetwork.Instantiate("Damage_Text", transform.position, Quaternion.Euler(new Vector3(45f, 0f, 0f)));
-        ft.GetComponent<TextMesh>().text = "" + (int)atk_;
-        if (isDeffensing)
+        if (PV.IsMine)
         {
-            if (shieldAmount > 0)
+            GameObject ft = PhotonNetwork.Instantiate("Damage_Text", transform.position, Quaternion.Euler(new Vector3(45f, 0f, 0f)));
+            ft.GetComponent<TextMesh>().text = "" + (int)atk_;
+
+            if (isDeffensing)
             {
-                float dmg = shieldAmount - atk_;
-                shieldAmount -= atk_;
-                if (dmg < 0)
+                if (shieldAmount > 0)
                 {
-                    curHP -= (-dmg);
+                    float dmg = shieldAmount - atk_;
+                    shieldAmount -= atk_;
+                    if (dmg < 0)
+                    {
+                        curHP -= (-dmg);
+                    }
                 }
+                else
+                    curHP -= atk_;
             }
             else
                 curHP -= atk_;
-        }
-        else
-            curHP -= atk_;
 
-        if (curHP <= 0 && isDeath==false)
-        {
-            if (isArena == true)
+            if (curHP <= 0 && isDeath == false)
             {
-                arenaWin = false;
-                PV.RPC("setArenaRank", RpcTarget.All);
-                isDeath = true;
-                animator.SetTrigger("doDeath");
-                GameObject.Find("MainCanvas").transform.Find("RespawnPanel").gameObject.SetActive(true);
-                myCollider.enabled = false;
-                rgbd.isKinematic = true;
+                if (isArena == true)
+                {
+                    arenaWin = false;
+                    PV.RPC("setArenaRank", RpcTarget.All);
+                    isDeath = true;
+                    animator.SetTrigger("doDeath");
+                    GameObject.Find("MainCanvas").transform.Find("RespawnPanel").gameObject.SetActive(true);
+                    myCollider.enabled = false;
+                    rgbd.isKinematic = true;
 
-                //PI.ArenaOut();
+                    //PI.ArenaOut();
 
+                }
+                else
+                {
+                    PhotonNetwork.Instantiate("killLog", Vector3.zero, Quaternion.identity);
+
+                    isDeath = true;
+                    PV.RPC("raiseKillPoint", RpcTarget.All);
+                    animator.SetTrigger("doDeath");
+                    myCollider.enabled = false;
+                    rgbd.isKinematic = true;
+                    death_point += 1;
+                    GameObject.Find("MainCanvas").transform.Find("RespawnPanel").gameObject.SetActive(true);
+                    Invoke("Respawn", 4f * level);
+                }
+                //PV.RPC("DestroyRPC", RpcTarget.AllBuffered);
             }
-            else
-            {
-                PhotonNetwork.Instantiate("killLog", Vector3.zero, Quaternion.identity);
-
-                isDeath = true;
-                PV.RPC("raiseKillPoint", RpcTarget.All);
-                animator.SetTrigger("doDeath");
-                myCollider.enabled = false;
-                rgbd.isKinematic = true;
-                death_point += 1;
-                GameObject.Find("MainCanvas").transform.Find("RespawnPanel").gameObject.SetActive(true);
-                Invoke("Respawn", 4f * level);
-            }
-            //PV.RPC("DestroyRPC", RpcTarget.AllBuffered);
         }
     }
     [PunRPC]
@@ -1084,7 +1175,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
             case Style.WeaponStyle.Sword:
                 isAttackReady = 0.15f < attackDelay;
 
-                if (isAttackReady && mLDown && !isDodge && !isDeffensing && !eDown)
+                if (isAttackReady && mLDown && !isDodge && !isDeffensing && !eDown && !isSkill)
                 {
 
                     animator.SetTrigger("doSlash");
@@ -1119,7 +1210,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
             case Style.WeaponStyle.Magic:
                 isAttackReady = 0.82f < attackDelay;
 
-                if (isAttackReady && mLDown && !isDodge)
+                if (isAttackReady && mLDown && !isDodge && !isSkill && !eDown)
                 {
                     animator.SetTrigger("doSpell");
                     Invoke("Spell", 0.35f);
@@ -1138,6 +1229,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
 
     }
 
+    [PunRPC]
     public void Slash1()
     {
         attackEffect.transform.localRotation = Quaternion.Euler(new Vector3(0f, 0f, 0f));
@@ -1146,7 +1238,9 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
         attackArea.enabled = true;
         Invoke("SlashOut", 0.05f);
         // yield return new WaitForSeconds(0.1f);
-    }
+    
+   }
+    [PunRPC]
     public void Slash2()
     {
         attackEffect.transform.localRotation = Quaternion.Euler(new Vector3(0f, 0f, 180f));
@@ -1284,11 +1378,22 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
 
         if (other.CompareTag("Player_Sword"))
         {
-            if(PV.IsMine)
-                Hit(other.transform.parent.GetComponent<Player_Control>().atk,0);
+            /*if ( PV.IsMine*//*&& PV.Owner != other.transform.parent.GetComponent<PhotonView>().Owner*//*)
+            {
+                
+            }*/
+            if (other.transform.parent.GetComponent<Player_Control>().isSkill)
+            {
+                Hit(other.transform.parent.GetComponent<Player_Control>().atk * 1.5f, 0);
+            }
+            else
+            {
+                Hit(other.transform.parent.GetComponent<Player_Control>().atk, 0);
+            }
+
             Last_Hiter = other.transform.parent.GetComponent<Player_Control>();
         }
-        if (PV.IsMine && other.CompareTag("Soldier_Attack"))
+        if (PV.Owner != other.transform.parent.GetComponent<Soldier>().PV.Owner && other.CompareTag("Soldier_Attack"))
         {
             Hit(other.transform.parent.GetComponent<Soldier>().atk,0);
         }
@@ -1677,6 +1782,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
             stream.SendNext(isDeath);
             stream.SendNext(arenaWin);
             stream.SendNext(isArena);
+            stream.SendNext(isSkill);
         }
         else
         {
@@ -1705,6 +1811,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
             isDeath = (bool)stream.ReceiveNext();
             arenaWin = (bool)stream.ReceiveNext();
             isArena = (bool)stream.ReceiveNext();
+            isSkill = (bool)stream.ReceiveNext();
         }
     }
 }

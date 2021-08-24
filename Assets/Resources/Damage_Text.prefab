@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 3829289734800605988}
   - component: {fileID: 2082766601226205278}
   - component: {fileID: 3933501760153192021}
+  - component: {fileID: 7075931495298184933}
   m_Layer: 0
   m_Name: Damage_Text
   m_TagString: Untagged
@@ -129,6 +130,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c7a5a2a0a01c2d8438926dc0b18a8337, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  tm: {fileID: 2213397433588007962}
   DestroyTime: 2
   Offset: {x: 0, y: 1.5, z: 0}
   RandomizeIntensity: {x: 0.2, y: 0, z: 0}
@@ -150,7 +152,27 @@ MonoBehaviour:
   Synchronization: 3
   OwnershipTransfer: 0
   observableSearch: 2
-  ObservedComponents: []
+  ObservedComponents:
+  - {fileID: 2082766601226205278}
+  - {fileID: 7075931495298184933}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
+--- !u!114 &7075931495298184933
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1284247143642617820}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b8c4a61274f60b4ea5fb4299cfdbf14, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowLayerWeightsInspector: 1
+  ShowParameterInspector: 1
+  m_SynchronizeParameters: []
+  m_SynchronizeLayers:
+  - SynchronizeType: 0
+    LayerIndex: 0
