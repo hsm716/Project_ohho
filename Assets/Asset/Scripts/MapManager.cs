@@ -14,7 +14,7 @@ public class MapManager : MonoBehaviourPunCallbacks
 
     public GameObject Section_Mesh;
     public Transform Bridges;
-    //public GameObject[] Sections2;
+
     public int[] Order;
 
     public Material mat;
@@ -29,16 +29,9 @@ public class MapManager : MonoBehaviourPunCallbacks
 
         StartCoroutine(Call_Section());
         StartCoroutine(CallBridges());
-        //StartCoroutine(NavMeshBaker());
-        //PV.RPC("Shuffle", RpcTarget.All);
+
     }
-/*    IEnumerator NavMeshBaker()
-    {
-        yield return new WaitForSeconds(26f);
 
-        Section_Mesh.transform.GetChild(0).GetComponent<NavMeshSurface>().BuildNavMesh();
-
-    }*/
     void Shuffle()
     {
         bool[] selected_state = new bool[] { false, false, false, false, false, false };
@@ -68,9 +61,6 @@ public class MapManager : MonoBehaviourPunCallbacks
             Shuffle();
         }
 
-        //Shuffle_Result();
-
-
     }
 
     [PunRPC]
@@ -85,7 +75,7 @@ public class MapManager : MonoBehaviourPunCallbacks
         int j = 0;
         foreach (Transform offset in Section_Offsets)
         {
-            yield return new WaitForSeconds(3f);
+            yield return new WaitForSeconds(2f);
             GameObject sections = Instantiate(Sections[Order[j]]);
             sections.transform.GetChild(0).localRotation = Quaternion.Euler(-90, 0, -60 * j);
             sections.transform.parent = offset;
@@ -93,33 +83,19 @@ public class MapManager : MonoBehaviourPunCallbacks
             sections.transform.localRotation = Quaternion.identity;
             j++;
         }
-        //StartCoroutine(Phase());
 
     }
 
     IEnumerator CallBridges()
     {
-        yield return new WaitForSeconds(3f);
+        yield return new WaitForSeconds(2f);
         foreach (Transform bridge in Bridges)
         {
-            yield return new WaitForSeconds(1.5f);
+            yield return new WaitForSeconds(1f); 
             bridge.gameObject.SetActive(true);
         }
     }
 
-    /*
-    IEnumerator Phase()
-    {
-
-        while (split < 1)
-        {
-            split += Time.deltaTime * 0.25f;
-            mat.SetFloat("_SplitValue", split);
-            yield return 0;
-        }
-
-    }
-    */
 
 
 }

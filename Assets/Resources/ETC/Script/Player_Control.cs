@@ -246,9 +246,12 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     public int star;
 
     public int monster_killpoint;
+    public int score;
+
     private void Awake()
     {
         star = 0;
+        score = 0;
         SoldierPoint = 20;
         SoldierPoint_max = 20;
         NickNameText.text = PV.IsMine ? PhotonNetwork.NickName : PV.Owner.NickName;
@@ -418,6 +421,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
             }
 
         }
+        score = kill_point * 10 + monster_killpoint * 2;
 
     }
     [PunRPC]

@@ -18,7 +18,7 @@ public class Bridge : MonoBehaviour
         foreach (Transform parts in transform)
         {
             animator = parts.GetChild(0).GetComponent<Animator>();
-            yield return new WaitForSeconds(0.1f);
+            yield return new WaitForSeconds(0.05f);
             //animator.Play("section");
             animator.SetTrigger("bridgeCall");
         }

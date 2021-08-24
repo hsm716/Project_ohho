@@ -32,7 +32,7 @@ public class Launcher1 : MonoBehaviourPunCallbacks
     {
         Debug.Log("Connecting to Master");
         PhotonNetwork.ConnectUsingSettings();
-
+        MenuManager.Instance.OpenMenu("Loading");
         if (PlayerPrefs.HasKey("username"))
         {
             usernameInput.text = PlayerPrefs.GetString("username");
