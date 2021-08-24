@@ -43,7 +43,7 @@ public class Monster : MonoBehaviourPunCallbacks, IPunObservable
     
     public float atk;
 
-    Transform target;
+    public Transform target;
 
     Vector3 Init_Pos;
 
@@ -68,11 +68,14 @@ public class Monster : MonoBehaviourPunCallbacks, IPunObservable
     public AudioClip sound_slash_hit;
     public AudioClip sound_arrow_hit;
     public AudioClip sound_golem_PunchAttack_clip;
+
+    public Vector3 InitPos;
     void Awake()
     {
         anim = GetComponent<Animator>();
         rgbd = GetComponent<Rigidbody>();
         agent = GetComponent<NavMeshAgent>();
+        InitPos = this.transform.position;
         //StartCoroutine("StepShake");
 
         //golem_Index = Random.Range(0, 3);
@@ -120,6 +123,7 @@ public class Monster : MonoBehaviourPunCallbacks, IPunObservable
 
 
     }
+   
 
 
     [PunRPC]
@@ -395,7 +399,7 @@ public class Monster : MonoBehaviourPunCallbacks, IPunObservable
     void skillEnable_false()
     {
         skillCol.enabled = false;
-
+        
     }
     public void SkillOut()
     {
@@ -415,6 +419,14 @@ public class Monster : MonoBehaviourPunCallbacks, IPunObservable
     {
         if (!isDead)
         {
+            if (Last_Hiter)
+            {
+                if (Last_Hiter.isDeath)
+                {
+                    Last_Hiter = null;
+                    ChaseObject(InitPos);
+                }
+            }
             if (monsterType == Type.demon)
             {
                 curSkillAmount += Time.deltaTime*5f;
@@ -456,12 +468,24 @@ public class Monster : MonoBehaviourPunCallbacks, IPunObservable
                     agent.velocity = Vector3.zero;
 
                 }*/
+                if (!target)
+                {
+                    if(Vector3.Distance(transform.position,InitPos) <= 0.5f)
+                    {
+                        Debug.Log(Vector3.Distance(transform.position, InitPos));
+                        isChase = false;
+                        agent.isStopped = true;
+                    }
+                    ChaseObject(InitPos);
+                }
+
                 if (isChase)
                 {
 
                     
                     //PV.RPC("ChaseObject", RpcTarget.Others,target.position);
-                    ChaseObject(target.position);
+                    if(target)
+                        ChaseObject(target.position);
                     if(!isSkill && !isAttack)
                         Attack();
                 }

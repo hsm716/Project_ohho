@@ -363,7 +363,7 @@ public class Player_Interface : MonoBehaviour
     public void HpUp()
     {
         player_data.maxHP += 1000;
-        player_data.Hp_Bar.GetHpBoost();
+        player_data.HP_CHANGE=true;
     }
     public void SpeedUp()
     {
@@ -374,6 +374,7 @@ public class Player_Interface : MonoBehaviour
     public void PowerUp()
     {
         player_data.atk *= 1.25f;
+        player_data.HP_CHANGE = true;
     }
     public void StaminaUp()
     {

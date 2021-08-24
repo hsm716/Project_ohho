@@ -255,6 +255,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     public int monster_killpoint;
     public int score;
 
+    public bool HP_CHANGE = false;
     private void Awake()
     {
         star = 0;
@@ -636,7 +637,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
                 }
                 if (curStyle == Style.WeaponStyle.Magic && isSkill&&curStamina <=2f)
                 {
-                    Skill_magic_E_out();
+                    PV.RPC("Skill_magic_E_out",RpcTarget.All);
                 }
 
 
@@ -688,7 +689,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
                     float dif = maxEXP - curEXP;
                     
                     LevelUp();
-                    curEXP += dif;
+                    curEXP += Mathf.Abs(dif);
                 }
 
             }
@@ -1155,6 +1156,10 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
                 {
                     arenaWin = false;
                     PV.RPC("setArenaRank", RpcTarget.All);
+                    if(curStyle == Style.WeaponStyle.Magic && isSkill)
+                    {
+                        PV.RPC("Skill_magic_E_out", RpcTarget.All);
+                    }
                     isDeath = true;
                     animator.SetTrigger("doDeath");
                     GameObject.Find("MainCanvas").transform.Find("RespawnPanel").gameObject.SetActive(true);
@@ -1166,10 +1171,15 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
                 }
                 else
                 {
+                    
                     PhotonNetwork.Instantiate("killLog", Vector3.zero, Quaternion.identity);
-
+                    if (curStyle == Style.WeaponStyle.Magic && isSkill)
+                    {
+                        PV.RPC("Skill_magic_E_out", RpcTarget.All);
+                    }
                     isDeath = true;
-                    PV.RPC("raiseKillPoint", RpcTarget.All);
+                    if(Last_Hiter)
+                        PV.RPC("raiseKillPoint", RpcTarget.All);
                     animator.SetTrigger("doDeath");
                     myCollider.enabled = false;
                     rgbd.isKinematic = true;
@@ -1835,6 +1845,8 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
 
             stream.SendNext(curCritical);
             stream.SendNext(curDefense);
+
+            stream.SendNext(HP_CHANGE);
         }
         else
         {
@@ -1873,6 +1885,8 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
 
             curCritical = (int)stream.ReceiveNext();
             curDefense = (int)stream.ReceiveNext();
+
+            HP_CHANGE = (bool)stream.ReceiveNext();
         }
     }
 }

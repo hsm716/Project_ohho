@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Player_HpBar : MonoBehaviour
+public class Player_HpBar : MonoBehaviourPunCallbacks
 {
     public Transform player;
     Player_Control player_data;
@@ -14,6 +14,8 @@ public class Player_HpBar : MonoBehaviour
     public GameObject HpLineFolder;
     public Text Level_text;
     public PhotonView PV;
+
+    
 
     //   private Player_Control playerLogic;
     Vector3 offset = new Vector3(0f, 2.3f, 0f);
@@ -26,6 +28,12 @@ public class Player_HpBar : MonoBehaviour
 
     void Update()
     {
+        
+        if (player_data.HP_CHANGE == true)
+        {
+            player_data.HP_CHANGE = false;
+            PV.RPC("GetHpBoost", RpcTarget.All);
+        }
 
         /*   if (Input.GetKeyDown(KeyCode.Escape))
                PV.RPC("DestroyRPC", RpcTarget.AllBuffered);*/
