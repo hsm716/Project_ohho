@@ -44947,6 +44947,7 @@ MonoBehaviour:
   star: 0
   monster_killpoint: 0
   score: 0
+  HP_CHANGE: 0
   skill_magic_E_effect: {fileID: 8140639959483632841}
   sword_E_effect: {fileID: 8150124544094309765}
   sword_E_area: {fileID: 8197510069094223750}

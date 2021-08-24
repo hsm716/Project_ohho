@@ -38,7 +38,7 @@ public class Style : MonoBehaviourPunCallbacks
         myPlayer.curStamina = 100f;
         myPlayer.maxStamina = 100f;
         //myPlayer.Hp_Bar.PV.RPC("GetHpBoost", RpcTarget.All);
-
+        myPlayer.HP_CHANGE = true;
         myPlayer.animator.Rebind();
         myPlayer.animator.Play("Idle_Sword");
 
@@ -53,6 +53,7 @@ public class Style : MonoBehaviourPunCallbacks
         myPlayer.atk = 150f;
         myPlayer.curHP = 2000f;
         myPlayer.maxHP = 2000f;
+        myPlayer.HP_CHANGE = true;
         myPlayer.curStamina = 80f;
         myPlayer.maxStamina = 80f;
         //myPlayer.Hp_Bar.PV.RPC("GetHpBoost", RpcTarget.All);
@@ -71,6 +72,7 @@ public class Style : MonoBehaviourPunCallbacks
         myPlayer.atk = 225f;
         myPlayer.curHP = 1750f;
         myPlayer.maxHP = 1750f;
+        myPlayer.HP_CHANGE = true;
         myPlayer.curStamina = 200f;
         myPlayer.maxStamina = 200f;
         //myPlayer.Hp_Bar.PV.RPC("GetHpBoost", RpcTarget.All);

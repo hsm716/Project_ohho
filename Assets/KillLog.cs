@@ -30,8 +30,18 @@ public class KillLog : MonoBehaviour
     void SetLog_RPC()
     {
         transform.parent = KillLogs.transform;
-        killer_name.text = myPlayer.Last_Hiter.username;
-        killedMan_name.text = myPlayer.username;
+        if (!myPlayer.Last_Hiter)
+        {
+            killer_name.text = "MONSTER";
+            killedMan_name.text = myPlayer.username;
+        }
+        else
+        {
+            killer_name.text = myPlayer.Last_Hiter.username;
+            killedMan_name.text = myPlayer.username;
+        }
+
+        
     }
     void Start()
     {
