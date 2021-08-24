@@ -120,7 +120,7 @@ public class QuestData : MonoBehaviourPunCallbacks//, IPunObservable
         if (questIsActive[3] == true)   //포지
         {
             //OccupiedValue_cur += Time.deltaTime*5f;
-            if (OccupiedValue_cur >= OccupiedValue_max) // 나뭇가지 5개 주워오기
+            if (twigCurCount >= twigMaxCount)  // 나뭇가지 5개 주워오기
             {
                 questClearCheck[3] = true;
 
@@ -128,7 +128,11 @@ public class QuestData : MonoBehaviourPunCallbacks//, IPunObservable
         }
         if (questIsActive[4] == true)   //설원
         {
+            if (OccupiedValue_cur >= OccupiedValue_max) // 나뭇가지 5개 주워오기
+            {
+                questClearCheck[4] = true;
 
+            }
         }
 
     }
@@ -191,13 +195,16 @@ public class QuestData : MonoBehaviourPunCallbacks//, IPunObservable
                 slimeKillCount = 0;
                 break;
             case 1:
-                break;
-            case 2:
                 twigCurCount = 0;
                 break;
+            case 2:
+                DemonKill = false;
+                break;
             case 3:
+                twigCurCount = 0;
                 break;
             case 4:
+                OccupiedValue_cur = 0;
                 break;
             case 5:
                 break;
