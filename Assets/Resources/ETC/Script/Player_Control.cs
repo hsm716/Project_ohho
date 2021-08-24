@@ -394,7 +394,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
             }
         }
 
-    }
+    } 
     private void FixedUpdate()
     {
         if (!PV.IsMine)

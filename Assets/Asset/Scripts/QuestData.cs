@@ -130,10 +130,7 @@ public class QuestData : MonoBehaviourPunCallbacks//, IPunObservable
         {
 
         }
-        if (questIsActive[5] == true)   //½ÅÀü
-        {
 
-        }
     }
 
 

@@ -281,11 +281,11 @@ public class Player_Interface : MonoBehaviour
             player_data.arenaRank=1;
             if(GameManager.Instance.areanaCount == 3)   //¸¶Áö¸· 
             {
-                RewardManager.Instance.arena[player_data.PV.ViewID / 1000 - 1] += 2;
+                player_data.star += 2;
             }
             else
             {
-                RewardManager.Instance.arena[player_data.PV.ViewID / 1000 - 1]++;
+                player_data.star++;
             }
         }
         if (GameManager.Instance.areanaCount == 3)

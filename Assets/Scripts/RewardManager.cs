@@ -7,8 +7,14 @@ using Photon.Pun;
 public class RewardManager : MonoBehaviourPunCallbacks
 {
     public static RewardManager Instance;
+
+    public PhotonView PV;
+
+    public GameObject RankingPanel;
+    public GameObject RankingCamera;
     public SceneFader sceneFader;
     public Transform reward_position;
+    public DialogueTrigger DT;
 
     public GameObject[] RankDetail;
     public GameObject[] FoldoutButton;
@@ -29,8 +35,6 @@ public class RewardManager : MonoBehaviourPunCallbacks
     public GameObject Third_Player;     //3등
 
     public GameObject[] RankPlayers;
-    public int[] arena = { 0, 0, 0 };
-    public int[] score = { 0, 0, 0 };
 
     public Text[] NameText;
     public Text[] KDText;
@@ -54,38 +58,90 @@ public class RewardManager : MonoBehaviourPunCallbacks
         most_jumlyung = 0;
         most_yaktal = 0;
 
-        //tartCoroutine(Test());
+        StartCoroutine(Test());
     }
 
     IEnumerator Test()  //페이드아웃 테스트
     {
-        yield return new WaitForSeconds(5f);
+        yield return new WaitForSeconds(60f);
         Reward();
     }
 
     public void Tochair()   //의자있는화면으로
     {
+        Debug.Log("@@@@@@@@@@@ToChair@@@@@@@");
         StartCoroutine(Test3());
     }
 
     IEnumerator Test3() //페이드인 테스트
     {
+        Final_Reward();
+
+        Debug.Log("@@@@@@@@@@@Test3@@@@@@@");
         yield return new WaitForSeconds(2f);
+        RankingCamera.SetActive(true);      //랭킹카메라 켜기
+        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+        foreach (GameObject p in players)
+        {
+            if (p.GetComponent<Player_Control>().PV.Owner.NickName == PhotonNetwork.LocalPlayer.NickName)
+            {
+                p.GetComponent<Player_Control>().characterCamera.gameObject.SetActive(false);
+                //p.GetComponent<Player_Control>().minimapCamera.gameObject.SetActive(false);
+                p.GetComponent<Player_Control>().WeaponPosition_L.SetActive(false);
+                p.GetComponent<Player_Control>().WeaponPosition_R.SetActive(false);
+
+                p.GetComponent<Player_Control>().enabled = false;
+            }
+
+        }
+
+        First_Player.transform.position = reward_position.position;
+        First_Player.transform.rotation = reward_position.rotation;
         sceneFader.FadeIn();
     }
 
-    public void Reward()
+    public void DialogueDisplay()
+    {
+        //PV.RPC("DialogueDisplay2", RpcTarget.All);
+        Debug.Log("@@@@@@@@@@@DialogueDisplay@@@@@@@");
+        DT.FinalDialogue();
+    }
+    [PunRPC]
+    public void DialogueDisplay2()
+    {
+        DT.FinalDialogue();
+    }
+
+    public void RewardPlace()   //Fadein 마지막
+    {
+        Debug.Log("@@@@@@@@@@@RewardPlace@@@@@@@");
+        StartCoroutine(RankingDisplay());
+    }
+
+    IEnumerator RankingDisplay()
+    {
+        yield return new WaitForSeconds(0.5f);
+        RankDisplay();
+        yield return new WaitForSeconds(1.0f);
+        RankingPanel.SetActive(true);
+
+        StartCoroutine(Star(0, First_Player.GetComponent<Player_Control>().star));
+        StartCoroutine(Star(1, Second_Player.GetComponent<Player_Control>().star));
+        StartCoroutine(Star(2, Third_Player.GetComponent<Player_Control>().star));
+    }
+
+    public void Reward()    //마지막 아레나 끝나면 호출
     {
         sceneFader.FadeOut();
 
 
         Occupy();   //점령
         Plunder();  //약탈
-        Arena();
+        //Arena();
         Kill();
         Level();
         BossKill();
-        Final_Reward();
+        
     }
 
     
@@ -155,7 +211,7 @@ public class RewardManager : MonoBehaviourPunCallbacks
 
         }
     }
-
+    /*
     void Arena()
     {
         GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
@@ -171,7 +227,7 @@ public class RewardManager : MonoBehaviourPunCallbacks
             
         }
     }
-
+    */
     void Kill()
     {
         GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
@@ -217,86 +273,83 @@ public class RewardManager : MonoBehaviourPunCallbacks
         }
     }
 
-    void Final_Reward()
+    void Final_Reward()     //순위 계산
     {
         UIClose();
 
-        int[] stars = { 0, 0, 0 };
         GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
-        int mostStar = 0;
-        
         foreach (GameObject p in players)
         {
-            Player_Control player_data_ = p.GetComponent<Player_Control>();
-            int index = player_data_.PV.ViewID / 1000 - 1;
+            int index = p.GetComponent<Player_Control>().PV.ViewID / 1000 - 1;
+            Debug.Log(index);
             RankPlayers[index] = p;
+        }
 
-            stars[index] = player_data_.star;
-            //score[index] += player_data_.kill_point * 10 + player_data_.monster_kill_point * 2;
 
-            for (int i = 1; i < 2; i++) //1
+        for (int i = 1; i < 2; i++) //1
+        {
+            for (int j = 0; j < 2; j++) //0, 1
             {
-                for (int j = 0; j < 2; j++) //0, 1
+                if (RankPlayers[j].GetComponent<Player_Control>().star >= RankPlayers[j + 1].GetComponent<Player_Control>().star)   //앞이 크거나 같으면
                 {
-                    if (RankPlayers[j].GetComponent<Player_Control>().star >= RankPlayers[j + 1].GetComponent<Player_Control>().star)   //앞이 크거나 같으면
+                    if (RankPlayers[j].GetComponent<Player_Control>().star == RankPlayers[j + 1].GetComponent<Player_Control>().star)
                     {
-                        if (RankPlayers[j].GetComponent<Player_Control>().score == RankPlayers[j + 1].GetComponent<Player_Control>().score)
+                        if(RankPlayers[j].GetComponent<Player_Control>().score < RankPlayers[j + 1].GetComponent<Player_Control>().score)
                         {
                             GameObject temp = RankPlayers[j];
                             RankPlayers[j] = RankPlayers[j + 1];
                             RankPlayers[j + 1] = temp;
                         }
                     }
-                    else    //앞이 작으면 바꾸기
-                    {
-                        GameObject temp = RankPlayers[j];
-                        RankPlayers[j] = RankPlayers[j + 1];
-                        RankPlayers[j + 1] = temp;
-                    }
-
+                }
+                else    //앞이 작으면 바꾸기
+                {
+                    GameObject temp = RankPlayers[j];
+                    RankPlayers[j] = RankPlayers[j + 1];
+                    RankPlayers[j + 1] = temp;
                 }
 
-                if (RankPlayers[i].GetComponent<Player_Control>().star >= RankPlayers[i + 1].GetComponent<Player_Control>().star)   //앞이 크거나 같으면
+            }
+
+            if (RankPlayers[i].GetComponent<Player_Control>().star >= RankPlayers[i + 1].GetComponent<Player_Control>().star)   //앞이 크거나 같으면
+            {
+                if (RankPlayers[i].GetComponent<Player_Control>().star == RankPlayers[i + 1].GetComponent<Player_Control>().star)
                 {
-                    if (RankPlayers[i].GetComponent<Player_Control>().score == RankPlayers[i + 1].GetComponent<Player_Control>().score)
+                    if (RankPlayers[i].GetComponent<Player_Control>().score < RankPlayers[i + 1].GetComponent<Player_Control>().score)
                     {
                         GameObject temp = RankPlayers[i];
                         RankPlayers[i] = RankPlayers[i + 1];
                         RankPlayers[i + 1] = temp;
                     }
-                }
-                else        //앞이 작으면 바꾸기
-                {
-                    GameObject temp = RankPlayers[i];
-                    RankPlayers[i] = RankPlayers[i + 1];
-                    RankPlayers[i + 1] = temp;
-                }
 
+                }
+            }
+            else        //앞이 작으면 바꾸기
+            {
+                GameObject temp = RankPlayers[i];
+                RankPlayers[i] = RankPlayers[i + 1];
+                RankPlayers[i + 1] = temp;
             }
 
-            
-            
-            
         }
 
+        First_Player = RankPlayers[0];
+        Second_Player = RankPlayers[1];
+        Third_Player = RankPlayers[2];
 
 
-        RankDisplay();
-
-        First_Player.transform.position = reward_position.position;
-        First_Player.transform.rotation = reward_position.rotation;
     }
 
-    void UIClose()
+    void UIClose()  //각 플레이어 인터페이스 끄기
     {
         GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
         foreach (GameObject p in players)
         {
-            p.transform.parent.GetChild(1).gameObject.SetActive(false); //인터페치스캔버스 끄기
+            p.transform.parent.GetChild(1).gameObject.SetActive(false); //인터페이스캔버스 끄기
         }
     }
 
-    public void RankDisplay()
+    public void RankDisplay()   //랭킹 내용 작성
     {
         GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
         foreach (GameObject p in players)
@@ -319,11 +372,6 @@ public class RewardManager : MonoBehaviourPunCallbacks
                         OccupiedList[0].transform.GetChild(j).gameObject.SetActive(false);
                     }
                 }
-
-                for (int i = 0; i < player_data_.star; i++) //별
-                {
-                    StartCoroutine(Star(0, i)); //딜레이
-                }
             }
             else if(p == Second_Player)     //2등
             {
@@ -342,11 +390,6 @@ public class RewardManager : MonoBehaviourPunCallbacks
                         OccupiedList[1].transform.GetChild(j).gameObject.SetActive(false);
                     }
                 }
-
-                for (int i = 0; i < player_data_.star; i++) //별
-                {
-                    StartCoroutine(Star(2, i)); //딜레이
-                }
             }
             else        //3등
             {
@@ -364,21 +407,21 @@ public class RewardManager : MonoBehaviourPunCallbacks
                         OccupiedList[2].transform.GetChild(j).gameObject.SetActive(false);
                     }
                 }
-
-                for (int i = 0; i < player_data_.star; i++) //별
-                {
-                    StartCoroutine(Star(2, i)); //딜레이
-                }
             }
 
-
         }
+
     }
 
     IEnumerator Star(int index, int num)
     {
-        yield return new WaitForSeconds(0.1f);
-        OccupiedList[index].transform.GetChild(num).gameObject.SetActive(true);
+        yield return new WaitForSeconds(1f);
+        for (int i = 0; i < num; i++)
+        {
+            yield return new WaitForSeconds(0.1f);
+            StarList[index].transform.GetChild(i).gameObject.SetActive(true);
+        }
+
     }
 
 

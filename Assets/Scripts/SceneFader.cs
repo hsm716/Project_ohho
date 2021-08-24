@@ -8,7 +8,7 @@ public class SceneFader : MonoBehaviour
 {
     public Image img;
     public AnimationCurve curve;
-    public DialogueTrigger DT;
+
     public GameObject continueButton;
 
     public void FadeIn()
@@ -35,7 +35,7 @@ public class SceneFader : MonoBehaviour
         }
         yield return new WaitForSeconds(1.5f);
 
-
+        RewardManager.Instance.RewardPlace();
     }
 
     IEnumerator FadeOut_()
@@ -49,6 +49,6 @@ public class SceneFader : MonoBehaviour
             img.color = new Color(0f, 0f, 0f, a);
             yield return 0;
         }
-        DT.FinalDialogue();
+        RewardManager.Instance.DialogueDisplay();
     }
 }
