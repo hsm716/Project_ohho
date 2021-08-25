@@ -43,6 +43,8 @@ public class RewardManager : MonoBehaviourPunCallbacks
     public Transform[] StarList;
     public Transform[] OccupiedList;  //child로 검사
 
+    public bool End;
+
     private void Awake()
     {
         if (Instance)
@@ -59,7 +61,7 @@ public class RewardManager : MonoBehaviourPunCallbacks
     {
         most_jumlyung = 0;
         most_yaktal = 0;
-
+        End = false;
         StartCoroutine(Test());
     }
 
@@ -69,15 +71,24 @@ public class RewardManager : MonoBehaviourPunCallbacks
         Reward();
     }
 
-    public void Tochair()   //의자있는화면으로
+    public void ToThrone()   //의자있는화면으로
     {
+        UIClose();
         Debug.Log("@@@@@@@@@@@ToChair@@@@@@@");
-        StartCoroutine(Test3());
+        End = true;
+        First_Player.transform.position = reward_position.position;
+        First_Player.transform.rotation = reward_position.rotation;
+
     }
 
-    IEnumerator Test3() //페이드인 테스트
+    public void FadeInTest()
     {
-        Final_Reward();
+        StartCoroutine(FadeInTest_());
+    }
+
+    IEnumerator FadeInTest_() //페이드인 테스트
+    {
+
 
         Debug.Log("@@@@@@@@@@@Test3@@@@@@@");
         yield return new WaitForSeconds(2f);
@@ -97,33 +108,36 @@ public class RewardManager : MonoBehaviourPunCallbacks
 
         }
 
-        First_Player.transform.position = reward_position.position;
-        First_Player.transform.rotation = reward_position.rotation;
+
         sceneFader.FadeIn();
     }
+    /*
+public void DialogueDisplay()
+{
+    //PV.RPC("DialogueDisplay2", RpcTarget.All);
+    Debug.Log("@@@@@@@@@@@DialogueDisplay@@@@@@@");
+    //DT.FinalDialogue();
 
-    public void DialogueDisplay()
-    {
-        //PV.RPC("DialogueDisplay2", RpcTarget.All);
-        Debug.Log("@@@@@@@@@@@DialogueDisplay@@@@@@@");
-        DT.FinalDialogue();
-    }
-    [PunRPC]
-    public void DialogueDisplay2()
-    {
-        DT.FinalDialogue();
-    }
 
+}
+
+[PunRPC]
+public void DialogueDisplay2()
+{
+    DT.FinalDialogue();
+}
+*/
     public void RewardPlace()   //Fadein 마지막
     {
         Debug.Log("@@@@@@@@@@@RewardPlace@@@@@@@");
+
         StartCoroutine(RankingDisplay());
     }
 
     IEnumerator RankingDisplay()
     {
         yield return new WaitForSeconds(0.5f);
-        RankDisplay();
+
         yield return new WaitForSeconds(1.0f);
         RankingPanel.SetActive(true);
 
@@ -134,8 +148,6 @@ public class RewardManager : MonoBehaviourPunCallbacks
 
     public void Reward()    //마지막 아레나 끝나면 호출
     {
-        sceneFader.FadeOut();
-
 
         Occupy();   //점령
         Plunder();  //약탈
@@ -143,75 +155,88 @@ public class RewardManager : MonoBehaviourPunCallbacks
         Kill();
         Level();
         BossKill();
-        
+        Final_Reward();
+        RankDisplay();
+        sceneFader.FadeOut();   //페이드 아웃
     }
 
-    
+
     void Occupy()
     {
-        GameObject QM = GameObject.Find("QuestManager");
-
-        int[] sectionOwner = { 0, 0, 0, 0, 0 };
-        for (int i = 0; i < 5; i++)
+        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+        int[] Oc = { 0, 0, 0};  //각자 몇개씩 점령했는지
+        foreach (GameObject p in players)
         {
-            sectionOwner[i] = QM.GetComponent<QuestManager>().SectionOwner[i] / 1000;   //각 구역의 주인의 viewID를 1000으로 나눈값
-        }
+            Player_Control player_data_ = p.GetComponent<Player_Control>();
+            int index = player_data_.PV.ViewID / 1000 - 1;
+            for (int i = 0; i < 3; i++)
+            {
+                for (int j = 0; j < 5; j++)
+                {
+                    if (player_data_.QD.questClearCheck[j] == true && player_data_.QD.questIsActive[j] == false)
+                    {
+                        Oc[index]++;
+                        OccupiedList[i].GetChild(j).gameObject.SetActive(true);
+                        Debug.Log(i + "번째 리스트" + j + "번째 요소 활성화");
+                    }
+                }
+            }
 
-        int[] index = { 0, 0, 0, 0 };   //3명 3까지
-        for (int i = 0; i < index.Length; i++)
-        {
-            index[sectionOwner[i]]++;
         }
 
         int max = 0;
-        int mode = 0;
-        for (int i = 1; i < index.Length; i++)  //1부터 > 플레이어 / 1000의 최솟값 = 1
+        int ocId = 0;
+        for (int i = 0; i < 3; i++)  //1부터 > 플레이어 / 1000의 최솟값 = 1
         {
-            if (max < index[i])
+            if (max < Oc[i])
             {
-                max = index[i];     //몇개 점령했는지
-                mode = i;           //누구인지 / 1000
+                max = Oc[i];     //몇개 점령했는지
+                ocId = i;
             }
         }
-        
-        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
 
         foreach (GameObject p in players)
         {
-            if (mode == p.GetComponent<Player_Control>().PV.ViewID / 1000)  //가장 많이 점령한 사람
+            Player_Control player_data_ = p.GetComponent<Player_Control>();
+
+
+            if (ocId == player_data_.PV.ViewID / 1000 - 1)
             {
                 Occupier = p;
-                Occupier.GetComponent<Player_Control>().star++;
-                most_jumlyung = max;
             }
+
         }
 
-        if (mode == 0)      //점령자가 아무도 없으면
-        {
-            Occupier = null;
-        }
+
+        if (Occupier != null)
+            Occupier.GetComponent<Player_Control>().star++;
+
     }
+
 
     void Plunder()
     {
         GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
         foreach (GameObject p in players)
         {
-            if (most_yaktal <= p.GetComponent<Player_Control>().yaktal)   //최대 약탈 수 갱신
-            {
+            if (most_yaktal < p.GetComponent<Player_Control>().yaktal)   //최대 약탈 수 갱신
+            {/*
                 if (most_yaktal == p.GetComponent<Player_Control>().yaktal)  //약탈수가 같으면
                 {
                     Plunderer = null;   //약탈자 없음
                 }
                 else
-                {
+                {*/
                     most_yaktal = p.GetComponent<Player_Control>().yaktal;
                     Plunderer = p;  //약탈자
-                    Plunderer.GetComponent<Player_Control>().star++;
-                }
+
+                //}
             }
 
         }
+        
+        if (Plunderer != null)
+            Plunderer.GetComponent<Player_Control>().star++;
     }
     /*
     void Arena()
@@ -241,23 +266,29 @@ public class RewardManager : MonoBehaviourPunCallbacks
             {
                 mostKill = p.GetComponent<Player_Control>().kill_point;
                 Killer = p;
+
             }
         }
+        if (Killer != null)
+            Killer.GetComponent<Player_Control>().star++;
     }
 
     void Level()
     {
         GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
 
-        int topLevel = 0;
+        int topLevel = 1;
         foreach (GameObject p in players)
         {
             if (topLevel < p.GetComponent<Player_Control>().level)
             {
                 topLevel = p.GetComponent<Player_Control>().level;
                 Leveler = p;
+
             }
         }
+        if (Leveler != null)
+            Leveler.GetComponent<Player_Control>().star++;
     }
 
     void BossKill()
@@ -277,9 +308,10 @@ public class RewardManager : MonoBehaviourPunCallbacks
 
     void Final_Reward()     //순위 계산
     {
-        UIClose();
-
+        
+        RankingCamera.SetActive(true);      //랭킹카메라 켜기
         GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+
         foreach (GameObject p in players)
         {
             int index = p.GetComponent<Player_Control>().PV.ViewID / 1000 - 1;
@@ -334,7 +366,22 @@ public class RewardManager : MonoBehaviourPunCallbacks
             }
 
         }
+        /*
+        foreach (GameObject p in players)
+        {
+            if (p.GetComponent<Player_Control>().PV.Owner.NickName == PhotonNetwork.LocalPlayer.NickName)
+            {
+                p.GetComponent<Player_Control>().characterCamera.gameObject.SetActive(false);
+                //p.GetComponent<Player_Control>().minimapCamera.gameObject.SetActive(false);
+                p.GetComponent<Player_Control>().WeaponPosition_L.SetActive(false);
+                p.GetComponent<Player_Control>().WeaponPosition_R.SetActive(false);
 
+                p.GetComponent<Player_Control>().enabled = false;
+            }
+
+        }
+
+    */
         First_Player = RankPlayers[0];
         Second_Player = RankPlayers[1];
         Third_Player = RankPlayers[2];
@@ -348,6 +395,15 @@ public class RewardManager : MonoBehaviourPunCallbacks
         foreach (GameObject p in players)
         {
             p.transform.parent.GetChild(1).gameObject.SetActive(false); //인터페이스캔버스 끄기
+            if (p.GetComponent<Player_Control>().PV.Owner.NickName == PhotonNetwork.LocalPlayer.NickName)
+            {
+                p.GetComponent<Player_Control>().characterCamera.gameObject.SetActive(false);
+                //p.GetComponent<Player_Control>().minimapCamera.gameObject.SetActive(false);
+                p.GetComponent<Player_Control>().WeaponPosition_L.SetActive(false);
+                p.GetComponent<Player_Control>().WeaponPosition_R.SetActive(false);
+
+                p.GetComponent<Player_Control>().enabled = false;
+            }
         }
     }
 
@@ -364,7 +420,7 @@ public class RewardManager : MonoBehaviourPunCallbacks
                 KDText[0].text = player_data_.kill_point + " / " + player_data_.death_point;
                 YaktalText[0].text = player_data_.yaktal.ToString();
                 MonsterKillText[0].text = player_data_.monster_killpoint.ToString();
-
+                /*
                 for (int j = 0; j < 5; j++) //점령지
                 {
                     if (player_data_.QD.questClearCheck[j] == true && player_data_.QD.questIsActive[j] == false)
@@ -375,7 +431,7 @@ public class RewardManager : MonoBehaviourPunCallbacks
                     {
                         OccupiedList[0].transform.GetChild(j).gameObject.SetActive(false);
                     }
-                }
+                }*/
             }
             else if(p == Second_Player)     //2등
             {
@@ -383,7 +439,7 @@ public class RewardManager : MonoBehaviourPunCallbacks
                 KDText[1].text = player_data_.kill_point + " / " + player_data_.death_point;
                 YaktalText[1].text = player_data_.yaktal.ToString();
                 MonsterKillText[1].text = player_data_.monster_killpoint.ToString();
-
+                /*
                 for (int j = 0; j < 5; j++) //점령지
                 {
                     if (player_data_.QD.questClearCheck[j] == true && player_data_.QD.questIsActive[j] == false)
@@ -395,7 +451,7 @@ public class RewardManager : MonoBehaviourPunCallbacks
                     {
                         OccupiedList[1].transform.GetChild(j).gameObject.SetActive(false);
                     }
-                }
+                }*/
             }
             else        //3등
             {
@@ -403,7 +459,7 @@ public class RewardManager : MonoBehaviourPunCallbacks
                 KDText[2].text = player_data_.kill_point + " / " + player_data_.death_point;
                 YaktalText[2].text = player_data_.yaktal.ToString();
                 MonsterKillText[2].text = player_data_.monster_killpoint.ToString();
-
+                /*
                 for (int j = 0; j < 5; j++) //점령지
                 {
                     if (player_data_.QD.questClearCheck[j] == true && player_data_.QD.questIsActive[j] == false)
@@ -414,7 +470,7 @@ public class RewardManager : MonoBehaviourPunCallbacks
                     {
                         OccupiedList[2].transform.GetChild(j).gameObject.SetActive(false);
                     }
-                }
+                }*/
             }
 
         }
@@ -462,4 +518,5 @@ public class RewardManager : MonoBehaviourPunCallbacks
         PhotonNetwork.LoadLevel(0);
         Destroy(gameObject);
     }
+
 }

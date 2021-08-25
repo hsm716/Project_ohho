@@ -10,11 +10,20 @@ public class DialogueTrigger : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.tag == "Player" && other.GetComponent<Player_Control>().PV.IsMine)
+        if (gameObject.tag == "Throne" && RewardManager.Instance.End)
         {
-            //TriggerDialogue(QuestManager.Instance.QuestClearCheck(dialogue.npcId));   //퀘스트 클리어 여부에 따라 대화 생성
-            TriggerDialogue(other.GetComponent<QuestData>().questClearCheck[dialogue.npcId]);   //퀘스트 클리어 여부에 따라 대화 생성
+            FinalDialogue();
         }
+        else
+        {
+            if (other.tag == "Player" && other.GetComponent<Player_Control>().PV.IsMine)
+            {
+                //TriggerDialogue(QuestManager.Instance.QuestClearCheck(dialogue.npcId));   //퀘스트 클리어 여부에 따라 대화 생성
+                TriggerDialogue(other.GetComponent<QuestData>().questClearCheck[dialogue.npcId]);   //퀘스트 클리어 여부에 따라 대화 생성
+            }
+        }
+
+
     }
 
     private void OnTriggerExit(Collider other)
@@ -33,5 +42,6 @@ public class DialogueTrigger : MonoBehaviour
     public void FinalDialogue()
     {
         FindObjectOfType<DialogueManager>().StartDialogue(dialogue);
+        //GameObject.Find("DialogueManager").GetComponent<DialogueManager>().StartDialogue(dialogue);
     }
 }

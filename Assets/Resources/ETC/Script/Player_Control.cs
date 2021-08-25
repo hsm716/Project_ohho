@@ -241,7 +241,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
 
 
     public string preset_data;
-    public int[] preset_int = { 1, 0, 0, 0 };
+    public int[] preset_int;
 
     public int arenaRank;
     public bool arenaWin;
@@ -277,7 +277,6 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
         pullPower = 20f;
         shieldAmount = 200f;
         Respawn_Center = GameObject.Find("Respawn_Spots");
-
         //
 
         if (PV.IsMine)

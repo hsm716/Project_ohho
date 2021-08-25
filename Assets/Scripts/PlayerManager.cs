@@ -19,7 +19,7 @@ public class PlayerManager : MonoBehaviourPunCallbacks, IPunObservable
     void Awake()
     {
         PV = GetComponent<PhotonView>();
-        preset_string = "";
+        preset_string = "1000";
 
     }
 

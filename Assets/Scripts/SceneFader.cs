@@ -49,6 +49,7 @@ public class SceneFader : MonoBehaviour
             img.color = new Color(0f, 0f, 0f, a);
             yield return 0;
         }
-        RewardManager.Instance.DialogueDisplay();
+        //RewardManager.Instance.DialogueDisplay();
+        RewardManager.Instance.ToThrone();
     }
 }

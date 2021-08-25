@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Photon.Pun;
 
-public class DialogueManager : MonoBehaviour
+public class DialogueManager : MonoBehaviourPunCallbacks
 {
     private Queue<string> sentences;
 
@@ -181,7 +181,7 @@ public class DialogueManager : MonoBehaviour
         if (sentences.Count == 0)   //마지막 대화가 끝났을 때
         {
             EndDialogue();
-            RewardManager.Instance.Tochair();
+            RewardManager.Instance.FadeInTest();
             return;
         }
 
