@@ -70,9 +70,12 @@ public class Monster : MonoBehaviourPunCallbacks, IPunObservable
     public AudioClip sound_golem_PunchAttack_clip;
     public AudioClip sound_demon_Attack_clip;
     public AudioClip sound_slime_Attack_clip;
-    
+
+    public AudioClip sound_demon_skill_clip;
 
     public Vector3 InitPos;
+
+    public ParticleSystem hitEffect_blood;
     void Awake()
     {
         anim = GetComponent<Animator>();
@@ -137,7 +140,7 @@ public class Monster : MonoBehaviourPunCallbacks, IPunObservable
             atk_ *= 1.5f;
 
         anim.SetTrigger("doHit");
-        hitSword.Play();
+        
 
         curHP -= atk_;
         if (PV.IsMine)
@@ -151,14 +154,34 @@ public class Monster : MonoBehaviourPunCallbacks, IPunObservable
                 ft.transform.GetChild(0).transform.GetComponent<TextMesh>().characterSize = 0.1f;
             }
         }
-        if (type == 0)
+        
+        if (monsterType == Type.demon)
         {
-            sound_source.PlayOneShot(sound_slash_hit);
+            if (type == 0)
+            {
+                sound_source.PlayOneShot(sound_slash_hit);
+                hitEffect_blood.Play();
+            }
+            else if (type == 1)
+            {
+                sound_source.PlayOneShot(sound_arrow_hit);
+                hitEffect_blood.Play();
+            }
         }
-        else if(type==1)
+        else
         {
-            sound_source.PlayOneShot(sound_arrow_hit);
+            if (type == 0)
+            {
+                sound_source.PlayOneShot(sound_slash_hit);
+                hitSword.Play();
+            }
+            else if (type == 1)
+            {
+                sound_source.PlayOneShot(sound_arrow_hit);
+                hitSword.Play();
+            }
         }
+       
             
         if (!isAttack&&!isSkill)
         {
@@ -294,7 +317,7 @@ public class Monster : MonoBehaviourPunCallbacks, IPunObservable
                     isAttack = true;
                     agent.isStopped = true;
                     anim.transform.forward = target.position - transform.position;
-                    sound_source.PlayOneShot(sound_slime_Attack_clip);
+                    
                     anim.SetTrigger("doAttack");
                     Invoke("AttackEnd", 1.2f);
                 }
@@ -309,7 +332,7 @@ public class Monster : MonoBehaviourPunCallbacks, IPunObservable
                     isAttack = true;
                     agent.isStopped = true;
                     anim.transform.forward = target.position - transform.position;
-                    sound_source.PlayOneShot(sound_demon_Attack_clip);
+                    
                     anim.SetTrigger("doAttack");
                     Invoke("AttackEnd", 2.5f);
                 }
@@ -324,7 +347,7 @@ public class Monster : MonoBehaviourPunCallbacks, IPunObservable
                     isAttack = true;
                     agent.isStopped = true;
                     anim.transform.forward = target.position - transform.position;
-                    sound_source.PlayOneShot(sound_golem_PunchAttack_clip);
+                   
                     anim.SetTrigger("doAttack");
                     Invoke("AttackEnd", 1.5f);
                 }
@@ -337,6 +360,13 @@ public class Monster : MonoBehaviourPunCallbacks, IPunObservable
     public void Attack_areaOn()
     {
         meleeArea.enabled = true;
+        if(monsterType==Monster.Type.demon)
+            sound_source.PlayOneShot(sound_demon_Attack_clip);
+        else if(monsterType == Monster.Type.golem)
+            sound_source.PlayOneShot(sound_golem_PunchAttack_clip);
+        else
+            sound_source.PlayOneShot(sound_slime_Attack_clip);
+
         Invoke("Attack_areaOff", 0.2f);
 
     }
@@ -443,6 +473,7 @@ public class Monster : MonoBehaviourPunCallbacks, IPunObservable
                     Skill1();
                     Invoke("SkillOut", 3f);
                     anim.SetTrigger("doSkill");
+                    sound_source.PlayOneShot(sound_demon_skill_clip);
                     
 
                 }
@@ -564,6 +595,8 @@ public class Monster : MonoBehaviourPunCallbacks, IPunObservable
             stream.SendNext(curSkillAmount);
             stream.SendNext(maxSkillAmount);
             stream.SendNext(golem_Index);
+
+            stream.SendNext(monsterType);
             //stream.SendNext(mySet);
         }
         else
@@ -577,6 +610,7 @@ public class Monster : MonoBehaviourPunCallbacks, IPunObservable
             curSkillAmount = (float)stream.ReceiveNext();
             maxSkillAmount = (float)stream.ReceiveNext();
             golem_Index = (int)stream.ReceiveNext();
+            monsterType = (Type)stream.ReceiveNext();
             //mySet = (Transform)stream.ReceiveNext();
         }
     }

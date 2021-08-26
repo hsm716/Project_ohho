@@ -267,12 +267,15 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     public int score;
 
     public bool HP_CHANGE = false;
+
+    public ParticleSystem hitEffect_blood;
     private void Awake()
     {
         star = 0;
         score = 0;
-        SoldierPoint = 20;
-        SoldierPoint_max = 20;
+        level = 1;
+        SoldierPoint = 1;
+        SoldierPoint_max = 1;
         NickNameText.text = PV.IsMine ? PhotonNetwork.NickName : PV.Owner.NickName;
         username = PV.IsMine ? PhotonNetwork.NickName : PV.Owner.NickName;
         HealthImage.color = PV.IsMine ? Color.green : Color.red;
@@ -299,7 +302,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
             walkSpeed = 4f;
             curSpeed = walkSpeed;
             transform.position = Respawn_Center.transform.GetChild((int)(PV.ViewID / 1000)-1).transform.position;
-            SoldierType = Random.Range(0,3);
+            SoldierType = 0;
             Set1_Init_pos = Set1.localPosition;
             Set2_Init_pos = Set2.localPosition;
             Instance = this.gameObject;
@@ -608,11 +611,22 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
 
     }
 
-
+    void FindMyRegion()
+    {
+        for(int i = 0; i < QuestManager.Instance.SectionOwner.Length; i++)
+        {
+            if (PV.ViewID == QuestManager.Instance.SectionOwner[i])
+            {
+                SoldierType = i;
+                break;
+            }
+        }
+    }
     void Update()
     {
         if (PV.IsMine)
         {
+            FindMyRegion();
             if (isDeath == false)
             {
                 if (PI.isActive_Input == true && GameManager.Instance.isActive)
@@ -691,7 +705,8 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
 
                 if (transform.position.y < -100)
                 {
-                    isRespawn = true;
+                    curHP = -2000f;
+                    isDeath = true;
                 }
 
                 if (curEXP >= maxEXP && !isLevelUp)
@@ -1131,10 +1146,12 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
         if (type == 0)
         {
             sound_source.PlayOneShot(sound_slash_hit);
+            hitEffect_blood.Play();
         }
         else if (type == 1)
         {
             sound_source.PlayOneShot(sound_arrow_hit);
+            hitEffect_blood.Play();
         }
         else if(type == 2)
         {
@@ -1184,7 +1201,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
             if (curHP <= 0 && isDeath == false)
             {
 
-                if (preset_int[0] == 1)
+                if (preset_int[0] == 0)
                 {
                     sound_source.PlayOneShot(sound_death_female);
                 }
@@ -1518,13 +1535,13 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
             {
                 if (hitObj.monsterType == Monster.Type.demon || hitObj.monsterType == Monster.Type.golem)
                 {
-                    Hit(hitObj.atk * 2f,0,hit_sound);
+                    Hit(hitObj.atk * 2f, hit_sound, 0);
                 }
             }
             else
             {
                 
-                Hit(hitObj.atk,0,hit_sound);
+                Hit(hitObj.atk,hit_sound,0);
             }
         }
 
@@ -1598,7 +1615,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
                     }
                     PV.RPC("RecoverHP", RpcTarget.All);
                     GameObject ft = PhotonNetwork.Instantiate("Damage_Text", transform.position, Quaternion.Euler(new Vector3(55f, 0f, 0f)));
-                    ft.GetComponent<TextMesh>().text = "" + 200;
+                    ft.transform.GetChild(0).transform.GetComponent<TextMesh>().text = "" + 200;
                     ft.transform.GetChild(0).transform.GetComponent<TextMesh>().color = Color.green;
 
                     curHP += 200f;
