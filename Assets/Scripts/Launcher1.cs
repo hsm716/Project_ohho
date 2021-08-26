@@ -46,6 +46,19 @@ public class Launcher1 : MonoBehaviourPunCallbacks
         }
     }
 
+    private void Update()
+    {
+        Player[] players = PhotonNetwork.PlayerList;
+        if (players.Count() == 3)
+        {
+            startGameButton.GetComponent<Button>().interactable = true;
+        }
+        else
+        {
+            startGameButton.GetComponent<Button>().interactable = false;
+        }
+    }
+
     public override void OnConnectedToMaster()
     {
         Debug.Log("Connected to Master");
@@ -119,6 +132,11 @@ public class Launcher1 : MonoBehaviourPunCallbacks
     {
         PhotonNetwork.JoinRoom(info.Name);
         MenuManager.Instance.OpenMenu("Loading");
+    }
+
+    public void QuitGame()
+    {
+        Application.Quit();
     }
 
     public void OnUsernameInputValueChanged()
