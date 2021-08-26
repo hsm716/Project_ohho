@@ -9,6 +9,8 @@ public class Spell : MonoBehaviourPunCallbacks
     public Player_Control myPlayer;
     public float atk;
 
+    public AudioSource audioSource;
+    public AudioClip explosion_audio;
     //public GameObject boom;
     //Vector3 dir_;
     //Vector3 dir;
@@ -67,6 +69,8 @@ public class Spell : MonoBehaviourPunCallbacks
 
     private void OnParticleCollision(GameObject col)
     {
+
+        audioSource.PlayOneShot(explosion_audio);
         if (col.CompareTag("Player"))
         {
             if (!PV.IsMine && col.GetComponent<PhotonView>().Owner != PV.Owner)

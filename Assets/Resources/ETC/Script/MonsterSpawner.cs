@@ -16,18 +16,18 @@ public class MonsterSpawner : MonoBehaviour
     {
         if (PhotonNetwork.IsMasterClient)
         {
-            maxCount_Slime = 10;
+            maxCount_Slime = 7;
             if (spawnType == Type.demon)
             {
-               // StartCoroutine(Spawn_demon());
+               StartCoroutine(Spawn_demon());
             }
             if (spawnType == Type.golem)
             {
-              //  StartCoroutine(Spawn_golem());
+               StartCoroutine(Spawn_golem());
             }
             if(spawnType == Type.slime)
             {
-               // StartCoroutine(Spawn());
+               StartCoroutine(Spawn());
             }
             
             //
@@ -52,14 +52,20 @@ public class MonsterSpawner : MonoBehaviour
     {
         while (true)
         {
-            /*if (SlimePool.Count <= maxCount_Slime)
-            {*/
+            if (curCount_Slime < maxCount_Slime)
+            {
                 GameObject Slime = PhotonNetwork.Instantiate("Monster_Slime", new Vector3(Random.Range(transform.position.x, transform.position.x + 6f), transform.position.y, Random.Range(transform.position.z, transform.position.z + 6f)), Quaternion.identity);
             Slime.transform.parent = this.transform;
-            //SlimePool.Enqueue(Slime);
-            //}
+                curCount_Slime += 1;
+                //SlimePool.Enqueue(Slime);
+                yield return new WaitForSeconds(7f);
+            }
+            else
+            {
+                yield return new WaitForSeconds(1f);
+            }
             
-            yield return new WaitForSeconds(10f);
+            
         }
     }
     IEnumerator Spawn_demon()

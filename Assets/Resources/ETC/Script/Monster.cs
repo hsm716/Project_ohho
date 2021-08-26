@@ -68,6 +68,9 @@ public class Monster : MonoBehaviourPunCallbacks, IPunObservable
     public AudioClip sound_slash_hit;
     public AudioClip sound_arrow_hit;
     public AudioClip sound_golem_PunchAttack_clip;
+    public AudioClip sound_demon_Attack_clip;
+    public AudioClip sound_slime_Attack_clip;
+    
 
     public Vector3 InitPos;
     void Awake()
@@ -176,6 +179,7 @@ public class Monster : MonoBehaviourPunCallbacks, IPunObservable
                     
                     //Last_Hiter.GetComponent<QuestData>().Quest();
                 }
+                transform.parent.parent.GetComponent<MonsterSpawner>().curCount_Slime -= 1;
 
             }
             else if(monsterType == Type.demon)
@@ -290,6 +294,7 @@ public class Monster : MonoBehaviourPunCallbacks, IPunObservable
                     isAttack = true;
                     agent.isStopped = true;
                     anim.transform.forward = target.position - transform.position;
+                    sound_source.PlayOneShot(sound_slime_Attack_clip);
                     anim.SetTrigger("doAttack");
                     Invoke("AttackEnd", 1.2f);
                 }
@@ -304,6 +309,7 @@ public class Monster : MonoBehaviourPunCallbacks, IPunObservable
                     isAttack = true;
                     agent.isStopped = true;
                     anim.transform.forward = target.position - transform.position;
+                    sound_source.PlayOneShot(sound_demon_Attack_clip);
                     anim.SetTrigger("doAttack");
                     Invoke("AttackEnd", 2.5f);
                 }
