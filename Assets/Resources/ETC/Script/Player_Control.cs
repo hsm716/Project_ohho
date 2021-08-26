@@ -1510,7 +1510,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     {
         if (other.CompareTag("Occupied_Area"))
         {
-            if(QD.questIsActive[3]==true)
+            if(QD.questIsActive[4]==true)
                 curOccupied_value += Time.deltaTime * 5f;
         }
     }

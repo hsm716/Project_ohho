@@ -62,8 +62,8 @@ public class RewardManager : MonoBehaviourPunCallbacks, IPunObservable
     {
         most_jumlyung = 0;
         most_yaktal = 0;
-        End = true;
-        //StartCoroutine(Test());
+        End = false;
+        //StartCoroutine(Test()); 
     }
 
     IEnumerator Test()  //페이드아웃 테스트
@@ -125,7 +125,7 @@ public class RewardManager : MonoBehaviourPunCallbacks, IPunObservable
         //Arena();
         Kill();
         Level();
-        BossKill();
+        //BossKill();
         Final_Reward();
 
         sceneFader.FadeOut();   //페이드 아웃
@@ -280,7 +280,7 @@ public class RewardManager : MonoBehaviourPunCallbacks, IPunObservable
     void Final_Reward()     //순위 계산
     {
         
-        RankingCamera.SetActive(true);      //랭킹카메라 켜기
+
         GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
 
         foreach (GameObject p in players)
@@ -378,6 +378,7 @@ public class RewardManager : MonoBehaviourPunCallbacks, IPunObservable
                 //p.GetComponent<Player_Control>().enabled = false;
             }
         }
+        RankingCamera.SetActive(true);      //랭킹카메라 켜기
     }
 
     public void RankDisplay()   //랭킹 내용 작성

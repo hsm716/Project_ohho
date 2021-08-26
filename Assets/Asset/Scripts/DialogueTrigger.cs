@@ -14,6 +14,7 @@ public class DialogueTrigger : MonoBehaviour
         {
             RewardManager.Instance.End = false;
             FinalDialogue();
+
         }
         else if (other.tag == "Player" && other.GetComponent<Player_Control>().PV.IsMine)
         {

@@ -1499,6 +1499,7 @@ MonoBehaviour:
     type: 3}
   Last_Hiter: {fileID: 0}
   atk: 0
+  target: {fileID: 0}
   isAttack: 0
   isChase: 0
   isStop: 0
@@ -1514,6 +1515,7 @@ MonoBehaviour:
   sound_slash_hit: {fileID: 8300000, guid: 0c339317cde75f74da607b404bf128cc, type: 3}
   sound_arrow_hit: {fileID: 8300000, guid: 55e20f59b5cc3f94d9a63c4cdc02d0e9, type: 3}
   sound_golem_PunchAttack_clip: {fileID: 0}
+  InitPos: {x: 0, y: 0, z: 0}
 --- !u!136 &7091300514427539302
 CapsuleCollider:
   m_ObjectHideFlags: 0

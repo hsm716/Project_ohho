@@ -298,6 +298,8 @@ MonoBehaviour:
   Order: 
   mat: {fileID: 0}
   split: -1
+  isStart: 0
+  navMesh_parent: {fileID: 0}
 --- !u!4 &9230160
 Transform:
   m_ObjectHideFlags: 0
@@ -21379,6 +21381,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: TempleSection
       objectReference: {fileID: 0}
+    - target: {fileID: 4250935466564742741, guid: eed9e61091d79e24da411be9a60db34d,
+        type: 3}
+      propertyPath: sceneViewId
+      value: 4
+      objectReference: {fileID: 0}
     - target: {fileID: 6518177188952908471, guid: eed9e61091d79e24da411be9a60db34d,
         type: 3}
       propertyPath: m_Materials.Array.data[0]
@@ -28959,6 +28966,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 127626859}
     m_Modifications:
+    - target: {fileID: 259685877445532554, guid: 96ac13ee1205f7541802504b7b9edf44,
+        type: 3}
+      propertyPath: sceneViewId
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 538919626221646077, guid: 96ac13ee1205f7541802504b7b9edf44,
         type: 3}
       propertyPath: m_Name

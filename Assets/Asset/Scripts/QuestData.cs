@@ -134,7 +134,7 @@ public class QuestData : MonoBehaviourPunCallbacks
         }
         if (questIsActive[4] == true)   //설원
         {
-            if (OccupiedValue_cur >= OccupiedValue_max) // 나뭇가지 5개 주워오기
+            if (OccupiedValue_cur >= OccupiedValue_max) // 점령
             {
                 questClearCheck[4] = true;
 
@@ -211,6 +211,7 @@ public class QuestData : MonoBehaviourPunCallbacks
                 break;
             case 4:
                 OccupiedValue_cur = 0;
+                myPlayer.curOccupied_value = 0;
                 break;
             case 5:
                 break;

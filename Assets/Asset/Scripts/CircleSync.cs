@@ -35,40 +35,44 @@ public class CircleSync : MonoBehaviour
         if (!PV.IsMine)
             return;
 
-        var dir = camera.transform.position - transform.position;
-        var ray = new Ray(transform.position, dir.normalized);
-
-        if (Physics.Raycast(ray, out hit, 3000, Mask))
+        if (camera)
         {
-            //wallMat = hit.transform.GetComponent<MeshRenderer>().material;
+            var dir = camera.transform.position - transform.position;
+            var ray = new Ray(transform.position, dir.normalized);
 
-            if (fade < 1)
+            if (Physics.Raycast(ray, out hit, 3000, Mask))
             {
-                fade += Time.deltaTime;
-                foreach (var mat in wallMat)
+                //wallMat = hit.transform.GetComponent<MeshRenderer>().material;
+
+                if (fade < 1)
                 {
-                    mat.SetFloat(SizeID, fade);
-                }
-                
-            }
-        }
-        else
-        {
-            if (fade > 0)
-            {
-                fade -= Time.deltaTime;
-                foreach (var mat in wallMat)
-                {
-                    mat.SetFloat(SizeID, fade);
+                    fade += Time.deltaTime;
+                    foreach (var mat in wallMat)
+                    {
+                        mat.SetFloat(SizeID, fade);
+                    }
+
                 }
             }
-        }
+            else
+            {
+                if (fade > 0)
+                {
+                    fade -= Time.deltaTime;
+                    foreach (var mat in wallMat)
+                    {
+                        mat.SetFloat(SizeID, fade);
+                    }
+                }
+            }
 
-        var view = camera.WorldToViewportPoint(transform.position);
-        foreach (var mat in wallMat)
-        {
-            mat.SetVector(PosID, view);
+            var view = camera.WorldToViewportPoint(transform.position);
+            foreach (var mat in wallMat)
+            {
+                mat.SetVector(PosID, view);
+            }
         }
+        
         
     }
 }

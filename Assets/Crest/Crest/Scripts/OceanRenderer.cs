@@ -704,7 +704,7 @@ namespace Crest
         {
             if (Viewpoint == null)
             {
-                Debug.LogError("Crest needs to know where to focus the ocean detail. Please set the <i>ViewCamera</i> or the <i>Viewpoint</i> property that will render the ocean, or tag the primary camera as <i>MainCamera</i>.", this);
+                //Debug.LogError("Crest needs to know where to focus the ocean detail. Please set the <i>ViewCamera</i> or the <i>Viewpoint</i> property that will render the ocean, or tag the primary camera as <i>MainCamera</i>.", this);
             }
         }
 
@@ -757,7 +757,8 @@ namespace Crest
             Shader.SetGlobalFloat(sp_lodAlphaBlackPointWhitePointFade, _lodAlphaBlackPointWhitePointFade);
 
             // @Hack: Work around to unity_CameraToWorld._13_23_33 not being set correctly in URP 7.4+
-            OceanMaterial.SetVector(sp_CameraForward, Viewpoint.forward);
+            if (Viewpoint)
+                OceanMaterial.SetVector(sp_CameraForward, Viewpoint.forward);
 
             // LOD 0 is blended in/out when scale changes, to eliminate pops. Here we set it as a global, whereas in OceanChunkRenderer it
             // is applied to LOD0 tiles only through instance data. This global can be used in compute, where we only apply this factor for slice 0.
@@ -911,13 +912,17 @@ namespace Crest
 
         void LateUpdateViewerHeight()
         {
-            var camera = ViewCamera;
+            if (ViewCamera)
+            {
+                var camera = ViewCamera;
 
-            _sampleHeightHelper.Init(camera.transform.position, 0f, true);
+                _sampleHeightHelper.Init(camera.transform.position, 0f, true);
 
-            _sampleHeightHelper.Sample(out var waterHeight);
+                _sampleHeightHelper.Sample(out var waterHeight);
 
-            ViewerHeightAboveWater = camera.transform.position.y - waterHeight;
+                ViewerHeightAboveWater = camera.transform.position.y - waterHeight;
+            }
+
         }
 
         void LateUpdateLods()

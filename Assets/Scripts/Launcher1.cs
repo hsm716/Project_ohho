@@ -129,6 +129,7 @@ public class Launcher1 : MonoBehaviourPunCallbacks
     {
         MenuManager.Instance.OpenMenu("Title");
     }
+    private static Dictionary<string, RoomInfo> cachedRoomList = new Dictionary<string, RoomInfo>();
 
     public override void OnRoomListUpdate(List<RoomInfo> roomList)
     {
@@ -136,12 +137,29 @@ public class Launcher1 : MonoBehaviourPunCallbacks
         {
             Destroy(trans.gameObject);                  //전부다 없앤 다음 새로 생성
         }
-
+        /*
         for (int i = 0; i < roomList.Count; i++)
         {
             if (roomList[i].RemovedFromList)
                 continue;
             Instantiate(roomListItemPrefab, roomListContent).GetComponent<RoomListItem>().Setup(roomList[i]);
+        }
+        */
+        for(int i = 0; i < roomList.Count; i++)
+        {
+            RoomInfo info = roomList[i];
+            if (info.RemovedFromList)
+            {
+                cachedRoomList.Remove(info.Name);
+            }
+            else
+            {
+                cachedRoomList[info.Name] = info;
+            }
+        }
+        foreach (KeyValuePair<string, RoomInfo> entry in cachedRoomList)
+        {
+            Instantiate(roomListItemPrefab, roomListContent).GetComponent<RoomListItem>().Setup(cachedRoomList[entry.Key]);
         }
     }
 
