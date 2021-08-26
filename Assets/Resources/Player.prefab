@@ -44913,6 +44913,14 @@ MonoBehaviour:
   sound_source: {fileID: 6279836584305621176}
   sound_slash_hit: {fileID: 8300000, guid: 0c339317cde75f74da607b404bf128cc, type: 3}
   sound_arrow_hit: {fileID: 8300000, guid: 55e20f59b5cc3f94d9a63c4cdc02d0e9, type: 3}
+  sound_golem_hit: {fileID: 8300000, guid: aacf0342c5ddc1e4c9442f5d1c8fbd08, type: 3}
+  sound_demon_hit: {fileID: 8300000, guid: 0f476a7e2f3016a46a0a6d9db8819ed9, type: 3}
+  sound_slime_hit: {fileID: 8300000, guid: 8f9093fab96e62448ad2ba64e6c9a6df, type: 3}
+  sound_dodge: {fileID: 8300000, guid: d8f0dc774d2327a4eb2ae85f53b56483, type: 3}
+  sound_backJump: {fileID: 8300000, guid: 5b063dd8766e91d458b1827953e35eb7, type: 3}
+  sound_skill_slash: {fileID: 8300000, guid: 6dc0ca51ed2cf7d4f9f785156fb04b98, type: 3}
+  sound_death_male: {fileID: 8300000, guid: 7f19f1be51556f74fa7075b3ccac8968, type: 3}
+  sound_death_female: {fileID: 8300000, guid: 72d4900fd43eac5438ed48bb65bef264, type: 3}
   CM: {fileID: 0}
   characterCamera: {fileID: 0}
   MM: {fileID: 0}

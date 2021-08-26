@@ -153,6 +153,17 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     public AudioClip sound_slash_hit;
     public AudioClip sound_arrow_hit;
 
+    public AudioClip sound_golem_hit;
+    public AudioClip sound_demon_hit;
+    public AudioClip sound_slime_hit;
+
+
+    public AudioClip sound_dodge;
+    public AudioClip sound_backJump;
+    public AudioClip sound_skill_slash;
+
+    public AudioClip sound_death_male;
+    public AudioClip sound_death_female;
 
     #endregion
     [PunRPC]
@@ -575,7 +586,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     public void Skill_sword_E_effect()
     {
         sword_E_effect.Play();
-        sound_Slash2.Play();
+        sound_source.PlayOneShot(sound_skill_slash);
         sword_E_area.enabled = true;
     }
     public void Skill_sword_E_Out()
@@ -931,6 +942,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     {
         if (!isDodge && dDown &&!isAttack &&!isDeffensing&&!isSkill_R&& curStamina>=50f)
         {
+            
             curStamina -= 50f;
             dodgeVec = movement;
            
@@ -943,12 +955,14 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
 
             if (isRunningBack)
             {
+                sound_source.PlayOneShot(sound_backJump);
                 animator.SetTrigger("doDodge_back");
                 animator.transform.forward = -dodgeVec;
 
             }
             else
             {
+                sound_source.PlayOneShot(sound_dodge);
                 animator.SetTrigger("doDodge");
                 animator.transform.forward = dodgeVec;
 
@@ -1122,6 +1136,24 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
         {
             sound_source.PlayOneShot(sound_arrow_hit);
         }
+        else if(type == 2)
+        {
+            sound_source.PlayOneShot(sound_slime_hit);
+        }
+        else if (type == 3)
+        {
+            sound_source.PlayOneShot(sound_golem_hit);
+        }
+        else if (type == 4)
+        {
+            sound_source.PlayOneShot(sound_demon_hit);
+        }
+        else if (type == 5)
+        {
+            
+        }
+
+
         if (PV.IsMine)
         {
             GameObject ft = PhotonNetwork.Instantiate("Damage_Text", transform.position, Quaternion.Euler(new Vector3(45f, 0f, 0f)));
@@ -1151,6 +1183,17 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
 
             if (curHP <= 0 && isDeath == false)
             {
+
+                if (preset_int[0] == 1)
+                {
+                    sound_source.PlayOneShot(sound_death_female);
+                }
+                else
+                {
+
+                    sound_source.PlayOneShot(sound_death_male);
+                }
+
                 if (isArena == true)
                 {
                     arenaWin = false;
@@ -1321,6 +1364,10 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     {
         sound_Slash2.Play();
     }
+    public void Sound_SlashSkill()
+    {
+        sound_source.PlayOneShot(sound_skill_slash);
+    }
     public void Sound_Shoot1()
     {
         sound_Shoot1.Play();
@@ -1452,17 +1499,32 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
         if (other.CompareTag("Monster_Attack"))
         {
             Monster hitObj = other.transform.parent.GetComponent<Monster>();
+            int hit_sound = 0;
+            if (hitObj.monsterType == Monster.Type.slime)
+            {
+                hit_sound = 2;
+            }
+            else if (hitObj.monsterType == Monster.Type.golem)
+            {
+                hit_sound = 3;
+            }
+            else if (hitObj.monsterType == Monster.Type.demon)
+            {
+                hit_sound = 4;
+            }
+
+
             if (hitObj.isSkill)
             {
                 if (hitObj.monsterType == Monster.Type.demon || hitObj.monsterType == Monster.Type.golem)
                 {
-                    Hit(hitObj.atk * 2f,0,0);
+                    Hit(hitObj.atk * 2f,0,hit_sound);
                 }
             }
             else
             {
                 
-                Hit(hitObj.atk,0,0);
+                Hit(hitObj.atk,0,hit_sound);
             }
         }
 
