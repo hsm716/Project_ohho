@@ -23,8 +23,8 @@ public class Player_Arena : MonoBehaviour
 
     public TextMeshProUGUI curSoldierPoint;
 
-    string[] SoldierType_melee_str = { "Soldier_main_melee", "Soldier_main_melee_B", "Soldier_main_melee_C" };
-    string[] SoldierType_arrow_str = { "Soldier_main_arrow", "Soldier_main_arrow_B", "Soldier_main_arrow_C" };
+    string[] SoldierType_melee_str = { "Soldier_main_melee", "Soldier_main_melee_B", "Soldier_main_melee_C", "Soldier_main_melee", "Soldier_main_melee" };
+    string[] SoldierType_arrow_str = { "Soldier_main_arrow", "Soldier_main_arrow_B", "Soldier_main_arrow_C", "Soldier_main_arrow" , "Soldier_main_arrow" };
     int SoldierType;
 
     public GameObject Respawn_Center;
@@ -42,10 +42,11 @@ public class Player_Arena : MonoBehaviour
     public TextMeshProUGUI username_txt;
     public Sprite[] ranking_123_sp;
 
+    int soldierPoint;
     private void Awake()
     {
         FindMyPlayer();
-        SoldierType = player_data.SoldierType;
+        
         player_data.transform.position = Respawn_Center.transform.GetChild((int)(player_data.PV.ViewID / 1000) - 1).position;
         isActive_SoldierSpot = new int[,] { { 0,0,0,0,0,0,0,0,0,0},
                                              {0,0,0,0,0,0,0,0,0,0},
@@ -77,7 +78,10 @@ public class Player_Arena : MonoBehaviour
         ranking_txt.text = ""+player_data.arenaRank;
         username_txt.text = player_data.username;
 
-        curSoldierPoint.text = player_data.SoldierPoint+" / " +player_data.SoldierPoint_max;
+        curSoldierPoint.text = soldierPoint+" / " +player_data.level;
+
+        SoldierType = player_data.SoldierType;
+
         if (isSelect_arrow)
         {
             button_arrow.transform.localScale = new Vector3(1.2f, 1.2f, 1f);
@@ -108,31 +112,33 @@ public class Player_Arena : MonoBehaviour
 
     public void Soldier_assign(string index)
     {
-        int soldier_type = 0;
-        if (isSelect_melee)
+        if (isReady == false)
         {
-            soldier_type = 1;
-        }
-        else if (isSelect_arrow)
-        {
-            soldier_type = 2;
-        }
-        if (isActive_SoldierSpot[index[0] - '0', index[2] - '0'] == soldier_type)
-        {
-            int prevType = isActive_SoldierSpot[index[0] - '0', index[2] - '0'];
-            soldier_type = 0;
-            isActive_SoldierSpot[index[0] - '0', index[2] - '0'] = soldier_type;
-            player_data.SoldierPoint += prevType;
-        }
-        else
-        {
-            int prevType = isActive_SoldierSpot[index[0] - '0', index[2] - '0'];
-            isActive_SoldierSpot[index[0] - '0', index[2] - '0'] = soldier_type;
-            player_data.SoldierPoint += prevType - soldier_type;
-        }
+            int soldier_type = 0;
+            if (isSelect_melee)
+            {
+                soldier_type = 1;
+            }
+            else if (isSelect_arrow)
+            {
+                soldier_type = 2;
+            }
+            if (isActive_SoldierSpot[index[0] - '0', index[2] - '0'] == soldier_type)
+            {
+                int prevType = isActive_SoldierSpot[index[0] - '0', index[2] - '0'];
+                soldier_type = 0;
+                isActive_SoldierSpot[index[0] - '0', index[2] - '0'] = soldier_type;
+                soldierPoint += prevType;
+            }
+            else
+            {
+                int prevType = isActive_SoldierSpot[index[0] - '0', index[2] - '0'];
+                isActive_SoldierSpot[index[0] - '0', index[2] - '0'] = soldier_type;
+                soldierPoint += prevType - soldier_type;
+            }
 
-        SoldierSpot[index[0] - '0'].transform.GetChild(index[2] - '0').GetComponent<Image>().sprite = Soldier_type_sp[soldier_type];
-
+            SoldierSpot[index[0] - '0'].transform.GetChild(index[2] - '0').GetComponent<Image>().sprite = Soldier_type_sp[soldier_type];
+        }
 
 
     }
@@ -141,11 +147,12 @@ public class Player_Arena : MonoBehaviour
         PV.RPC("InitReadyCount", RpcTarget.All);
         player_data.rgbd.isKinematic = true;
         player_data.transform.position = Respawn_Center.transform.GetChild((player_data.PV.ViewID / 1000) - 1).position;
+        soldierPoint = player_data.level;
         GameManager.Instance.areanaCount += 1;
     }
     public void ReadyGame()
     {
-        if (isReady == false)
+        if (isReady == false && soldierPoint >=0)
         {
             
             PV.RPC("ReadyGamePlus_RPC", RpcTarget.All);
@@ -153,7 +160,7 @@ public class Player_Arena : MonoBehaviour
             Ready.image.color = new Color(1f, 1f, 1f);
             isReady = true;
         }
-        else
+        else if(isReady == true)
         {
            
             PV.RPC("ReadyGameMinus_RPC", RpcTarget.All);
@@ -213,7 +220,7 @@ public class Player_Arena : MonoBehaviour
                 isActive_SoldierSpot[i, j] = 0;
             }
         }
-        player_data.SoldierPoint = 20;
+        soldierPoint = player_data.level;
         isSelect_arrow = false;
         isSelect_melee = false;
         isReady = false;

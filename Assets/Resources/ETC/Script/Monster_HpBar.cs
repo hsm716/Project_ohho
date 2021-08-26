@@ -24,7 +24,7 @@ public class Monster_HpBar : MonoBehaviourPunCallbacks
         monster_data = monster.GetComponent<Monster>();
         if (monster_data.monsterType == Monster.Type.slime)
         {
-            offset = new Vector3(0f, 1f, 0f);
+            offset = new Vector3(0f, 1.3f, 0f);
         }
         if (monster_data.monsterType == Monster.Type.demon)
         {

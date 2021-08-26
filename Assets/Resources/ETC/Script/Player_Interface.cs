@@ -234,6 +234,7 @@ public class Player_Interface : MonoBehaviour
     }
     void ArenaIn()
     {
+        
         player_data.horizontalMove = 0f;
         player_data.verticalMove = 0f;
         player_data.arenaWin = true;
@@ -262,7 +263,7 @@ public class Player_Interface : MonoBehaviour
             GameObject[] soldiers = GameObject.FindGameObjectsWithTag("Soldier");
             foreach (var s in soldiers)
             {
-                Destroy(s);
+               Destroy(s);
             }
         }
 

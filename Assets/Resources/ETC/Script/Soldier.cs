@@ -55,6 +55,8 @@ public class Soldier : MonoBehaviourPunCallbacks,IPunObservable
 
     public float curHP;
     public float maxHP;
+
+    public ParticleSystem hitEffect_blood;
     void Start()
     {
         anim = GetComponent<Animator>();
@@ -115,10 +117,12 @@ public class Soldier : MonoBehaviourPunCallbacks,IPunObservable
         }
         if (type == 0)
         {
+            hitEffect_blood.Play();
             sound_source.PlayOneShot(sound_slash_hit);
         }
         else if (type == 1)
         {
+            hitEffect_blood.Play();
             sound_source.PlayOneShot(sound_arrow_hit);
         }
         if (curHP <= 0 && !isDead)
