@@ -33,7 +33,7 @@ public class MotionTrail : MonoBehaviour {
         if (TargetSkinMesh == null)
         {
             #if UNITY_EDITOR
-            Debug.Log("<color=red>" + "타겟 스킨메쉬가 없습니다." + "</color>", this);
+            //Debug.Log("<color=red>" + "타겟 스킨메쉬가 없습니다." + "</color>", this);
             #endif
         }
         if (ValueName == "")

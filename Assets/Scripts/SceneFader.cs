@@ -50,6 +50,7 @@ public class SceneFader : MonoBehaviour
             yield return 0;
         }
         //RewardManager.Instance.DialogueDisplay();
+        yield return new WaitForSeconds(0.1f);
         RewardManager.Instance.ToThrone();
     }
 }

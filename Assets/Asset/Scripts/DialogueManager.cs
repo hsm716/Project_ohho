@@ -154,7 +154,7 @@ public class DialogueManager : MonoBehaviourPunCallbacks
         QuestManager.Instance.ShowQuestClear(dialogue);
     }
 
-    public void StartDialogue(Dialogue _dialogue)
+    public void FinalStartDialogue(Dialogue _dialogue)
     {
         dialogue = _dialogue;
         dialoguePanel.SetActive(true);
@@ -163,7 +163,7 @@ public class DialogueManager : MonoBehaviourPunCallbacks
         this.speakDelay = _dialogue.speakDelay;
 
         sentences.Clear();
-
+        nextDialogueButton.gameObject.SetActive(false);
         GameObject myPlayer = FindMyPlayer();
 
         foreach (string sentence in dialogue.unCompletedSentences)
@@ -176,8 +176,6 @@ public class DialogueManager : MonoBehaviourPunCallbacks
 
     public void NextSentence()
     {
-        GameObject myPlayer = FindMyPlayer();
-
         if (sentences.Count == 0)   //마지막 대화가 끝났을 때
         {
             EndDialogue();
@@ -200,7 +198,7 @@ public class DialogueManager : MonoBehaviourPunCallbacks
             yield return null;
         }
 
-        yield return new WaitForSeconds(1.5f);
+        yield return new WaitForSeconds(1.0f);
         NextSentence();
     }
 }

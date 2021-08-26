@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using Photon.Pun;
 
 
-public class QuestData : MonoBehaviourPunCallbacks//, IPunObservable
+public class QuestData : MonoBehaviourPunCallbacks
 {
     //public string questName;
     //public int[] npcId;
@@ -50,12 +50,17 @@ public class QuestData : MonoBehaviourPunCallbacks//, IPunObservable
     }
     private void Update()
     {
-        if (OccupiedValue_cur >= OccupiedValue_max)
+        if (myPlayer.PV.IsMine)
+        {
+            if (OccupiedValue_cur >= OccupiedValue_max)
             OccupiedValue_cur = OccupiedValue_max;
 
-        forestSpirit_CurCount = myPlayer.PI.item_Material["forest_spirit"];
-        twigCurCount = myPlayer.PI.item_Material["twig"];
-        OccupiedValue_cur = myPlayer.curOccupied_value;
+            forestSpirit_CurCount = myPlayer.PI.item_Material["forest_spirit"];
+            twigCurCount = myPlayer.PI.item_Material["twig"];
+            OccupiedValue_cur = myPlayer.curOccupied_value;
+
+
+
         Quest();
 
         /*        slimeSlider.value = 100 * slimeKillCount / slimeMaxCount;
@@ -67,7 +72,8 @@ public class QuestData : MonoBehaviourPunCallbacks//, IPunObservable
         twig.text = twigCurCount + " / " + twigMaxCount;
 
         OccupiedSlider.value = (OccupiedValue_cur / OccupiedValue_max);
-        Occupy.text = string.Format("{0:0.##}", 100*OccupiedValue_cur/OccupiedValue_max)+"%"; 
+        Occupy.text = string.Format("{0:0.##}", 100*OccupiedValue_cur/OccupiedValue_max)+"%";
+        }
     }
 /*    int FindItemNum(string name)
     {
@@ -210,4 +216,5 @@ public class QuestData : MonoBehaviourPunCallbacks//, IPunObservable
                 break;
         }
     }
+
 }

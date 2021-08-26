@@ -13,7 +13,11 @@ public class CameraMove : MonoBehaviour
     
     private void FixedUpdate()
     {
-        nextPosition  = Target.transform.position + new Vector3(offsetX, offsetY, offsetZ);
-        transform.position = Vector3.Slerp(transform.position, nextPosition, 0.5f);
+        if (Target)
+        {
+            nextPosition = Target.transform.position + new Vector3(offsetX, offsetY, offsetZ);
+            transform.position = Vector3.Slerp(transform.position, nextPosition, 0.5f);
+        }
+
     }
 }

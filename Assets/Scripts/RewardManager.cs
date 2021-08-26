@@ -1,10 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using Photon.Pun;
 
-public class RewardManager : MonoBehaviourPunCallbacks
+public class RewardManager : MonoBehaviourPunCallbacks, IPunObservable
 {
     public static RewardManager Instance;
 
@@ -61,8 +62,8 @@ public class RewardManager : MonoBehaviourPunCallbacks
     {
         most_jumlyung = 0;
         most_yaktal = 0;
-        End = false;
-        StartCoroutine(Test());
+        End = true;
+        //StartCoroutine(Test());
     }
 
     IEnumerator Test()  //페이드아웃 테스트
@@ -73,7 +74,8 @@ public class RewardManager : MonoBehaviourPunCallbacks
 
     public void ToThrone()   //의자있는화면으로
     {
-        UIClose();
+        RankDisplay();
+        UIClose();  //UI끄기
         Debug.Log("@@@@@@@@@@@ToChair@@@@@@@");
         End = true;
         First_Player.transform.position = reward_position.position;
@@ -89,44 +91,13 @@ public class RewardManager : MonoBehaviourPunCallbacks
     IEnumerator FadeInTest_() //페이드인 테스트
     {
 
-
         Debug.Log("@@@@@@@@@@@Test3@@@@@@@");
         yield return new WaitForSeconds(2f);
         RankingCamera.SetActive(true);      //랭킹카메라 켜기
-        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
-        foreach (GameObject p in players)
-        {
-            if (p.GetComponent<Player_Control>().PV.Owner.NickName == PhotonNetwork.LocalPlayer.NickName)
-            {
-                p.GetComponent<Player_Control>().characterCamera.gameObject.SetActive(false);
-                //p.GetComponent<Player_Control>().minimapCamera.gameObject.SetActive(false);
-                p.GetComponent<Player_Control>().WeaponPosition_L.SetActive(false);
-                p.GetComponent<Player_Control>().WeaponPosition_R.SetActive(false);
-
-                p.GetComponent<Player_Control>().enabled = false;
-            }
-
-        }
-
 
         sceneFader.FadeIn();
     }
-    /*
-public void DialogueDisplay()
-{
-    //PV.RPC("DialogueDisplay2", RpcTarget.All);
-    Debug.Log("@@@@@@@@@@@DialogueDisplay@@@@@@@");
-    //DT.FinalDialogue();
 
-
-}
-
-[PunRPC]
-public void DialogueDisplay2()
-{
-    DT.FinalDialogue();
-}
-*/
     public void RewardPlace()   //Fadein 마지막
     {
         Debug.Log("@@@@@@@@@@@RewardPlace@@@@@@@");
@@ -156,7 +127,7 @@ public void DialogueDisplay2()
         Level();
         BossKill();
         Final_Reward();
-        RankDisplay();
+
         sceneFader.FadeOut();   //페이드 아웃
     }
 
@@ -394,15 +365,17 @@ public void DialogueDisplay2()
         GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
         foreach (GameObject p in players)
         {
-            p.transform.parent.GetChild(1).gameObject.SetActive(false); //인터페이스캔버스 끄기
             if (p.GetComponent<Player_Control>().PV.Owner.NickName == PhotonNetwork.LocalPlayer.NickName)
             {
-                p.GetComponent<Player_Control>().characterCamera.gameObject.SetActive(false);
-                //p.GetComponent<Player_Control>().minimapCamera.gameObject.SetActive(false);
-                p.GetComponent<Player_Control>().WeaponPosition_L.SetActive(false);
-                p.GetComponent<Player_Control>().WeaponPosition_R.SetActive(false);
-
                 p.GetComponent<Player_Control>().enabled = false;
+                p.transform.parent.GetChild(1).gameObject.SetActive(false); //인터페이스캔버스 끄기
+                Destroy(p.GetComponent<Player_Control>().characterCamera.gameObject); 
+                p.GetComponent<Player_Control>().characterCamera.GetComponent<AudioListener>().enabled = false;
+                //p.GetComponent<Player_Control>().minimapCamera.gameObject.SetActive(false);
+                //p.GetComponent<Player_Control>().WeaponPosition_L.SetActive(false);
+                //p.GetComponent<Player_Control>().WeaponPosition_R.SetActive(false);
+
+                //p.GetComponent<Player_Control>().enabled = false;
             }
         }
     }
@@ -513,10 +486,23 @@ public void DialogueDisplay2()
     {
         Destroy(RoomManager.Instance.gameObject);
         Destroy(QuestManager.Instance.gameObject);
+        //PhotonNetwork.Disconnect();
         PhotonNetwork.DestroyPlayerObjects(PhotonNetwork.LocalPlayer);
+        SceneManager.LoadScene(0);
         PhotonNetwork.LeaveRoom();
-        PhotonNetwork.LoadLevel(0);
+        //PhotonNetwork.LoadLevel(0);
         Destroy(gameObject);
     }
 
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        if (stream.IsWriting)
+        {
+            stream.SendNext(End);
+        }
+        else
+        {
+            End = (bool)stream.ReceiveNext();
+        }
+    }
 }

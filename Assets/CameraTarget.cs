@@ -35,34 +35,37 @@ public class CameraTarget : MonoBehaviour
     {
         if (!myPlayer)
             FindMyPlayer();
-
-        mousePos = Input.mousePosition;
-
-        curPos = this.transform.position;
-
-        //up
-        if (Input.mousePosition.y >= Screen.height / 2 + screenSizeThickness)
+        if (myPlayer)
         {
+            mousePos = Input.mousePosition;
 
-            curPos.z += camSpeed * Time.deltaTime;
+            curPos = this.transform.position;
+
+            //up
+            if (Input.mousePosition.y >= Screen.height / 2 + screenSizeThickness)
+            {
+
+                curPos.z += camSpeed * Time.deltaTime;
+            }
+            //down
+            if (Input.mousePosition.y <= Screen.height / 2 - screenSizeThickness)
+            {
+                curPos.z -= camSpeed * Time.deltaTime;
+            }
+            //right
+            if (Input.mousePosition.x >= Screen.width / 2 + screenSizeThickness)
+            {
+                curPos.x += camSpeed * Time.deltaTime;
+            }
+            //left
+            if (Input.mousePosition.x <= Screen.width / 2 - screenSizeThickness)
+            {
+                curPos.x -= camSpeed * Time.deltaTime;
+            }
+            curPos.z = Mathf.Clamp(curPos.z, -4f + myPlayer.transform.position.z, myPlayer.transform.position.z + 4f);
+            curPos.x = Mathf.Clamp(curPos.x, -4f + myPlayer.transform.position.x, myPlayer.transform.position.x + 4f);
+            transform.position = curPos;
         }
-        //down
-        if (Input.mousePosition.y <= Screen.height / 2 - screenSizeThickness)
-        {
-            curPos.z -= camSpeed * Time.deltaTime;
-        }
-        //right
-        if (Input.mousePosition.x >= Screen.width / 2 + screenSizeThickness)
-        {
-            curPos.x += camSpeed * Time.deltaTime;
-        }
-        //left
-        if (Input.mousePosition.x <= Screen.width / 2 - screenSizeThickness)
-        {
-            curPos.x -= camSpeed * Time.deltaTime;
-        }
-        curPos.z = Mathf.Clamp(curPos.z, -4f + myPlayer.transform.position.z, myPlayer.transform.position.z + 4f);
-        curPos.x = Mathf.Clamp(curPos.x, -4f + myPlayer.transform.position.x, myPlayer.transform.position.x + 4f);
-        transform.position = curPos;
+
     }
 }
