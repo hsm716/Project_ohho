@@ -14,26 +14,33 @@ public class MonsterSpawner : MonoBehaviour
     int maxCount_Slime;
     void Start()
     {
+        StartCoroutine(SpawnLater());
+    }
+
+    IEnumerator SpawnLater()
+    {
+        yield return new WaitForSeconds(20f);
         if (PhotonNetwork.IsMasterClient)
         {
             maxCount_Slime = 7;
             if (spawnType == Type.demon)
             {
-               StartCoroutine(Spawn_demon());
+                StartCoroutine(Spawn_demon());
             }
             if (spawnType == Type.golem)
             {
-               StartCoroutine(Spawn_golem());
+                StartCoroutine(Spawn_golem());
             }
-            if(spawnType == Type.slime)
+            if (spawnType == Type.slime)
             {
-               StartCoroutine(Spawn());
+                StartCoroutine(Spawn());
             }
-            
+
             //
-            
+
         }
     }
+
 
     // Update is called once per frame
     void Update()

@@ -81,6 +81,7 @@ public class RewardManager : MonoBehaviourPunCallbacks, IPunObservable
         First_Player.transform.position = reward_position.position;
         First_Player.transform.rotation = reward_position.rotation;
 
+        FadeInTest();
     }
 
     public void FadeInTest()
@@ -92,7 +93,7 @@ public class RewardManager : MonoBehaviourPunCallbacks, IPunObservable
     {
 
         Debug.Log("@@@@@@@@@@@Test3@@@@@@@");
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(3f);
         RankingCamera.SetActive(true);      //랭킹카메라 켜기
 
         sceneFader.FadeIn();
@@ -489,8 +490,8 @@ public class RewardManager : MonoBehaviourPunCallbacks, IPunObservable
         Destroy(QuestManager.Instance.gameObject);
         //PhotonNetwork.Disconnect();
         PhotonNetwork.DestroyPlayerObjects(PhotonNetwork.LocalPlayer);
-        SceneManager.LoadScene(0);
         PhotonNetwork.LeaveRoom();
+        SceneManager.LoadScene(0);
         //PhotonNetwork.LoadLevel(0);
         Destroy(gameObject);
     }

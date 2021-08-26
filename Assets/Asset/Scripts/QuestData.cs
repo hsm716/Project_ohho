@@ -21,6 +21,10 @@ public class QuestData : MonoBehaviourPunCallbacks
     public Text Slime;
     public Slider twigSlider;
     public Text twig;
+    public Slider DemonSlider;
+    public Text Demon;
+    public Slider twigSlider_forge;
+    public Text twig_forge;
     public Slider OccupiedSlider;
     public Text Occupy;
 
@@ -35,7 +39,9 @@ public class QuestData : MonoBehaviourPunCallbacks
     public bool DemonKill = false;
 
     public int twigCurCount = 0;
+    public int twigforgeCurCount = 0;
     private int twigMaxCount = 5;
+    private int twigforgeMaxCount = 5;
 
     public float OccupiedValue_cur = 0f;
     public float OccupiedValue_max = 100f;
@@ -61,18 +67,35 @@ public class QuestData : MonoBehaviourPunCallbacks
 
 
 
-        Quest();
+            Quest();
 
-        /*        slimeSlider.value = 100 * slimeKillCount / slimeMaxCount;
+            /*  slimeSlider.value = 100 * slimeKillCount / slimeMaxCount;
                 Slime.text = slimeKillCount + " / " + slimeMaxCount;*/
-        slimeSlider.value = 100 * forestSpirit_CurCount / forestSpirit_MaxCount;
-        Slime.text = forestSpirit_CurCount + " / " + forestSpirit_MaxCount;
 
-        twigSlider.value = (twigCurCount / (float)twigMaxCount);
-        twig.text = twigCurCount + " / " + twigMaxCount;
+            slimeSlider.value = 100 * forestSpirit_CurCount / forestSpirit_MaxCount;    //0¹ø : ½£
+            Slime.text = forestSpirit_CurCount + " / " + forestSpirit_MaxCount;
 
-        OccupiedSlider.value = (OccupiedValue_cur / OccupiedValue_max);
-        Occupy.text = string.Format("{0:0.##}", 100*OccupiedValue_cur/OccupiedValue_max)+"%";
+            twigSlider.value = (twigCurCount / (float)twigMaxCount);    //1¹ø : »ç¸·
+            twig.text = twigCurCount + " / " + twigMaxCount;
+
+            //2¹ø : Çï
+            if (!DemonKill)
+            {
+                DemonSlider.value = (0 / 1);
+                Demon.text = "0 / 1";
+            }
+            else
+            {
+                DemonSlider.value = (1 / 1);
+                Demon.text = "1 / 1";
+            }
+
+
+            twigSlider_forge.value = (twigforgeCurCount / (float)twigforgeMaxCount);    //3¹ø : Æ÷Áö
+            twig_forge.text = twigforgeCurCount + " / " + twigforgeMaxCount;
+
+            OccupiedSlider.value = (OccupiedValue_cur / OccupiedValue_max);     //4¹ø : ´«
+            Occupy.text = string.Format("{0:0.##}", 100*OccupiedValue_cur/OccupiedValue_max)+"%";
         }
     }
 /*    int FindItemNum(string name)

@@ -247,7 +247,7 @@ public class Player_Interface : MonoBehaviour
     public void ArenaOut()
     {
         isActive_Input = true;
-        gm.arena_time = 30f;
+        gm.arena_time = 180f;
         player_data.isArena = false;
         isArena_in = false;
 

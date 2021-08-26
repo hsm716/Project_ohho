@@ -165,6 +165,8 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     public AudioClip sound_death_male;
     public AudioClip sound_death_female;
 
+    public AudioClip sound_skill_magic;
+
     #endregion
     [PunRPC]
     void DestroyRPC() => Destroy(gameObject);
@@ -562,7 +564,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
         animator.SetBool("isSkill_E", true);
         animator.SetTrigger("doSpell_Skill_E");
         skill_magic_E_effect.Play();
-
+        sound_source.PlayOneShot(sound_skill_magic);
     }
     [PunRPC]
     void Skill_magic_E_out()
@@ -570,6 +572,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
         skill_magic_E_effect.Stop();
         animator.SetBool("isSkill_E", false);
         isSkill = false;
+        sound_source.Stop();
     }
 
 

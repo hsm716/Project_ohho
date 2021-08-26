@@ -27,6 +27,7 @@ public class Monster : MonoBehaviourPunCallbacks, IPunObservable
     public AudioSource sound_melee_attack;
     public AudioSource sound_golem_PunchAttack;
 
+    public AudioSource sound_landing;
 
     public GameObject FloatingText_prefab;
 
@@ -396,7 +397,7 @@ public class Monster : MonoBehaviourPunCallbacks, IPunObservable
         {
             Camera_Move.Instance.ShakeCamera(3f, 0.6f);
         }
-
+        sound_landing.Play();
         agent.velocity = Vector3.zero;
         skillCol.enabled = true;
         agent.isStopped = true;
