@@ -1224,7 +1224,9 @@ MonoBehaviour:
     type: 3}
   sound_slime_Attack_clip: {fileID: 8300000, guid: ab76c1465cead34468468ba89b7dfdb1,
     type: 3}
+  sound_demon_skill_clip: {fileID: 0}
   InitPos: {x: 0, y: 0, z: 0}
+  hitEffect_blood: {fileID: 0}
 --- !u!95 &1481613412223847049
 Animator:
   serializedVersion: 3

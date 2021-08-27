@@ -4312,7 +4312,9 @@ MonoBehaviour:
     type: 3}
   sound_demon_Attack_clip: {fileID: 0}
   sound_slime_Attack_clip: {fileID: 0}
+  sound_demon_skill_clip: {fileID: 0}
   InitPos: {x: 0, y: 0, z: 0}
+  hitEffect_blood: {fileID: 0}
 --- !u!114 &6072916125889683159
 MonoBehaviour:
   m_ObjectHideFlags: 0

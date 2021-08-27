@@ -24,7 +24,7 @@ public class Launcher1 : MonoBehaviourPunCallbacks
     private void Awake()
     {
         Instance = this;
-        Screen.SetResolution(960, 540, false);
+        Screen.SetResolution(1920, 1080, false);
         PhotonNetwork.SendRate = 144;
         PhotonNetwork.SerializationRate = 144;
     }
@@ -45,7 +45,7 @@ public class Launcher1 : MonoBehaviourPunCallbacks
             OnUsernameInputValueChanged();
         }
     }
-
+     
     private void Update()
     {
         Player[] players = PhotonNetwork.PlayerList;

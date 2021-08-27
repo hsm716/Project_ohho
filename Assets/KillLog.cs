@@ -10,10 +10,10 @@ public class KillLog : MonoBehaviour
     public PhotonView PV;
 
     public Image Killer_Icon;
-    public TextMeshProUGUI killer_name;
+    public Text killer_name;
 
     Animator anim;
-    public TextMeshProUGUI killedMan_name;
+    public Text killedMan_name;
     public Image KilledMan_Icon;
 
     public Player_Control myPlayer;
