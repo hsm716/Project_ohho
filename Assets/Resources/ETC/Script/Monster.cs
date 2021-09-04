@@ -308,7 +308,7 @@ public class Monster : MonoBehaviourPunCallbacks, IPunObservable
     [PunRPC]
     void Attack()
     {
-        
+        // 몬스터의 각 타입 마다 사거리 및 설정을 달리함
         if (monsterType == Type.slime)
         {
             if (Vector3.Distance(transform.position, target.position) <= 1.5f && !isAttack)
@@ -317,6 +317,8 @@ public class Monster : MonoBehaviourPunCallbacks, IPunObservable
                 {
                     isAttack = true;
                     agent.isStopped = true;
+
+                    // 바라보는 방향을 타겟을 향하게 함.
                     anim.transform.forward = target.position - transform.position;
                     
                     anim.SetTrigger("doAttack");
@@ -405,9 +407,12 @@ public class Monster : MonoBehaviourPunCallbacks, IPunObservable
 
 
     }
+    // 몬스터 스킬
     void Skill1()
     {
         isSkill = true;
+
+        // 스킬이 있는 몬스터는, 골렘과 데몬으로 스킬 성격에 맞게 설정.
         if(monsterType == Type.golem)
         {
             agent.speed = 30f;
@@ -416,11 +421,17 @@ public class Monster : MonoBehaviourPunCallbacks, IPunObservable
             agent.speed = 50f;
         
     }
+
+    // 스킬 시전 중, 바닥에 충돌하는 타이밍을 함수로 만들어 애니매이션 Event에서 호출함
     public void FallLandNow()
     {
+
+        // 땅과 충돌했을 때, Camera_Move 클래스에 접근해서 카메라를 흔드는 효과를 줌
         if (monsterType == Type.demon)
         {
             Camera_Move.Instance.ShakeCamera(5f, 0.75f);
+
+            // 쇼크웨이브 효과를 주는 파티클을 실행시켜줌.
             shockWave.Play();
         }
         else if(monsterType == Type.golem)
@@ -456,6 +467,7 @@ public class Monster : MonoBehaviourPunCallbacks, IPunObservable
     {
         if (!isDead)
         {
+            // 이동 방식은 기본적으로 마지막에 공격한 적을 쫓아가게 설계
             if (Last_Hiter)
             {
                 if (Last_Hiter.isDeath)
@@ -464,6 +476,7 @@ public class Monster : MonoBehaviourPunCallbacks, IPunObservable
                     ChaseObject(InitPos);
                 }
             }
+            // 데몬과 골렘은 쿨타임에 맞춰 스킬 처리를 진행함.
             if (monsterType == Type.demon)
             {
                 curSkillAmount += Time.deltaTime*5f;
@@ -500,12 +513,8 @@ public class Monster : MonoBehaviourPunCallbacks, IPunObservable
                     target = Last_Hiter.transform;
                 else
                     target = null;
-                /*if (Vector3.Distance(transform.position, target.position) <= 0.5f && !isChase)
-                {
-                    agent.isStopped = true;
-                    agent.velocity = Vector3.zero;
 
-                }*/
+                // 나를 공격한 타겟이 없을 때(?) 없어졌을 때, 처음 위치로 되돌아가게 함
                 if (!target)
                 {
                     if(Vector3.Distance(transform.position,InitPos) <= 0.5f)
@@ -516,11 +525,9 @@ public class Monster : MonoBehaviourPunCallbacks, IPunObservable
                     ChaseObject(InitPos);
                 }
 
+                // 쫓을 대상이 있을 경우, 적을 쫓아가 공격
                 if (isChase)
                 {
-
-                    
-                    //PV.RPC("ChaseObject", RpcTarget.Others,target.position);
                     if(target)
                         ChaseObject(target.position);
                     if(!isSkill && !isAttack)
@@ -535,6 +542,7 @@ public class Monster : MonoBehaviourPunCallbacks, IPunObservable
             else if ((transform.position - curPos).sqrMagnitude >= 100) transform.position = curPos;
             else
             {
+                // 위치와 방향을 동기화
                 transform.position = Vector3.Lerp(transform.position, curPos, Time.fixedDeltaTime * 20f);
                 transform.rotation = Quaternion.Lerp(transform.rotation, curRot, Time.fixedDeltaTime * 20f);
             }

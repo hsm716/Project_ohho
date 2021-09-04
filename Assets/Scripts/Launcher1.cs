@@ -32,16 +32,22 @@ public class Launcher1 : MonoBehaviourPunCallbacks
     private void Start()
     {
         Debug.Log("Connecting to Master");
+        //  포톤 서버에 접속하게 해주는 함수.
         PhotonNetwork.ConnectUsingSettings();
         MenuManager.Instance.OpenMenu("Loading");
+
+        // 입력한 username으로 PlayerPrefs를 통해 로컬 저장함
         if (PlayerPrefs.HasKey("username"))
         {
             usernameInput.text = PlayerPrefs.GetString("username");
+
+            // 입력한 username을 포톤 클라이언트의 유저 이름으로 저장
             PhotonNetwork.NickName = PlayerPrefs.GetString("username");
         }
         else
         {
             usernameInput.text = "Player " + Random.Range(0, 10000).ToString("0000");
+            // 입력한 username을 포톤 클라이언트의 유저 이름으로 저장하는 함수 호출
             OnUsernameInputValueChanged();
         }
     }
@@ -49,7 +55,8 @@ public class Launcher1 : MonoBehaviourPunCallbacks
     private void Update()
     {
         Player[] players = PhotonNetwork.PlayerList;
-        if (players.Count() == 3)
+        // 현재 방에 설정한 인원 수 만큼 플레이어가 있으면, 시작가능 버튼이 활성화됨
+        if (players.Count() >= 1)
         {
             startGameButton.GetComponent<Button>().interactable = true;
         }
@@ -59,6 +66,7 @@ public class Launcher1 : MonoBehaviourPunCallbacks
         }
     }
 
+    // 메뉴화면으로 들어가게 하는 함수
     public override void OnConnectedToMaster()
     {
         Debug.Log("Connected to Master");
@@ -66,6 +74,7 @@ public class Launcher1 : MonoBehaviourPunCallbacks
         PhotonNetwork.AutomaticallySyncScene = true;
     }
 
+    
     public override void OnJoinedLobby()
     {
         MenuManager.Instance.OpenMenu("Title");
@@ -74,6 +83,8 @@ public class Launcher1 : MonoBehaviourPunCallbacks
 
     GameObject Custom;
 
+
+    // 입력한 방제목으로 방을 만드는 함수
     public void CreateRoom()
     {
         if (string.IsNullOrEmpty(roomNameInputField.text))
@@ -85,23 +96,30 @@ public class Launcher1 : MonoBehaviourPunCallbacks
 
     }
 
+    // 방에 들어가있을 때, 방제목과 들어온 플레이어 리스트르 띄어줌
     public override void OnJoinedRoom()
     {
         MenuManager.Instance.OpenMenu("Room");
         roomNameText.text = PhotonNetwork.CurrentRoom.Name;
 
+
+        // 방에 들어온 플레이어 리스트
         Player[] players = PhotonNetwork.PlayerList;
 
+
+        // 방에 누군가 들어오면, 모든 List를 제거
         foreach (Transform child in playerListContent)
         {
             Destroy(child.gameObject);
         }
 
+        // 들어온 플레이어의 정보를 가진 PlayerListItem 생성
         for (int i = 0; i < players.Count(); i++)
         {
             Instantiate(playerListItemPrefab, playerListContent).GetComponent<PlayerListItem>().Setup(players[i]);
         }
 
+        // 방장 클라이언트에게만 시작 버튼이 활성화 됨.
         startGameButton.SetActive(PhotonNetwork.IsMasterClient);
 
     }

@@ -150,6 +150,7 @@ public class Player_Interface : MonoBehaviour
     }
     void Update()
     {
+        // 각 능력치는 3번까지 업그레이드가 가능.
         if(atk_count>=3)
             atk_possible = true;
         if (def_count >= 3)
@@ -162,7 +163,10 @@ public class Player_Interface : MonoBehaviour
             hp_possible = true;
         if (stamina_count >= 3)
             stamina_possible = true;
+        //////////////////////////////////////////
+        
 
+        // GameManager &  Player 데이터에 기반한 UI 값들을 업데이트해줌.
         time = gm.arena_time;
         time_txt.text = string.Format("{0:00}",(int)(time/60)) + " : " + string.Format("{0:00}", (int)(time % 60));
         timeSlider.value = time / 300f;
@@ -175,7 +179,22 @@ public class Player_Interface : MonoBehaviour
 
         player_level_txt.text = ""+player_data.level;
 
+        HP_UI.text = (int)player_data.curHP + " / " + player_data.maxHP;
+        HPBAR.value = (player_data.curHP / player_data.maxHP);
 
+        STAMINA_UI_Txt.text = (int)player_data.curStamina + " / " + player_data.maxStamina;
+        STAMINA_BAR.value = (player_data.curStamina / player_data.maxStamina);
+
+        expBar.value = (player_data.curEXP / player_data.maxEXP) * 100;
+        Next_Level.text = "" + player_data.level;
+        expPercent.text = string.Format("{0:0.00}", ((player_data.curEXP / player_data.maxEXP) * 100)) + "%";
+
+        RedBuff_image.fillAmount = player_data.redBuff_time / 100f;
+        BlueBuff_image.fillAmount = player_data.blueBuff_time / 100f;
+        GreenBuff_image.fillAmount = player_data.greenBuff_time / 100f;
+
+
+        // 직업군 마다 스킬 아이콘을 바꾸어줌.
         if (player_data.curStyle == Style.WeaponStyle.Sword)
         {
             skill_E_img.sprite = skill_E_sword_sp;
@@ -193,6 +212,7 @@ public class Player_Interface : MonoBehaviour
         }
 
 
+        // 스킬 쿨타임에 맞게 스킬 아이콘과 사용까지 남은 시간을 나타내줌.
         if (player_data.isSkill_E_Ready)
         {
             skill_E_CoolTime_txt.text = "";
@@ -203,48 +223,47 @@ public class Player_Interface : MonoBehaviour
             skill_E_backimg.fillAmount =  (1 - (player_data.skill_E_Delay / player_data.skill_E_cooltime));
         }
 
+
+        // 아레나 진입 시간에 도달하면, 아레나에 진입하는 함수를 호출
         if (time <= 0f&&player_data.isArena==false)
         {
             ArenaIn();
         }
+
+        // 아레나 종료 시간에 도달하면, 아레나 탈출하는 함수를 호출
         if(time <= 0f && player_data.isArena==true)
         {
             ArenaOut();
         }
+
+        // 아레나 중일때, 아레나 종료 조건이 도달했는지 체크함.
         if(player_data.isArena == true)
         {
             CheckFinished_Arena();
         }
-        //CheckFinished_Arena();
-        HP_UI.text = (int)player_data.curHP +" / " + player_data.maxHP;
-        
-        HPBAR.value = (player_data.curHP / player_data.maxHP);
-
-        STAMINA_UI_Txt.text = (int)player_data.curStamina + " / " + player_data.maxStamina;
-        STAMINA_BAR.value = (player_data.curStamina / player_data.maxStamina);
-
-        expBar.value = (player_data.curEXP / player_data.maxEXP) * 100;
-        Next_Level.text = "" + player_data.level;
-        expPercent.text = string.Format("{0:0.00}", ((player_data.curEXP / player_data.maxEXP) * 100)) + "%";
-
-        RedBuff_image.fillAmount = player_data.redBuff_time / 100f;
-        BlueBuff_image.fillAmount = player_data.blueBuff_time / 100f;
-        GreenBuff_image.fillAmount = player_data.greenBuff_time / 100f;
 
     }
+    // 아레나 입장
     void ArenaIn()
     {
-        
+        // 플레이어의 이동 입력을 초기화함.
         player_data.horizontalMove = 0f;
         player_data.verticalMove = 0f;
+
         player_data.arenaWin = true;
+
+        // GameManager의 isActive를 False로 만들어
+        // 플레이어를 움직이지 못하게함.
         GameManager.Instance.isActive = false;
         isActive_Input = false;
+
+        // 아레나 병력 설정 UI를 활성화시켜줌.
         GameObject arenaCanvas = MC.transform.GetChild(7).gameObject;
         arenaCanvas.SetActive(true);
         arenaCanvas.transform.GetChild(0).gameObject.SetActive(true);
     }
 
+    // 아레나 탈출
     public void ArenaOut()
     {
         isActive_Input = true;
@@ -252,12 +271,8 @@ public class Player_Interface : MonoBehaviour
         player_data.isArena = false;
         isArena_in = false;
 
-/*        if (player_data.arenaWin)
-        {
-            player_data.arenaRank = GameManager.Instance.arenaRank-1;
-        }*/
-       
 
+        // 아레나에 남아있는 병력들을 제거해줌.
         if (player_data.PV.IsMine)
         {
             GameObject[] soldiers = GameObject.FindGameObjectsWithTag("Soldier");
@@ -267,33 +282,33 @@ public class Player_Interface : MonoBehaviour
             }
         }
 
+        // 3초 후, 리스폰
         player_data.Invoke("Respawn",3f);
 
-/*        player_data.rgbd.isKinematic = true;
-        player_data.transform.position = player_data.Respawn_Center.transform.GetChild((int)(player_data.PV.ViewID / 1000)-1).transform.position;
-        player_data.rgbd.isKinematic = false;*/
-
-
+        // 아레나 결과&보상 UI를 띄어줌
         GameObject arenaCanvas = MC.transform.GetChild(7).gameObject;
         arenaCanvas.transform.GetChild(2).gameObject.SetActive(true);
 
+        // 종료 시, 플레이어가 승리했을 경우
         if (player_data.arenaWin)
         {
+            // 1등으로 처리
             player_data.arenaRank=1;
+
+            // 마지막 아레나에서 승리했을 때, 플레이어의 최종스코어가 되는 Star 값을 두 개 올려줌.
             if(GameManager.Instance.areanaCount == 3)   //마지막 
             {
                 player_data.star += 2;
             }
-            else
+            else // 일반 아레나에서 승리 시, Star 값 1개 증가
             {
                 player_data.star++;
             }
         }
+        // 마지막 아레나일 경우, 종료했을 때 RewardManager 클래스의 Reward함수 호출을 통해서 최종 결산을 진행
         if (GameManager.Instance.areanaCount == 3)
             RewardManager.Instance.Reward();    //정산
         player_data.PV.RPC("initRank", RpcTarget.All);
-
-        //PA.ranking_img.sprite = PA.ranking_123_sp[PA.rank-1];
 
     }
 
@@ -319,6 +334,7 @@ public class Player_Interface : MonoBehaviour
         }
     }
 
+    // 능력치 선택
     public void Select(int index)
     {
         //qwe
@@ -382,17 +398,20 @@ public class Player_Interface : MonoBehaviour
         player_data.maxStamina += 50f;
     }
 
+    // 선택 가능 능력치를 섞어서 3개 뽑아줌.
     IEnumerator Shuffle()
     {
-        //qq
         yield return new WaitForSeconds(1f);
 
+        // 선택 가능 능력치를 bool[]에 저장함
         bool[] selected_state = { hp_possible, spd_possible, atk_possible, def_possible, critical_possible,stamina_possible };
 
         int count = 0;
+        // 능력치 중, 3개를 뽑음
         while (count < 3)
         {
             int rand_idx = Random.Range(0, 6);
+            // 선택 가능한 능력치를 대상으로 뽑음
             if (selected_state[rand_idx] == false)
             {
                 selected_state[rand_idx] = true;

@@ -515,12 +515,17 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     }
     void Skill()
     {
+
+        // 스킬 e,r에 대한 딜레이 증가
         skill_E_Delay +=Time.deltaTime;
         skill_R_Delay +=Time.deltaTime;
 
+        // 지정한 쿨타임에 딜레이 값이 도달하면 사용가능하게 변경.
         isSkill_E_Ready = skill_E_cooltime < skill_E_Delay;
         isSkill_R_Ready = skill_R_cooltime < skill_R_Delay;
 
+
+        // 마법사 클래스가 스킬을 진행하고 있을 때, 처리
         if(curStyle == Style.WeaponStyle.Magic)
         {
             if (isSkill)
@@ -531,17 +536,23 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
             }
         }
 
+        
+        // E버튼은 스킬 사용이 가능한 시점에서 작동하게 처리.
         if (eDown && !isSkill_E_Ready)
             eDown = false;
+
+        // E버튼을 누르고 오른쪽 마우스버튼을 누르면, 스킬 시전 취소함.
         if (eDown && Input.GetMouseButtonUp(1))
         {
             eDown = false;
         }
 
+        // 스킬 사용은 버튼을 누르고나서 왼쪽 버튼을 눌렀을 때, 발동한다.
         if (eDown && mLDown && isSkill_E_Ready && !isSkill && !isDodge)
         {
             isSkill = true;
             eDown = false;
+            // 각 직업군마다 다른 스킬을 호출하게함.
             if (curStyle == Style.WeaponStyle.Sword && !isAttack)
             {
                 PV.RPC("Skill_sword_E", RpcTarget.All);
@@ -557,9 +568,8 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
             }
             skill_E_Delay = 0f;
         }
-
-
     }
+
     public ParticleSystem skill_magic_E_effect;
     [PunRPC]
     void Skill_magic_E()
@@ -640,8 +650,12 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
                 else
                     PI.GameBoard_Tab.SetActive(false);
 
+
+                // 마법사 및 궁수의 투사체 발사 방향
                 if (spellPoint)
                 {
+                    // 마우스 포인터위치에 닿아 있는 Collider의 y축 위치를 이용하여
+                    // 발사 각도를 조절함
                     float degree_value = -((int)mouseDir_y.y * 10);
                     degree_value = Mathf.Clamp(degree_value, -90, 0);
                     spellPoint.transform.localRotation = Quaternion.Euler(new Vector3(degree_value, 0f, 0f));
@@ -729,8 +743,6 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
         {
             transform.position = Vector3.Lerp(transform.position, curPos, Time.fixedDeltaTime * 20);
             transform.rotation = Quaternion.Lerp(transform.rotation, curRot, Time.fixedDeltaTime * 20);
-            //Hp_Bar.transform.rotation = Quaternion.Euler(new Vector3())
-            //Hp_Bar.transform.rotation = Quaternion.Euler(new Vector3)
             Hp_Bar.hpBar.value = curHpValue;
         }
         switch (curStyle)
@@ -955,7 +967,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
 
 
     // 구르기 동작코드, 210624_황승민
-    [PunRPC]
+    //[PunRPC]
     void Dodge()
     {
         if (!isDodge && dDown &&!isAttack &&!isDeffensing&&!isSkill_R&& curStamina>=50f)
@@ -993,7 +1005,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
 
     }
     // 구르기 벗어나는 동작코드, 210624_황승민
-    [PunRPC]
+    //[PunRPC]
     void DodgeOut()
     {
         curSpeed = walkSpeed;
@@ -1009,17 +1021,18 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
         //rgbd.angularVelocity = Vector3.zero;
     }
     // 움직임 동작코드, 210624_황승민
-    [PunRPC]
+    //[PunRPC]
     void Moving()
     {
 
-
+        // 구르기, 스킬 시전 중이 아닐때 입력한 방향으로 설정
         if (!isDodge && !isSkill)
         {
             movement.Set(horizontalMove, 0, verticalMove);
         }
         else
         {
+            // 각 시전 중인 동작에 맞게 방향 설정
             if(isDodge&&!isSkill)
                 if (curStyle != Style.WeaponStyle.Magic)
                     movement.Set(dodgeVec.x, dodgeVec.y, dodgeVec.z);
@@ -1028,35 +1041,46 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
                     movement.Set(Skill_sword_E_Vector.x, Skill_sword_E_Vector.y, Skill_sword_E_Vector.z);
         }
 
+        // Sword 클래스 :: 방어태세일 때, 속도감소
         if (isDeffensing)
         {
             curSpeed = walkSpeed - 1f;
         }
+        
+        // 설정된 방향에 정규화 과정을 거치고 현재 속도를 반영
         movement = movement.normalized * curSpeed * Time.deltaTime;
+
+        // 설정된 movement Vector3값을 현재 위치값에 더하여 위치 업데이트
         rgbd.transform.position += movement;
 
-        //rgbd.MovePosition(transform.position + movement);
     }
 
     // 방향전환 동작코드, 210624_황승민
-    [PunRPC]
+    //[PunRPC]
+
+    // 플레이어 방향 조절.
     void Turn()
     {
+        // 구르기, 스킬 시전 중이 아닐때 작동하게함.
         if (!isDodge && !isSkill)
         {
+            
             Ray ray = characterCamera.ScreenPointToRay(Input.mousePosition);
             // 레이어마스크 /////
             int layerMask = (1 << LayerMask.NameToLayer("Environment")) |  (1 << LayerMask.NameToLayer("Wall"));
             RaycastHit hitResult;
             /////////////////////
             
+            // 지정한 거리에 맞춰 레이어마스크 값에 만 반응하게 하였고,
             if (Physics.Raycast(ray, out hitResult,100f,layerMask))
             {
-                //Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.forward) * hitResult.distance, Color.yellow);
-                //Debug.Log(hitResult.transform.gameObject.name);
+                // RayCast해서 검출된 결과값을 이용하여 마우스포인터의 위치 값을 찾아냄.  
                 mouseDir = new Vector3(hitResult.point.x, transform.position.y, hitResult.point.z) - transform.position;
                 animator.transform.forward = Vector3.Slerp(animator.transform.forward,mouseDir,0.5f);
                 mouseDir_y = new Vector3(hitResult.point.x, hitResult.point.y, hitResult.point.z) - transform.position;
+
+                // 현재 입력중인 이동 방향과 마우스 포인터의 위치를 이용하여 바라보고 있는 방향에 맞게 
+                // 애니매이션을 결정함 ex 뒤로걷기, 앞으로걷기, 앞구르기, 빽스탭
                 if (mouseDir.x * horizontalMove <= 0f && mouseDir.z * verticalMove <= 0f)
                 {
                     if (mouseDir.x * horizontalMove == 0f && mouseDir.z * verticalMove == 0f)
@@ -1072,6 +1096,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
         }
         else if (curStyle ==Style.WeaponStyle.Magic && isSkill)
         {
+            
             Ray ray = characterCamera.ScreenPointToRay(Input.mousePosition);
             // 레이어마스크 /////
             int layerMask = (1 << LayerMask.NameToLayer("Environment")) | (1 << LayerMask.NameToLayer("Wall"));
@@ -1137,15 +1162,24 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
             animator.Play("Idle_Magic");
         }
     }
-    [PunRPC]
+    //[PunRPC]
     public void Hit(float atk_,int type,int critical)
     {
+        // 피격 처리 함수
+
+        // 공격 피해를 입을 때, 매개변수인 ciritical 값을 토대로 
+        // 이번 공격피해가 치명상인지 아닌지를 랜덤함수를 통해 판단.
         bool isCritical = Random.Range(0, 100) < critical;
+
+        // 치명상일 경우, 받을 피해 150%
         if (isCritical)
             atk_ *= 1.5f;
 
+        // 현재 본인의 방어력에 따라 받을 피해량이 감소함.
         atk_ -=atk_ *(float)(curDefense / 100f);
 
+
+        // 매개변수로 받은 type값에 따라서 피격 사운드를 다르게 처리함.
         if (type == 0)
         {
             sound_source.PlayOneShot(sound_slash_hit);
@@ -1173,10 +1207,15 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
             
         }
 
-
+        // 피해를 입은 플레이어의 클라이언트에서만 발생되게 처리함.
         if (PV.IsMine)
         {
-            GameObject ft = PhotonNetwork.Instantiate("Damage_Text", transform.position, Quaternion.Euler(new Vector3(45f, 0f, 0f)));
+            // PhotonNetwork.Instantiate 함수는 일반 Instantiate와 다르게, 이 함수를 호출해서 생성된 오브젝트가 다른 클라이언트들에게도 반영이 됨.
+
+            // 데미지 팝업 텍스트를 생성해줌.
+            GameObject ft = PhotonNetwork.Instantiate("Damage_Text", transform.position, Quaternion.Euler(new Vector3(55f, 0f, 0f)));
+
+            // 생성된 팝업 텍스트의 값을 입은 피해량, 치명타 On/off 에 맞게 변경시킴.
             ft.transform.GetChild(0).transform.GetComponent<TextMesh>().text = "" + (int)atk_;
             if (isCritical)
             {
@@ -1184,6 +1223,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
                 ft.transform.GetChild(0).transform.GetComponent<TextMesh>().characterSize = 0.1f;
             }
 
+            // Sword Class:: 방어태세일 때, 쉴드량과 함께 체력감소 처리를 하게됨.
             if (isDeffensing)
             {
                 if (shieldAmount > 0)
@@ -1201,9 +1241,12 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
             else
                 curHP -= atk_;
 
+
+            // 체력이 0이하가 되면 죽음을 처리함.
             if (curHP <= 0 && isDeath == false)
             {
-
+                // 커스터마이징 과정 중에, preset_int의 0번째 인덱스가 성별을 나타냄
+                // 성별에 따른 비명 사운드를 다르게함.
                 if (preset_int[0] == 0)
                 {
                     sound_source.PlayOneShot(sound_death_female);
@@ -1214,8 +1257,11 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
                     sound_source.PlayOneShot(sound_death_male);
                 }
 
+                // 아레나에 있을 경우, 죽음 처리가 다름.
                 if (isArena == true)
                 {
+                    // 죽었기 때문에, 아레나에서의 승리 변수를 false로 바꿈.
+                    // 아레나가 종료되기 전까지 리스폰 처리를 하지않음.
                     arenaWin = false;
                     PV.RPC("setArenaRank", RpcTarget.All);
                     if(curStyle == Style.WeaponStyle.Magic && isSkill)
@@ -1233,20 +1279,30 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
                 }
                 else
                 {
-                    
+                    // 죽었을 경우, 킬로그를 나타내는 오브젝트를 생성함.
                     PhotonNetwork.Instantiate("killLog", Vector3.zero, Quaternion.identity);
+
+                    // 마법사가 스킬 시전 중, 사망했을 경우 스킬을 종료시켜줌.
+                    // PhotonView.RPC 함수를 통해서, 이 함수를 호출한 클라이언트 뿐만 아니라 다른 클라이언트에서도 동일한 함수를 호출시켜줌.
                     if (curStyle == Style.WeaponStyle.Magic && isSkill)
                     {
                         PV.RPC("Skill_magic_E_out", RpcTarget.All);
                     }
                     isDeath = true;
+
+                    // Last_Hiter는 제일 마지막에 피해를 입한 상대를 나타내고, 죽었을 때 그 상대가 있다면, 상대의 킬수를 올려줌. 
                     if(Last_Hiter)
                         PV.RPC("raiseKillPoint", RpcTarget.All);
+
+                    // 죽음 애니매이션이 발생함.
                     animator.SetTrigger("doDeath");
                     myCollider.enabled = false;
                     rgbd.isKinematic = true;
+                    // 죽음 수가 올라감.
                     death_point += 1;
                     GameObject.Find("MainCanvas").transform.Find("RespawnPanel").gameObject.SetActive(true);
+
+                    // 4초 * 플레이어레벨 만큼의 리스폰 시간을 가짐.
                     Invoke("Respawn", 4f * level);
                 }
                 //PV.RPC("DestroyRPC", RpcTarget.AllBuffered);
@@ -1278,18 +1334,25 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
     }
 
 
-    [PunRPC]
+    //[PunRPC]
+
+    // 플레이어 공격 처리
     void Attack()
     {
         isAttack = false;
+
+        // 업데이트 문에서 호출하고 있으며, 매 프레임마다 delay값을 증가시킴.
         attackDelay += Time.deltaTime;
 
 
+        // 플레이어 직업군(공격스타일)에 따라 공격 처리를 달리함.
         switch (curStyle)
         {
+            // 검사
             case Style.WeaponStyle.Sword:
                 isAttackReady = 0.15f < attackDelay;
 
+                // 공격 준비On && 마우스 왼쪽 버튼 클릭 시 발동
                 if (isAttackReady && mLDown && !isDodge && !isDeffensing && !eDown && !isSkill)
                 {
 
@@ -1301,6 +1364,8 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
 
 
                 break;
+
+           // 궁수
             case Style.WeaponStyle.Arrow:
                 isAttackReady = 0.6f < attackDelay;
 
@@ -1315,13 +1380,9 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
                     Invoke("PullPower_valueChange", 0.1f);
                     attackDelay = 0f;
                 }
-
-/*                if(mRDown && curArrow == null)
-                {
-                    if(isAttackReady)
-                        curArrow = GetArrow();
-                }*/
                 break;
+
+            // 마법사
             case Style.WeaponStyle.Magic:
                 isAttackReady = 0.82f < attackDelay;
 
@@ -1332,12 +1393,6 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
                     isAttack = true;
                     attackDelay = 0f;
                 }
-
-                /*                if(mRDown && curArrow == null)
-                                {
-                                    if(isAttackReady)
-                                        curArrow = GetArrow();
-                                }*/
                 break;
 
         }
@@ -1602,15 +1657,24 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
         Hp_Recovery1.Play();
         Hp_Recovery2.Play();
     }
+
+
+    // 아이템 사용
     void Use_Item_num(int index)
     {
+        // 인벤토리에 있는 아이템 사용은 1,2,3,4 버튼을 통해 이루어짐.
         bool acceptUse = true;
+
+        // 인벤토리안 해당 인덱스에 아이템이 있을 경우에 사용가능.
         if (Inventory_item_is[index] == true)
         {
             
+            // 아이템의 종류에 따라 처리를 다르게함. (아직은 하나만 존재)
             switch (PI.Inventory_item_name[index]) 
             {
                 case "hp_potion":
+                    // 체력포션 사용을 하는데 현재 체력이 최대체력 이상이라면,
+                    // 사용 못하게함.
                     if (curHP >= maxHP)
                     {
                         acceptUse = false;
@@ -1629,6 +1693,7 @@ public class Player_Control : MonoBehaviourPunCallbacks,IPunObservable
                     break;
             
             }
+            // 사용한 경우에만, 개수를 줄여줌;
             if (acceptUse)
             {
                 PI.Inventory_item_num[index] -= 1;

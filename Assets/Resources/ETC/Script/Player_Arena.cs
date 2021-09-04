@@ -54,6 +54,7 @@ public class Player_Arena : MonoBehaviour
                                              {0,0,0,0,0,0,0,0,0,0},
         };
     }
+    // 내 클라이언트에서 조작하고 있는 플레이어를 찾는 과정
     void FindMyPlayer()
     {
         GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
@@ -110,11 +111,15 @@ public class Player_Arena : MonoBehaviour
 
     }
 
+    // 병사를 배치하는 과정
     public void Soldier_assign(string index)
     {
+        // 준비버튼을 누르지 않았을 때만, 설정가능
         if (isReady == false)
         {
             int soldier_type = 0;
+
+            // 배치할 병사 타입별로 type 값을 변경
             if (isSelect_melee)
             {
                 soldier_type = 1;
@@ -123,6 +128,8 @@ public class Player_Arena : MonoBehaviour
             {
                 soldier_type = 2;
             }
+
+            // [4,10] 배열로 되어있는 배치판에 선택한 인덱스에 선택한 타입의 병사를 배치함.
             if (isActive_SoldierSpot[index[0] - '0', index[2] - '0'] == soldier_type)
             {
                 int prevType = isActive_SoldierSpot[index[0] - '0', index[2] - '0'];
@@ -136,11 +143,9 @@ public class Player_Arena : MonoBehaviour
                 isActive_SoldierSpot[index[0] - '0', index[2] - '0'] = soldier_type;
                 soldierPoint += prevType - soldier_type;
             }
-
+            // 배치한 병사 타입에 맞게 이미지를 변경시켜줌.
             SoldierSpot[index[0] - '0'].transform.GetChild(index[2] - '0').GetComponent<Image>().sprite = Soldier_type_sp[soldier_type];
         }
-
-
     }
     private void OnEnable()
     {
@@ -180,18 +185,16 @@ public class Player_Arena : MonoBehaviour
     [PunRPC]
     void ReadyGamePlus_RPC()
     {
-        gm.ReadyCountCur += 1;
+        GameManager.Instance.ReadyCountCur += 1;
     }
     [PunRPC]
     void ReadyGameMinus_RPC()
     {
-        gm.ReadyCountCur -= 1;
+        GameManager.Instance.ReadyCountCur -= 1;
     }
 
     public void StartGame()
     {
-
-        
         PV.RPC("StartGame_RPC",RpcTarget.All);
     }
     [PunRPC]
@@ -245,12 +248,15 @@ public class Player_Arena : MonoBehaviour
         isSelect_melee = false;
         isSelect_arrow = (isSelect_arrow == true ? false : true);
     }
+
+    // 병사들 생성
     void Soldier_Spawn()
     {
         for (int i = 0; i < 4; i++)
         {
             for(int j = 0; j < 10; j++)
             {
+                // 해당 인덱스 내, 병사 타입에 따라 결정함.
                 if(isActive_SoldierSpot[i,j] == 1)
                 {
                     GameObject go = PhotonNetwork.Instantiate(SoldierType_melee_str[SoldierType], player_data.transform.position, transform.rotation);

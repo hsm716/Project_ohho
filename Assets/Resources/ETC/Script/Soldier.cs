@@ -74,14 +74,22 @@ public class Soldier : MonoBehaviourPunCallbacks,IPunObservable
 
         FindMyPlayer();
     }
+
+    // 나의 플레이어를 찾는 함수
     void FindMyPlayer()
     {
         GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
         foreach (GameObject p in players)
         {
+            // 플레이어와 병사에는 각각 PhotonView 라는 컴포넌트가 있는데, 해당 컴포넌트에는 오브젝트가 생성될 때 생성한 클라이언트의 USERNAME을 Owner로 설정 되어있음.
+            // 플레이어의 owner 유저이름과 병사의 owner 유저이름을 비교하여 같은 경우, 자신의 주군이라고 판단
             if (p.GetComponent<Player_Control>().PV.Owner.NickName == PV.Owner.NickName)
             {
+                // 타겟을 플레이어로 설정
                 target = p.transform;
+
+                // 배치판에서 4행 10열로 병사를 배치했었는데,
+                // mySetNumber 값은 행 값을 나타낸다. myNumber 열을 나타낸다.
                 if(mySetNumber==0)
                     mySet = target.GetChild(6).GetChild(myNumber);
                 else if(mySetNumber==1)
@@ -193,11 +201,14 @@ public class Soldier : MonoBehaviourPunCallbacks,IPunObservable
         }
 
     }
+
     [PunRPC]
-    void Attack()
+    void Attack() // 공격 함수
     {
+        // 병사 타입에 따라서, 근거리 원거리를 다르게 처리함.
         if (soldierType == Type.melee)
         {
+            // 공격범위 안에 들며, 타겟이 되는 적들이 아군이 아니면 공격을 시전함.
             if (Vector3.Distance(transform.position, target.position) <= 1.5f && !isAttack)
             {
                 if (!target.CompareTag("SetNumber") && target.GetComponent<PhotonView>().Owner != PV.Owner)
@@ -213,6 +224,7 @@ public class Soldier : MonoBehaviourPunCallbacks,IPunObservable
         }
         else if(soldierType == Type.arrow)
         {
+            // 원거리 병사들은 타겟을 향해 비교적 긴 사거리를 가지며, 아군이 아니면 공격함.
             if (Vector3.Distance(transform.position, target.position) <= 14f && !isAttack)
             {
                 if (!target.CompareTag("SetNumber") && target.GetComponent<PhotonView>().Owner != PV.Owner)
@@ -222,12 +234,11 @@ public class Soldier : MonoBehaviourPunCallbacks,IPunObservable
                     anim.transform.forward = target.position - transform.position;
                     agent.isStopped = true;
                     anim.SetTrigger("doAttack");
-                    
                 }
             }
         }
-        
     }
+
     public void Shot()
     {
         PhotonNetwork.Instantiate("Soldier_Arrow", shotPoint.transform.position, shotPoint.transform.rotation);
@@ -299,20 +310,25 @@ public class Soldier : MonoBehaviourPunCallbacks,IPunObservable
         if (!isDead)
         {
 
+            // 내 클라이언트의 명령만 들음
             if (PV.IsMine)
             {
+                // T버튼 클릭시, 탐색 및 공격 명령
                 if (Input.GetKeyDown(KeyCode.T))
                 {
                     isChase = (isChase == false ? true : false);
                 }
+                // H버튼 클릭시, 정지 명령
                 if (Input.GetKeyDown(KeyCode.H))
                 {
                     isStop = (isStop == false ? true : false);
                 }
+                
                 if (!isAttack)
                     Turn();
 
                 
+                // 탐색 및 공격 명령이 내려졌을 때, 타겟을 행해 쫓고 공격함.
                 if (isChase)
                 {
 
@@ -325,6 +341,7 @@ public class Soldier : MonoBehaviourPunCallbacks,IPunObservable
             else if ((transform.position - curPos).sqrMagnitude >= 100) transform.position = curPos;
             else
             {
+                // 병사들의 위치 및 방향을 동기화함
                 transform.position = Vector3.Lerp(transform.position, curPos, Time.deltaTime*20f);
                 transform.rotation = Quaternion.Lerp(transform.rotation, curRot, Time.deltaTime*20f);
             }
@@ -333,6 +350,7 @@ public class Soldier : MonoBehaviourPunCallbacks,IPunObservable
 
 
 
+            // 타겟이 없으면, 내 플레이어를 찾아서 타겟에 넣어줌.
             if (!target)
             {
                 FindMyPlayer();
@@ -340,32 +358,34 @@ public class Soldier : MonoBehaviourPunCallbacks,IPunObservable
             }
             else if (target || mySet)
             {
+                // 타겟이나 mySet이 존재하고, 공격중이 아닐때
                 if (!isAttack)
                 {
-
+                    // 적 탐색 및 공격 명령이 없을때는, 배치된 위치를 쫓아 이동하게함 
                     if (isFollow && !isChase && !isStop)
                     {
                         agent.isStopped = false;
                         ChaseObject(mySet.position);
-                    }
+                    } // 적 탐색 및 공격 명령이 있을때는, target을 쫓아 이동함.
                     else if (isFollow && isChase && !isStop)
                     {
                         agent.isStopped = false;
                         ChaseObject(target.position);
                     }
-
+                    // 정지 명령이 있을 때, 정지함
                     if (isStop)
                     {
                         agent.isStopped = true;
                     }
                     else
                     {
+                        // 탐색 및 공격 명령이 없을 때, 배치된 위치에 가까워졌을때, 정지함.
                         if (Vector3.Distance(transform.position, mySet.position) <= 0.5f && !isChase)
                         {
                             agent.isStopped = true;
                             agent.velocity = Vector3.zero;
 
-                        }
+                        }// 탐색 및 공격 명령이 있을 때, 타겟에 공격할 사거리만큼 가까워졌을때, 정지함
                         else if (Vector3.Distance(transform.position, target.position) <= 1.5f && isChase)
                         {
                             agent.isStopped = true;

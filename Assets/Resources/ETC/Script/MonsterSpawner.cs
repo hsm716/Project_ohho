@@ -17,11 +17,18 @@ public class MonsterSpawner : MonoBehaviour
         StartCoroutine(SpawnLater());
     }
 
+
+    // 지연 스폰
     IEnumerator SpawnLater()
     {
+        // 게임시작 애니매이션이 지난 후, 몬스터를 호출
         yield return new WaitForSeconds(20f);
+
+        // 스폰 지연 후, 스폰 코루틴 함수를 호출
+        // 방장 클라이언트에서만 네트워크 오브젝트인 몬스터들을 소환.
         if (PhotonNetwork.IsMasterClient)
         {
+            // 슬라임 수를 제한함.
             maxCount_Slime = 7;
             if (spawnType == Type.demon)
             {

@@ -39,6 +39,8 @@ public class GameBoard : MonoBehaviour
             playerList.transform.GetChild(i).gameObject.SetActive(true);
         }
     }
+
+    // 플레이어들을 찾아서, 각 플레이어들의 정보들을 가져옴
     void FindPlayers()
     {
         GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
@@ -47,7 +49,7 @@ public class GameBoard : MonoBehaviour
             Player_Control player_data_ = player.GetComponent<Player_Control>();
             int index = (player_data_.PV.ViewID / 1000) - 1;
 
-            //공격 스타일 //
+            //각 플레이어들의 공격 스타일(직업군)에 맞게 이미지 변경//
             if (player_data_.curStyle == Style.WeaponStyle.Sword)
             {
                 classType_img[index].sprite = swordClass_sp;
@@ -62,8 +64,10 @@ public class GameBoard : MonoBehaviour
             }
             ///////////////////////////////////////////////////
 
+            // KD (킬/데스) 저장
             KD_txt[index].text = player_data_.kill_point + " / " + player_data_.death_point;
 
+            // 각 플레이어가 점령한 지역 표시
             userName_txt[index].text = player_data_.username;
             for (int j = 0; j < 5; j++)
             {
